@@ -1,4 +1,5 @@
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
 
 public class DTO {
@@ -22,27 +23,20 @@ public class DTO {
     }
 
     private void createKeyspace(Session session, String keyspaceName, String replicationStrategy, int replicationFactor) {
-        StringBuilder stringBuilder = new StringBuilder("CREATE KEYSPACE IF NOT EXISTS ")
-                .append(keyspaceName).append(" WITH replication = {")
-                .append("'class':'").append(replicationStrategy)
-                .append("','replication_factor':").append(replicationFactor)
-                .append("};");
+        PreparedStatement preparedStatement = session.prepare("CREATE KEYSPACE IF NOT EXISTS " + keyspaceName +
+                " WITH replication = {'class': '" + replicationStrategy + "','replication_factor': " + replicationFactor + "};");
 
-        String query = stringBuilder.toString();
-        session.execute(query);
+        session.execute(preparedStatement.bind());
     }
 
     private void createTable(Session session, String keyspace, String tableName) {
-        // TODO: Use keyspace command not working
-        StringBuilder stringBuilder = new StringBuilder("USE " + keyspace + "CREATE TABLE IF NOT EXISTS ")
-                .append(tableName).append("(")
-                .append("id text, ")
-                .append("title text, ")
-                .append("age int, ")
-                .append("PRIMARY KEY(id));");
+        PreparedStatement preparedStatement = session.prepare("USE " + keyspace + ";");
+        session.execute(preparedStatement.bind());
 
-        String query = stringBuilder.toString();
-        session.execute(query);
+        preparedStatement = session.prepare("CREATE TABLE IF NOT EXISTS " + tableName +
+                " (id text, title text, age int, PRIMARY KEY(id));");
+
+        session.execute(preparedStatement.bind());
     }
 }
 
