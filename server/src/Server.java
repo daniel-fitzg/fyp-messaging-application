@@ -1,20 +1,21 @@
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class Server {
     private ThreadPoolExecutor threadPoolExecutor;
 
-    // Channel that listens for incoming TCP connections
-    private ServerSocketChannel serverSocketChannel;
-
     private Server(int maxThreads) {
         this.threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreads);
     }
 
     private void serveRequests() {
+        // Channel that listens for incoming TCP connections
+        ServerSocketChannel serverSocketChannel;
+
         try {
             serverSocketChannel = ServerSocketChannel.open();
             // TODO: Current hostname address allows only local clients to connect to server
@@ -22,8 +23,9 @@ public class Server {
 
             while(true) {
                 System.out.println("Waiting for client connection...");
-                serverSocketChannel.accept();
+                SocketChannel socketChannel = serverSocketChannel.accept();
                 System.out.println("Connection successful");
+                threadPoolExecutor.execute(new ServerWorker(socketChannel));
             }
 
         } catch (IOException exception) {
@@ -32,7 +34,7 @@ public class Server {
     }
 
     public static void main (String[] args) {
-        System.out.println("Starting server ...");
+        System.out.println("Starting server...");
         new Server(10).serveRequests();
     }
 }
