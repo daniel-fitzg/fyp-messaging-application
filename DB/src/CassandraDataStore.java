@@ -12,10 +12,14 @@ public class CassandraDataStore {
 
     CassandraDataStore() {
         cluster = Cluster.builder().addContactPoint(localHostAddress).withPort(portNumber).build();
-        session = cluster.connect();
+        session = cluster.connect("messaging_app");
     }
 
     public List<String> getUsers() {
         return new UserDao(session).getUsers();
+    }
+
+    public void addMessage(String message) {
+        new MessageDao(session).addMessage(message);
     }
 }

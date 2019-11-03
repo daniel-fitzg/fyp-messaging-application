@@ -1,5 +1,4 @@
 import java.nio.channels.SocketChannel;
-import
 
 public class ServerWorker implements Runnable {
     // TODO: DB Module added as a dependency, OK?
@@ -10,6 +9,7 @@ public class ServerWorker implements Runnable {
     ServerWorker(SocketChannel socketChannel) {
         this.socketChannel = socketChannel;
         this.serverWorkerHelper = new ServerWorkerHelper();
+        this.cassandraDataStore = new CassandraDataStore();
     }
 
     @Override
@@ -18,8 +18,7 @@ public class ServerWorker implements Runnable {
         String messageReceived = serverWorkerHelper.receiveMessage(socketChannel);
         System.out.println("Message received from client: " + messageReceived);
 
-        // TODO: DB Module added as a dependency, OK?
-
+        cassandraDataStore.addMessage(messageReceived);
     }
 
 }
