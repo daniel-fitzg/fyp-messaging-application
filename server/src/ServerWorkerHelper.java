@@ -22,6 +22,10 @@ class ServerWorkerHelper {
         }
     }
 
+    void authenticatePassword(String password) {
+        //
+    }
+
 //    void authenticatePassword(String password) {
 //        if ()
 //    }
