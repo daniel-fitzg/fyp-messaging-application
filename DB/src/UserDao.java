@@ -16,11 +16,11 @@ class UserDao {
     public List<String> getUsers() {
         List<String> users = new ArrayList<>();
 
-        PreparedStatement preparedStatement = session.prepare("SELECT user_id FROM " + tableName);
+        PreparedStatement preparedStatement = session.prepare("SELECT user_name FROM " + tableName);
         ResultSet resultSet = session.execute(preparedStatement.bind());
 
         resultSet.forEach(row -> {
-            users.add(row.getString("user_id"));
+            users.add(row.getString("user_name"));
         });
 
         return users;

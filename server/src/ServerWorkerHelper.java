@@ -1,8 +1,44 @@
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.List;
 
-public class ServerWorkerHelper {
+class ServerWorkerHelper {
+    private List<String> users;
+    private SocketChannel socketChannel;
+
+    ServerWorkerHelper(CassandraDataStore cassandraDataStore, SocketChannel socketChannel) {
+        this.socketChannel = socketChannel;
+        users = cassandraDataStore.getUsers();
+    }
+
+
+    void authenticateUserName(String userName) {
+        // TODO DAO should return user objects not strings
+        if (users.contains(userName)) {
+            sendMessage("Username OK");
+        } else {
+            sendMessage("Username not found");
+        }
+    }
+
+//    void authenticatePassword(String password) {
+//        if ()
+//    }
+
+    void sendMessage(String message) {
+        try {
+            ByteBuffer buffer = ByteBuffer.allocate(message.length() + 1);
+            buffer.put(message.getBytes());
+            buffer.put((byte) 0x00);
+            buffer.flip();
+            while (buffer.hasRemaining()) {
+                socketChannel.write(buffer);
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
     String receiveMessage(SocketChannel socketChannel) {
         try {

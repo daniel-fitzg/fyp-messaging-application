@@ -12,7 +12,25 @@ public class Client {
         try (SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 5000))) {
             System.out.println("Connected to Server");
 
+            while(true) {
+                System.out.println("Enter user name: ");
+                sendMessage(socketChannel, scanner.nextLine());
+                if (receiveMessage(socketChannel).equals("Username OK")) {
+                    System.out.println("Enter password: ");
+                    sendMessage(socketChannel, scanner.nextLine());
+                    if (receiveMessage(socketChannel).equals("Password OK")) {
+                        break;
+                    } else {
+                        System.out.println("Incorrect password");
+                    }
+                } else {
+                    System.out.println("User name not found");
+                }
+            }
+
             while (true) {
+                // TODO: Check if user exists
+
                 System.out.println("Enter messsage: ");
                 sendMessage(socketChannel, scanner.nextLine());
             }
@@ -21,7 +39,7 @@ public class Client {
         }
     }
 
-    void sendMessage(SocketChannel socketChannel, String message) {
+    private void sendMessage(SocketChannel socketChannel, String message) {
         try {
             ByteBuffer buffer = ByteBuffer.allocate(message.length() + 1);
             buffer.put(message.getBytes());
@@ -34,6 +52,34 @@ public class Client {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    String receiveMessage(SocketChannel socketChannel) {
+        try {
+            ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+            String message = "";
+
+            while (socketChannel.read(byteBuffer) > 0) {
+                char byteRead = 0x00;
+                byteBuffer.flip();
+                while (byteBuffer.hasRemaining()) {
+                    byteRead = (char) byteBuffer.get();
+                    if (byteRead == 0x00) {
+                        break;
+                    }
+                    message += byteRead;
+                }
+                if (byteRead == 0x00) {
+                    break;
+                }
+                byteBuffer.clear();
+            }
+
+            return message;
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return "";
     }
 
     public static void main (String[] args) {

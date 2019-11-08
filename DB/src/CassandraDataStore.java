@@ -1,7 +1,6 @@
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CassandraDataStore {
