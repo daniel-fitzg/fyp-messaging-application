@@ -28,10 +28,10 @@ public class Client {
                 }
             }
 
-            while (true) {
-                // TODO: Check if user exists
+            System.out.println("Sign-in successful");
 
-                System.out.println("Enter messsage: ");
+            while (true) {
+                System.out.println("Enter message: ");
                 sendMessage(socketChannel, scanner.nextLine());
             }
         } catch (IOException exception) {
@@ -54,7 +54,7 @@ public class Client {
         }
     }
 
-    String receiveMessage(SocketChannel socketChannel) {
+    private String receiveMessage(SocketChannel socketChannel) {
         try {
             ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
             String message = "";

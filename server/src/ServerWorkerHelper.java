@@ -15,7 +15,6 @@ class ServerWorkerHelper {
 
 
     void authenticateUserName(String userName) {
-        // TODO DAO should return user objects not strings
         users.forEach(user -> {
             if (user.getUserName().equals(userName)) {
                 sendMessage("Username OK");
@@ -26,11 +25,17 @@ class ServerWorkerHelper {
     }
 
     void authenticatePassword(String password) {
-        //
+        users.forEach(user -> {
+            if (user.getPassword().equalsIgnoreCase(password)) {
+                sendMessage("Password OK");
+            } else {
+                sendMessage("Incorrect Password");
+            }
+        });
     }
 
 
-    void sendMessage(String message) {
+    private void sendMessage(String message) {
         try {
             ByteBuffer buffer = ByteBuffer.allocate(message.length() + 1);
             buffer.put(message.getBytes());
