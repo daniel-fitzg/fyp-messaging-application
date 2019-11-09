@@ -4,31 +4,31 @@ import java.nio.channels.SocketChannel;
 import java.util.List;
 
 class ServerWorkerHelper {
-    private List<String> users;
+    private List<User> users;
     private SocketChannel socketChannel;
 
     ServerWorkerHelper(CassandraDataStore cassandraDataStore, SocketChannel socketChannel) {
         this.socketChannel = socketChannel;
         users = cassandraDataStore.getUsers();
+        System.out.println();
     }
 
 
     void authenticateUserName(String userName) {
         // TODO DAO should return user objects not strings
-        if (users.contains(userName)) {
-            sendMessage("Username OK");
-        } else {
-            sendMessage("Username not found");
-        }
+        users.forEach(user -> {
+            if (user.getUserName().equals(userName)) {
+                sendMessage("Username OK");
+            } else {
+                sendMessage("Username not found");
+            }
+        });
     }
 
     void authenticatePassword(String password) {
         //
     }
 
-//    void authenticatePassword(String password) {
-//        if ()
-//    }
 
     void sendMessage(String message) {
         try {

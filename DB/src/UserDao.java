@@ -4,6 +4,10 @@ import com.datastax.driver.core.Session;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+// TODO For each table add comment block specifying columns
+
 
 class UserDao {
     final String tableName = "users";
@@ -13,14 +17,21 @@ class UserDao {
         this.session = session;
     }
 
-    public List<String> getUsers() {
-        List<String> users = new ArrayList<>();
+    public List<User> getUsers() {
+        List<User> users = new ArrayList<>();
 
-        PreparedStatement preparedStatement = session.prepare("SELECT user_name FROM " + tableName);
+        PreparedStatement preparedStatement = session.prepare("SELECT * FROM " + tableName);
         ResultSet resultSet = session.execute(preparedStatement.bind());
 
+        User user = new User();
         resultSet.forEach(row -> {
-            users.add(row.getString("user_name"));
+            user.setUserId(row.getUUID("user_id"));
+            user.setUserName(row.getString("user_name"));
+            user.setPassword(row.getString("password"));
+            user.setRegisterDate(row.getTimestamp("register_date"));
+            user.setEmail(row.getString("email"));
+
+            users.add(user);
         });
 
         return users;

@@ -14,7 +14,7 @@ public class CassandraDataStore {
         session = cluster.connect("messaging_app");
     }
 
-    public List<String> getUsers() {
+    public List<User> getUsers() {
         return new UserDao(session).getUsers();
     }
 
