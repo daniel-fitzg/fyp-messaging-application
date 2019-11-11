@@ -29,7 +29,7 @@ public class Client {
                         System.out.println(receiveMessage(socketChannel));
                         break;
                     } else if (userSelection.equalsIgnoreCase("n")) {
-                        System.out.println("Existing user");
+                        sendMessage(socketChannel, "Existing user");
                         break;
                     }
                 }

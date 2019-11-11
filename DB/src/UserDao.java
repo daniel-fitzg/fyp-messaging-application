@@ -41,7 +41,18 @@ class UserDao {
         PreparedStatement preparedStatement = session.prepare("INSERT INTO " + tableName +
                 " (user_id, user_name, password, register_date, email) VALUES (?, ?, ?, ?, ?)");
 
-        ResultSet resultSet = session.execute(preparedStatement.bind(UUID.randomUUID(), userName, password, null, email));
+        session.execute(preparedStatement.bind(UUID.randomUUID(), userName, password, null, email));
+    }
 
+    UUID getUserId(String userName) {
+        PreparedStatement preparedStatement = session.prepare("SELECT user_id FROM " + tableName + " WHERE user_name = '" + userName + "'");
+        ResultSet resultSet = session.execute(preparedStatement.bind());
+
+        final UUID[] userId = {null};
+        resultSet.forEach(row -> {
+            userId[0] = row.getUUID("user_id");
+        });
+
+        return userId[0];
     }
 }

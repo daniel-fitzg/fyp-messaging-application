@@ -1,4 +1,5 @@
 import java.nio.channels.SocketChannel;
+import java.util.Date;
 import java.util.UUID;
 
 public class ServerWorker implements Runnable {
@@ -15,24 +16,32 @@ public class ServerWorker implements Runnable {
 
     @Override
     public void run() {
+        UUID userId = null;
+
         System.out.println("Processing request from client...");
         String newOrExistingUser = serverWorkerHelper.receiveMessage();
         if (newOrExistingUser.equalsIgnoreCase("Registering new user")) {
-            serverWorkerHelper.registerNewUser();
+            userId = serverWorkerHelper.registerNewUser();
         } else if (newOrExistingUser.equalsIgnoreCase("Existing user")) {
             // TODO Process user login details
             while (true) {
-
                 System.out.println("Waiting for client user name:");
-                serverWorkerHelper.authenticateUserName(serverWorkerHelper.receiveMessage());
+                userId = serverWorkerHelper.authenticateUserName(serverWorkerHelper.receiveMessage());
                 serverWorkerHelper.authenticatePassword(serverWorkerHelper.receiveMessage());
             }
         }
 
-//        String messageReceived = serverWorkerHelper.receiveMessage(socketChannel);
-//        System.out.println("Message received from client: " + messageReceived);
-//
-//        cassandraDataStore.addMessage(messageReceived);
+        while(true) {
+            String messageReceived = serverWorkerHelper.receiveMessage();
+
+            if (messageReceived.equalsIgnoreCase("quit")) {
+                System.out.println("Message received from client: " + messageReceived);
+                cassandraDataStore.addMessage(UUID.randomUUID(), userId, new Date(),messageReceived);
+                break;
+            }
+
+            cassandraDataStore.close();
+        }
     }
 
 }

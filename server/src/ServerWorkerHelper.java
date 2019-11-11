@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.List;
+import java.util.UUID;
 
 class ServerWorkerHelper {
     private CassandraDataStore cassandraDataStore;
@@ -16,7 +17,7 @@ class ServerWorkerHelper {
     }
 
 
-    void authenticateUserName(String userName) {
+    UUID authenticateUserName(String userName) {
         users.forEach(user -> {
             if (user.getUserName().equals(userName)) {
                 sendMessage("Username OK");
@@ -24,6 +25,8 @@ class ServerWorkerHelper {
                 sendMessage("Username not found");
             }
         });
+
+        return cassandraDataStore.getUserId(userName);
     }
 
     void authenticatePassword(String password) {
@@ -34,17 +37,18 @@ class ServerWorkerHelper {
                 sendMessage("Incorrect Password");
             }
         });
+
     }
 
-    void registerNewUser() {
+    UUID registerNewUser() {
         String userName  = receiveMessage();
         String password = receiveMessage();
         String email = receiveMessage();
 
         cassandraDataStore.addUser(userName, password, email);
         sendMessage("Registration successful");
+        return cassandraDataStore.getUserId(userName);
     }
-
 
     private void sendMessage(String message) {
         try {
@@ -86,4 +90,5 @@ class ServerWorkerHelper {
         }
         return "";
     }
+
 }

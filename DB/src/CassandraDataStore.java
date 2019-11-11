@@ -1,7 +1,9 @@
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class CassandraDataStore {
     private Cluster cluster;
@@ -22,7 +24,16 @@ public class CassandraDataStore {
         new UserDao(session).addUser(userName, password, email);
     }
 
-    public void addMessage(String message) {
-        new MessageDao(session).addMessage(message);
+    public UUID getUserId(String userName) {
+        return new UserDao(session).getUserId(userName);
+    }
+
+    public void addMessage(UUID messageId, UUID userId, Date createDate, String message) {
+        new MessageDao(session).addMessage(messageId, userId, createDate, message);
+    }
+
+    public void close() {
+        session.close();
+        cluster.close();
     }
 }
