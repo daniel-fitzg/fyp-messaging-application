@@ -13,6 +13,27 @@ public class Client {
             System.out.println("Connected to Server");
 
             while(true) {
+                System.out.println("New User? (Press Y/N):");
+                while(true) {
+                    String userSelection = scanner.nextLine();
+                    if (userSelection.equalsIgnoreCase("y")) {
+                        // Register User
+                        sendMessage(socketChannel, "Registering new user");
+                        System.out.println("Registration:");
+                        System.out.println("Enter a user name:");
+                        sendMessage(socketChannel, scanner.nextLine());
+                        System.out.println("Enter a password:");
+                        sendMessage(socketChannel, scanner.nextLine());
+                        System.out.println("Enter an email address:");
+                        sendMessage(socketChannel, scanner.nextLine());
+                        System.out.println(receiveMessage(socketChannel));
+                        break;
+                    } else if (userSelection.equalsIgnoreCase("n")) {
+                        System.out.println("Existing user");
+                        break;
+                    }
+                }
+
                 System.out.println("Enter user name: ");
                 sendMessage(socketChannel, scanner.nextLine());
                 if (receiveMessage(socketChannel).equals("Username OK")) {

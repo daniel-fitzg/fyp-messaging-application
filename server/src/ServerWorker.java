@@ -16,11 +16,17 @@ public class ServerWorker implements Runnable {
     @Override
     public void run() {
         System.out.println("Processing request from client...");
-        // TODO Process user login details
-        while(true) {
-            System.out.println("Waiting for client user name:");
-            serverWorkerHelper.authenticateUserName(serverWorkerHelper.receiveMessage(socketChannel));
-            serverWorkerHelper.authenticatePassword(serverWorkerHelper.receiveMessage(socketChannel));
+        String newOrExistingUser = serverWorkerHelper.receiveMessage();
+        if (newOrExistingUser.equalsIgnoreCase("Registering new user")) {
+            serverWorkerHelper.registerNewUser();
+        } else if (newOrExistingUser.equalsIgnoreCase("Existing user")) {
+            // TODO Process user login details
+            while (true) {
+
+                System.out.println("Waiting for client user name:");
+                serverWorkerHelper.authenticateUserName(serverWorkerHelper.receiveMessage());
+                serverWorkerHelper.authenticatePassword(serverWorkerHelper.receiveMessage());
+            }
         }
 
 //        String messageReceived = serverWorkerHelper.receiveMessage(socketChannel);

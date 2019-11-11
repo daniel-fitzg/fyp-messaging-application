@@ -36,4 +36,12 @@ class UserDao {
 
         return users;
     }
+
+    void addUser(String userName, String password, String email) {
+        PreparedStatement preparedStatement = session.prepare("INSERT INTO " + tableName +
+                " (user_id, user_name, password, register_date, email) VALUES (?, ?, ?, ?, ?)");
+
+        ResultSet resultSet = session.execute(preparedStatement.bind(UUID.randomUUID(), userName, password, null, email));
+
+    }
 }

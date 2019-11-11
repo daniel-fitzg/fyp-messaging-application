@@ -4,10 +4,12 @@ import java.nio.channels.SocketChannel;
 import java.util.List;
 
 class ServerWorkerHelper {
-    private List<User> users;
+    private CassandraDataStore cassandraDataStore;
     private SocketChannel socketChannel;
+    private List<User> users;
 
     ServerWorkerHelper(CassandraDataStore cassandraDataStore, SocketChannel socketChannel) {
+        this.cassandraDataStore = cassandraDataStore;
         this.socketChannel = socketChannel;
         users = cassandraDataStore.getUsers();
         System.out.println();
@@ -34,6 +36,15 @@ class ServerWorkerHelper {
         });
     }
 
+    void registerNewUser() {
+        String userName  = receiveMessage();
+        String password = receiveMessage();
+        String email = receiveMessage();
+
+        cassandraDataStore.addUser(userName, password, email);
+        sendMessage("Registration successful");
+    }
+
 
     private void sendMessage(String message) {
         try {
@@ -49,7 +60,7 @@ class ServerWorkerHelper {
         }
     }
 
-    String receiveMessage(SocketChannel socketChannel) {
+    String receiveMessage() {
         try {
             ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
             String message = "";

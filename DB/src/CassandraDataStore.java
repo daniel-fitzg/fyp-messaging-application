@@ -18,6 +18,10 @@ public class CassandraDataStore {
         return new UserDao(session).getUsers();
     }
 
+    public void addUser(String userName, String password, String email) {
+        new UserDao(session).addUser(userName, password, email);
+    }
+
     public void addMessage(String message) {
         new MessageDao(session).addMessage(message);
     }
