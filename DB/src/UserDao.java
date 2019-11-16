@@ -23,8 +23,8 @@ class UserDao {
         PreparedStatement preparedStatement = session.prepare("SELECT * FROM " + tableName);
         ResultSet resultSet = session.execute(preparedStatement.bind());
 
-        User user = new User();
         resultSet.forEach(row -> {
+            User user = new User();
             user.setUserId(row.getUUID("user_id"));
             user.setUserName(row.getString("user_name"));
             user.setPassword(row.getString("password"));

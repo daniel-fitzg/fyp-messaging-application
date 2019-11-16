@@ -13,6 +13,7 @@ public class CassandraDataStore {
 
     CassandraDataStore() {
         cluster = Cluster.builder().addContactPoint(localHostAddress).withPort(portNumber).build();
+        // TODO: catch com.datastax.driver.core.exceptions.NoHostAvailableException
         session = cluster.connect("messaging_app");
     }
 

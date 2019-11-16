@@ -13,7 +13,6 @@ class ServerWorkerHelper {
         this.cassandraDataStore = cassandraDataStore;
         this.socketChannel = socketChannel;
         users = cassandraDataStore.getUsers();
-        System.out.println();
     }
 
 
@@ -21,8 +20,10 @@ class ServerWorkerHelper {
         users.forEach(user -> {
             if (user.getUserName().equals(userName)) {
                 sendMessage("Username OK");
+                System.out.println("Username OK");
             } else {
                 sendMessage("Username not found");
+                System.out.println("Username not found");
             }
         });
 
@@ -33,8 +34,10 @@ class ServerWorkerHelper {
         users.forEach(user -> {
             if (user.getPassword().equalsIgnoreCase(password)) {
                 sendMessage("Password OK");
+                System.out.println("Password OK");
             } else {
                 sendMessage("Incorrect Password");
+                System.out.println("Incorrect Password");
             }
         });
 

@@ -19,11 +19,11 @@ public class ServerWorker implements Runnable {
         UUID userId = null;
 
         System.out.println("Processing request from client...");
+
         String newOrExistingUser = serverWorkerHelper.receiveMessage();
         if (newOrExistingUser.equalsIgnoreCase("Registering new user")) {
             userId = serverWorkerHelper.registerNewUser();
         } else if (newOrExistingUser.equalsIgnoreCase("Existing user")) {
-            // TODO Process user login details
             while (true) {
                 System.out.println("Waiting for client user name:");
                 userId = serverWorkerHelper.authenticateUserName(serverWorkerHelper.receiveMessage());
@@ -42,6 +42,8 @@ public class ServerWorker implements Runnable {
             }
 
             cassandraDataStore.addMessage(UUID.randomUUID(), userId, new Date(), messageReceived);
+
+
         }
     }
 
