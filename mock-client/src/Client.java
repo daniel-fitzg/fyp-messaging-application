@@ -70,6 +70,7 @@ public class Client {
                 socketChannel.write(buffer);
             }
             System.out.println("Sent message to server");
+            System.out.println();
         } catch (IOException exception) {
             exception.printStackTrace();
         }

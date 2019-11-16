@@ -28,6 +28,7 @@ public class ServerWorker implements Runnable {
                 System.out.println("Waiting for client user name:");
                 userId = serverWorkerHelper.authenticateUserName(serverWorkerHelper.receiveMessage());
                 serverWorkerHelper.authenticatePassword(serverWorkerHelper.receiveMessage());
+                break;
             }
         }
 
@@ -36,11 +37,11 @@ public class ServerWorker implements Runnable {
 
             if (messageReceived.equalsIgnoreCase("quit")) {
                 System.out.println("Message received from client: " + messageReceived);
-                cassandraDataStore.addMessage(UUID.randomUUID(), userId, new Date(),messageReceived);
+                cassandraDataStore.close();
                 break;
             }
 
-            cassandraDataStore.close();
+            cassandraDataStore.addMessage(UUID.randomUUID(), userId, new Date(), messageReceived);
         }
     }
 

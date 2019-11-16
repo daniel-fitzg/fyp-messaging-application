@@ -45,7 +45,8 @@ class UserDao {
     }
 
     UUID getUserId(String userName) {
-        PreparedStatement preparedStatement = session.prepare("SELECT user_id FROM " + tableName + " WHERE user_name = '" + userName + "'");
+        // Allow filtering enables search by user_name, avoid this by including user_name in table primary key
+        PreparedStatement preparedStatement = session.prepare("SELECT user_id FROM " + tableName + " WHERE user_name = '" + userName + "' ALLOW FILTERING;");
         ResultSet resultSet = session.execute(preparedStatement.bind());
 
         final UUID[] userId = {null};
