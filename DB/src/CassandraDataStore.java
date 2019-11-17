@@ -21,12 +21,12 @@ public class CassandraDataStore {
         return new UserDao(session).getUsers();
     }
 
-    public void addUser(String userName, String password, String email) {
-        new UserDao(session).addUser(userName, password, email);
+    public User addUser(String userName, String password, Date registerDate, String email) {
+        return new UserDao(session).addUser(userName, password, registerDate, email);
     }
 
-    public UUID getUserId(String userName) {
-        return new UserDao(session).getUserId(userName);
+    public User getUser(String userName) {
+        return new UserDao(session).getUser(userName);
     }
 
     public void addMessage(UUID messageId, UUID userId, Date createDate, String message) {

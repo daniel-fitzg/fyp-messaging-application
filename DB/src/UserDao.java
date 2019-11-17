@@ -1,8 +1,10 @@
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,23 +39,28 @@ class UserDao {
         return users;
     }
 
-    void addUser(String userName, String password, String email) {
+    User addUser(String userName, String password, Date registerDate, String email) {
         PreparedStatement preparedStatement = session.prepare("INSERT INTO " + tableName +
                 " (user_id, user_name, password, register_date, email) VALUES (?, ?, ?, ?, ?)");
 
-        session.execute(preparedStatement.bind(UUID.randomUUID(), userName, password, null, email));
+        session.execute(preparedStatement.bind(UUID.randomUUID(), userName, password, registerDate, email));
+
+        return getUser(userName);
     }
 
-    UUID getUserId(String userName) {
+    User getUser(String userName) {
         // Allow filtering enables search by user_name, avoid this by including user_name in table primary key
         PreparedStatement preparedStatement = session.prepare("SELECT user_id FROM " + tableName + " WHERE user_name = '" + userName + "' ALLOW FILTERING;");
         ResultSet resultSet = session.execute(preparedStatement.bind());
 
-        final UUID[] userId = {null};
-        resultSet.forEach(row -> {
-            userId[0] = row.getUUID("user_id");
-        });
+        // Populate User with DB results
+        User user = new User();
+        Row row = resultSet.one();
+        user.setUserId(row.getUUID("user_id"));
+        user.setUserName(row.getString("user_name"));
+        user.setPassword(row.getString("password"));
+        user.setEmail(row.getString("email"));
 
-        return userId[0];
+        return user;
     }
 }

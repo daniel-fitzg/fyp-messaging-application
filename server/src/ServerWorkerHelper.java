@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,20 +16,55 @@ class ServerWorkerHelper {
         users = cassandraDataStore.getUsers();
     }
 
+    boolean registerNewUser() {
+        String userName = receiveMessage();
+        String password = receiveMessage();
+        String email = receiveMessage();
 
-    UUID authenticateUserName(String userName) {
-        users.forEach(user -> {
-            if (user.getUserName().equals(userName)) {
-                sendMessage("Username OK");
-                System.out.println("Username OK");
-            } else {
-                sendMessage("Username not found");
-                System.out.println("Username not found");
-            }
-        });
+        User user = cassandraDataStore.addUser(userName, password, new Date(), email);
+        if (user.getUserId() == null) {
+            sendMessage("Registration successful");
+            return true;
+        }
 
-        return cassandraDataStore.getUserId(userName);
+        return false;
     }
+
+    boolean authenticateUser() {
+        // if username not found return false
+        String userName = receiveMessage();
+
+        for (User user : users) {
+            if (user.getUserName().equalsIgnoreCase(userName)) {
+                System.out.println("User name OK");
+                sendMessage("User name OK");
+                if (receiveMessage().equalsIgnoreCase(user.getPassword())) {
+                    System.out.println("Password OK");
+                    sendMessage("Password OK");
+                    return true;
+                }
+            }
+        }
+
+        sendMessage("User name not found");
+        return false;
+    }
+
+
+
+//    UUID authenticateUserName(String userName) {
+//        users.forEach(user -> {
+//            if (user.getUserName().equals(userName)) {
+//                sendMessage("Username OK");
+//                System.out.println("Username OK");
+//            } else {
+//                sendMessage("Username not found");
+//                System.out.println("Username not found");
+//            }
+//        });
+//
+//        return cassandraDataStore.getUserId(userName);
+//    }
 
     void authenticatePassword(String password) {
         users.forEach(user -> {
@@ -43,17 +79,7 @@ class ServerWorkerHelper {
 
     }
 
-    UUID registerNewUser() {
-        String userName  = receiveMessage();
-        String password = receiveMessage();
-        String email = receiveMessage();
-
-        cassandraDataStore.addUser(userName, password, email);
-        sendMessage("Registration successful");
-        return cassandraDataStore.getUserId(userName);
-    }
-
-    private void sendMessage(String message) {
+    void sendMessage(String message) {
         try {
             ByteBuffer buffer = ByteBuffer.allocate(message.length() + 1);
             buffer.put(message.getBytes());

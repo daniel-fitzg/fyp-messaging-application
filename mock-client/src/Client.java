@@ -14,42 +14,44 @@ public class Client {
 
             while(true) {
                 System.out.println("New User? (Press Y/N):");
-                while(true) {
-                    String userSelection = scanner.nextLine();
-                    if (userSelection.equalsIgnoreCase("y")) {
-                        // Register User
-                        sendMessage(socketChannel, "Registering new user");
-                        System.out.println("Registration:");
-                        System.out.println("Enter a user name:");
-                        sendMessage(socketChannel, scanner.nextLine());
-                        System.out.println("Enter a password:");
-                        sendMessage(socketChannel, scanner.nextLine());
-                        System.out.println("Enter an email address:");
-                        sendMessage(socketChannel, scanner.nextLine());
-                        System.out.println(receiveMessage(socketChannel));
-                        break;
-                    } else if (userSelection.equalsIgnoreCase("n")) {
-                        sendMessage(socketChannel, "Existing user");
-                        break;
-                    }
-                }
 
-                System.out.println("Enter user name: ");
-                sendMessage(socketChannel, scanner.nextLine());
-                if (receiveMessage(socketChannel).equals("Username OK")) {
-                    System.out.println("Enter password: ");
+                String userInput = scanner.nextLine();
+
+                if (userInput.equalsIgnoreCase("y")) {
+                    sendMessage(socketChannel, userInput);
+
+                    System.out.println("Registration:");
+                    System.out.println("Enter a user name:");
                     sendMessage(socketChannel, scanner.nextLine());
-                    if (receiveMessage(socketChannel).equals("Password OK")) {
+                    System.out.println("Enter a password:");
+                    sendMessage(socketChannel, scanner.nextLine());
+                    System.out.println("Enter an email address:");
+                    sendMessage(socketChannel, scanner.nextLine());
+
+                    if (receiveMessage(socketChannel).equalsIgnoreCase("Registration successful")) {
+                        System.out.println("Registration complete");
                         break;
-                    } else {
-                        System.out.println("Incorrect password");
                     }
-                } else {
-                    System.out.println("User name not found");
+                } else if (userInput.equalsIgnoreCase("n")) {
+                    sendMessage(socketChannel, userInput);
+
+                    System.out.println("Enter username: ");
+                    sendMessage(socketChannel, scanner.nextLine());
+                    if (receiveMessage(socketChannel).equalsIgnoreCase("User name OK")) {
+                        System.out.println("Enter password: ");
+                        sendMessage(socketChannel, scanner.nextLine());
+                        if (receiveMessage(socketChannel).equalsIgnoreCase("Password OK")) {
+                            System.out.println("Sign-in successful");
+                            break;
+                        } else {
+                            System.out.println("Incorrect password");
+                        }
+                    } else {
+                        System.out.println("User name not found");
+                    }
                 }
             }
 
-            System.out.println("Sign-in successful");
 
             while (true) {
                 System.out.println("Enter message: ");
@@ -69,8 +71,6 @@ public class Client {
             while (buffer.hasRemaining()) {
                 socketChannel.write(buffer);
             }
-            System.out.println("Sent message to server");
-            System.out.println();
         } catch (IOException exception) {
             exception.printStackTrace();
         }
