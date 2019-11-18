@@ -31,6 +31,9 @@ public class Server {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+
+        threadPoolExecutor.shutdown();
+        System.out.println("Server shutdown");
     }
 
     public static void main (String[] args) {
