@@ -50,35 +50,6 @@ class ServerWorkerHelper {
         return false;
     }
 
-
-
-//    UUID authenticateUserName(String userName) {
-//        users.forEach(user -> {
-//            if (user.getUserName().equals(userName)) {
-//                sendMessage("Username OK");
-//                System.out.println("Username OK");
-//            } else {
-//                sendMessage("Username not found");
-//                System.out.println("Username not found");
-//            }
-//        });
-//
-//        return cassandraDataStore.getUserId(userName);
-//    }
-
-    void authenticatePassword(String password) {
-        users.forEach(user -> {
-            if (user.getPassword().equalsIgnoreCase(password)) {
-                sendMessage("Password OK");
-                System.out.println("Password OK");
-            } else {
-                sendMessage("Incorrect Password");
-                System.out.println("Incorrect Password");
-            }
-        });
-
-    }
-
     void sendMessage(String message) {
         try {
             ByteBuffer buffer = ByteBuffer.allocate(message.length() + 1);
