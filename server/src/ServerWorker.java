@@ -17,7 +17,6 @@ public class ServerWorker implements Runnable {
 
     @Override
     public void run() {
-        UUID userId = null;
 
         System.out.println("Processing request from client...");
 
@@ -43,7 +42,6 @@ public class ServerWorker implements Runnable {
 
             if (messageReceived.equalsIgnoreCase("quit")) {
                 System.out.println("Message received from client: " + messageReceived);
-
                 try {
                     socketChannel.close();
                     cassandraDataStore.close();
@@ -56,7 +54,12 @@ public class ServerWorker implements Runnable {
 
             System.out.println("Message sent to DB: " + messageReceived);
 
-            //cassandraDataStore.addMessage(UUID.randomUUID(), userId, new Date(), messageReceived);
+            // Simulates a user and message ID
+            UUID userId = UUID.randomUUID();
+            UUID messageId = UUID.randomUUID();
+
+            String returnedMessage = cassandraDataStore.addMessage(messageId, userId, new Date(), messageReceived);
+            serverWorkerHelper.sendMessage(returnedMessage);
         }
     }
 

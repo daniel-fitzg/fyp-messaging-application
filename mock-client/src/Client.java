@@ -65,6 +65,8 @@ public class Client {
                 }
 
                 sendMessage(socketChannel, message);
+
+                System.out.println("Message being returned from server: " + receiveMessage(socketChannel));
             }
         } catch (IOException exception) {
             exception.printStackTrace();

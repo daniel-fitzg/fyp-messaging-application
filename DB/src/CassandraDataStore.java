@@ -29,8 +29,12 @@ public class CassandraDataStore {
         return new UserDao(session).getUser(userName);
     }
 
-    public void addMessage(UUID messageId, UUID userId, Date createDate, String message) {
-        new MessageDao(session).addMessage(messageId, userId, createDate, message);
+    public String addMessage(UUID messageId, UUID userId, Date createDate, String message) {
+        return new MessageDao(session).addMessage(messageId, userId, createDate, message);
+    }
+
+    public String getMessage(UUID messageId, UUID userId) {
+        return new MessageDao(session).getMessage(messageId, userId);
     }
 
     public void close() {

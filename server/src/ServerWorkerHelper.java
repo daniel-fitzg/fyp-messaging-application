@@ -3,7 +3,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 class ServerWorkerHelper {
     private CassandraDataStore cassandraDataStore;
