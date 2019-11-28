@@ -1,17 +1,18 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.util.Scanner;
 
-public class Client {
+
+public class Client extends JFrame {
 
     private void startClient() {
-        Scanner scanner = new Scanner(System.in);
 
-        try (SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 5000))) {
-            System.out.println("Connected to Server");
-
+            // TODO: Basic user authentication, removed for Christmas demo
 //            while(true) {
 //                System.out.println("New User? (Press Y/N):");
 //
@@ -52,25 +53,38 @@ public class Client {
 //                }
 //            }
 
+            JFrame messageFrame = new JFrame("User Conversation");
+            messageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            messageFrame.setSize(400, 200);
+            messageFrame.setLayout(new FlowLayout());
+            JLabel header = new JLabel("Messaging Application Demo");
+            header.setFont(new Font("Calibri", Font.PLAIN, 24));
+            messageFrame.add(header);
+            JLabel userEntryLabel = new JLabel("Enter text: ");
+            messageFrame.add(userEntryLabel);
+            JTextArea userEntryArea = new JTextArea(1, 15);
+            messageFrame.add(userEntryArea);
+            JButton sendTextButton = new JButton("SEND");
+            messageFrame.add(sendTextButton);
+            JLabel returnTextLabel = new JLabel("Text returned from server: ");
+            messageFrame.add(returnTextLabel);
+            JTextField returnTextField = new JTextField(15);
+            messageFrame.add(returnTextField);
 
-            while (true) {
-                System.out.println("Enter message: ");
-
-                String message = scanner.nextLine();
-                if (message.equalsIgnoreCase("quit")) {
-                    sendMessage(socketChannel, message);
-                    socketChannel.close();
-                    System.out.println("Client shutdown");
-                    break;
+            sendTextButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try (SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 5000))) {
+                        String message = userEntryArea.getText();
+                        sendMessage(socketChannel, message);
+                        returnTextField.setText(receiveMessage(socketChannel));
+                    } catch (IOException exception) {
+                      exception.printStackTrace();
+                    }
                 }
+            });
 
-                sendMessage(socketChannel, message);
-
-                System.out.println("Message being returned from server: " + receiveMessage(socketChannel));
-            }
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+            messageFrame.setVisible(true);
     }
 
     private void sendMessage(SocketChannel socketChannel, String message) {
@@ -116,6 +130,12 @@ public class Client {
     }
 
     public static void main (String[] args) {
-        new Client().startClient();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                Client client = new Client();
+                client.startClient();
+            }
+        });
     }
 }

@@ -22,12 +22,10 @@ public class Server {
             serverSocketChannel.socket().bind(new InetSocketAddress("127.0.0.1", 5000));
 
             while(true) {
-                System.out.println("Waiting for client connection...");
                 SocketChannel socketChannel = serverSocketChannel.accept();
                 System.out.println("Connection successful");
                 threadPoolExecutor.execute(new ServerWorker(socketChannel));
             }
-
         } catch (IOException exception) {
             exception.printStackTrace();
         }

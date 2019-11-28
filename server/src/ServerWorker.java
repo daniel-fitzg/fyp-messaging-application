@@ -1,10 +1,8 @@
-import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.util.Date;
 import java.util.UUID;
 
 public class ServerWorker implements Runnable {
-    // TODO: DB Module added as a dependency, OK?
     private CassandraDataStore cassandraDataStore;
     private SocketChannel socketChannel;
     private ServerWorkerHelper serverWorkerHelper;
@@ -18,8 +16,7 @@ public class ServerWorker implements Runnable {
     @Override
     public void run() {
 
-        System.out.println("Processing request from client...");
-
+        // TODO: Basic user authentication, removed for Christmas demo
 //        while (true) {
 //            String userInput = serverWorkerHelper.receiveMessage();
 //            if (userInput.equalsIgnoreCase("y")) {
@@ -35,24 +32,12 @@ public class ServerWorker implements Runnable {
 //            }
 //        }
 
-        while (true) {
-            System.out.println("Processing messages...");
+        System.out.println("Processing request from client...");
 
-            String messageReceived = serverWorkerHelper.receiveMessage();
+        String messageReceived = serverWorkerHelper.receiveMessage();
 
-            if (messageReceived.equalsIgnoreCase("quit")) {
-                System.out.println("Message received from client: " + messageReceived);
-                try {
-                    socketChannel.close();
-                    cassandraDataStore.close();
-                    System.out.println("Client disconnected");
-                    break;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            System.out.println("Message sent to DB: " + messageReceived);
+        if (!messageReceived.equalsIgnoreCase("")) {
+            System.out.println("Text received: " + messageReceived);
 
             // Simulates a user and message ID
             UUID userId = UUID.randomUUID();
@@ -62,5 +47,4 @@ public class ServerWorker implements Runnable {
             serverWorkerHelper.sendMessage(returnedMessage);
         }
     }
-
 }
