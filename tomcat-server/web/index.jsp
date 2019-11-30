@@ -11,6 +11,6 @@
     <title>$Title$</title>
   </head>
   <body>
-  Tomcat is now running
+  <h1>Tomcat is now running</h1>
   </body>
 </html>
