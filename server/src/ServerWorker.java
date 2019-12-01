@@ -16,22 +16,6 @@ public class ServerWorker implements Runnable {
     @Override
     public void run() {
 
-        // TODO: Basic user authentication, removed for Christmas demo
-//        while (true) {
-//            String userInput = serverWorkerHelper.receiveMessage();
-//            if (userInput.equalsIgnoreCase("y")) {
-//                while (!serverWorkerHelper.registerNewUser()) {
-//                    System.out.println("New user registration failed");
-//                }
-//                break;
-//            } else if (userInput.equalsIgnoreCase("n")) {
-//                while (!serverWorkerHelper.authenticateUser()) {
-//                    System.out.println("User authentication failed");
-//                }
-//                break;
-//            }
-//        }
-
         System.out.println("Processing request from client...");
 
         String messageReceived = serverWorkerHelper.receiveMessage();

@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.util.Date;
 import java.util.List;
 
 class ServerWorkerHelper {
@@ -13,40 +12,6 @@ class ServerWorkerHelper {
         this.cassandraDataStore = cassandraDataStore;
         this.socketChannel = socketChannel;
         users = cassandraDataStore.getUsers();
-    }
-
-    boolean registerNewUser() {
-        String userName = receiveMessage();
-        String password = receiveMessage();
-        String email = receiveMessage();
-
-        User user = cassandraDataStore.addUser(userName, password, new Date(), email);
-        if (user.getUserId() == null) {
-            sendMessage("Registration successful");
-            return true;
-        }
-
-        return false;
-    }
-
-    boolean authenticateUser() {
-        // if username not found return false
-        String userName = receiveMessage();
-
-        for (User user : users) {
-            if (user.getUserName().equalsIgnoreCase(userName)) {
-                System.out.println("User name OK");
-                sendMessage("User name OK");
-                if (receiveMessage().equalsIgnoreCase(user.getPassword())) {
-                    System.out.println("Password OK");
-                    sendMessage("Password OK");
-                    return true;
-                }
-            }
-        }
-
-        sendMessage("User name not found");
-        return false;
     }
 
     void sendMessage(String message) {
