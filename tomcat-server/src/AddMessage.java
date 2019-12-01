@@ -1,5 +1,3 @@
-//import cassandraDB.CassandraDataStore;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,23 +17,18 @@ public class AddMessage extends javax.servlet.http.HttpServlet {
 
         try {
             String incomingMessage = (String) objectInputStream.readObject();
-            System.out.println("Incoming message: " + incomingMessage);
-            //CassandraDataStore cassandraDataStore = new CassandraDataStore();
             String returnedMessage = new CassandraDataStore().addMessage(UUID.randomUUID(), UUID.randomUUID(), new Date(), incomingMessage);
             objectOutputStream.writeObject(returnedMessage);
         } catch (ClassNotFoundException exception) {
             exception.printStackTrace();
         }
-
     }
 
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("In POST method");
         processRequest(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        processRequest(request, response);
     }
 }

@@ -6,10 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
 
 
 public class Client extends JFrame {
@@ -37,10 +34,8 @@ public class Client extends JFrame {
             sendTextButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    try (SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 5000))) {
+                    try {
                         String message = userEntryArea.getText();
-                        sendMessage(socketChannel, message);
-                        //returnTextField.setText(receiveMessage(socketChannel));
 
                         URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "AddMessage");
                         HttpURLConnection httpUrlConnection = (HttpURLConnection) link.openConnection();
@@ -52,7 +47,6 @@ public class Client extends JFrame {
                         objectOutputStream.writeObject(message);
 
                         ObjectInputStream objectInputStream = new ObjectInputStream(httpUrlConnection.getInputStream());
-
                         try {
                             returnTextField.setText((String) objectInputStream.readObject());
                         } catch (ClassNotFoundException exception) {
@@ -70,54 +64,11 @@ public class Client extends JFrame {
             messageFrame.setVisible(true);
     }
 
-    private void sendMessage(SocketChannel socketChannel, String message) {
-        try {
-            ByteBuffer buffer = ByteBuffer.allocate(message.length() + 1);
-            buffer.put(message.getBytes());
-            buffer.put((byte) 0x00);
-            buffer.flip();
-            while (buffer.hasRemaining()) {
-                socketChannel.write(buffer);
-            }
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    private String receiveMessage(SocketChannel socketChannel) {
-        try {
-            ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
-            String message = "";
-
-            while (socketChannel.read(byteBuffer) > 0) {
-                char byteRead = 0x00;
-                byteBuffer.flip();
-                while (byteBuffer.hasRemaining()) {
-                    byteRead = (char) byteBuffer.get();
-                    if (byteRead == 0x00) {
-                        break;
-                    }
-                    message += byteRead;
-                }
-                if (byteRead == 0x00) {
-                    break;
-                }
-                byteBuffer.clear();
-            }
-
-            return message;
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        return "";
-    }
-
     public static void main (String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                Client client = new Client();
-                client.startClient();
+                new Client().startClient();
             }
         });
     }
