@@ -3,7 +3,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
@@ -78,6 +82,21 @@ public class Client extends JFrame {
                         String message = userEntryArea.getText();
                         sendMessage(socketChannel, message);
                         returnTextField.setText(receiveMessage(socketChannel));
+
+                        URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "AddMessage");
+                        HttpURLConnection httpUrlConnection = (HttpURLConnection) link.openConnection();
+                        httpUrlConnection.setDoOutput(true);
+                        httpUrlConnection.setDoInput(true);
+                        httpUrlConnection.setRequestProperty("Content-Type", "application/octet_stream");
+
+                        ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpUrlConnection.getOutputStream());
+                        objectOutputStream.writeObject("Test");
+
+                        ObjectInputStream objectInputStream = new ObjectInputStream(httpUrlConnection.getInputStream());
+
+                        objectOutputStream.close();
+                        objectInputStream.close();
+
                     } catch (IOException exception) {
                       exception.printStackTrace();
                     }

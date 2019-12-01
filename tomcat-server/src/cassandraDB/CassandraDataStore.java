@@ -1,4 +1,4 @@
-package CassandraDB;
+package cassandraDB;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;

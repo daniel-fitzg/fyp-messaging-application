@@ -1,4 +1,4 @@
-package CassandraDB;
+package cassandraDB;
 
 import java.util.Date;
 import java.util.UUID;
