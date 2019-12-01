@@ -40,7 +40,7 @@ public class Client extends JFrame {
                     try (SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 5000))) {
                         String message = userEntryArea.getText();
                         sendMessage(socketChannel, message);
-                        returnTextField.setText(receiveMessage(socketChannel));
+                        //returnTextField.setText(receiveMessage(socketChannel));
 
                         URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "AddMessage");
                         HttpURLConnection httpUrlConnection = (HttpURLConnection) link.openConnection();
@@ -49,13 +49,18 @@ public class Client extends JFrame {
                         httpUrlConnection.setRequestProperty("Content-Type", "application/octet_stream");
 
                         ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpUrlConnection.getOutputStream());
-                        objectOutputStream.writeObject("Test");
+                        objectOutputStream.writeObject(message);
 
                         ObjectInputStream objectInputStream = new ObjectInputStream(httpUrlConnection.getInputStream());
 
+                        try {
+                            returnTextField.setText((String) objectInputStream.readObject());
+                        } catch (ClassNotFoundException exception) {
+                            exception.printStackTrace();
+                        }
+
                         objectOutputStream.close();
                         objectInputStream.close();
-
                     } catch (IOException exception) {
                       exception.printStackTrace();
                     }

@@ -27,8 +27,8 @@ public class ServerWorker implements Runnable {
             UUID userId = UUID.randomUUID();
             UUID messageId = UUID.randomUUID();
 
-            String returnedMessage = cassandraDataStore.addMessage(messageId, userId, new Date(), messageReceived);
-            serverWorkerHelper.sendMessage(returnedMessage);
+           // String returnedMessage = cassandraDataStore.addMessage(messageId, userId, new Date(), messageReceived);
+          //  serverWorkerHelper.sendMessage(returnedMessage);
         }
     }
 }

@@ -13,7 +13,7 @@ public class CassandraDataStore {
     private String localHostAddress = "127.0.0.1";
     private int portNumber = 9042;
 
-    CassandraDataStore() {
+    public CassandraDataStore() {
         cluster = Cluster.builder().addContactPoint(localHostAddress).withPort(portNumber).build();
         // TODO: catch com.datastax.driver.core.exceptions.NoHostAvailableException
         session = cluster.connect("messaging_app");
