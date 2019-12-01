@@ -16,47 +16,6 @@ public class Client extends JFrame {
 
     private void startClient() {
 
-            // TODO: Basic user authentication, removed for Christmas demo
-//            while(true) {
-//                System.out.println("New User? (Press Y/N):");
-//
-//                String userInput = scanner.nextLine();
-//
-//                if (userInput.equalsIgnoreCase("y")) {
-//                    sendMessage(socketChannel, userInput);
-//
-//                    System.out.println("Registration:");
-//                    System.out.println("Enter a user name:");
-//                    sendMessage(socketChannel, scanner.nextLine());
-//                    System.out.println("Enter a password:");
-//                    sendMessage(socketChannel, scanner.nextLine());
-//                    System.out.println("Enter an email address:");
-//                    sendMessage(socketChannel, scanner.nextLine());
-//
-//                    if (receiveMessage(socketChannel).equalsIgnoreCase("Registration successful")) {
-//                        System.out.println("Registration complete");
-//                        break;
-//                    }
-//                } else if (userInput.equalsIgnoreCase("n")) {
-//                    sendMessage(socketChannel, userInput);
-//
-//                    System.out.println("Enter username: ");
-//                    sendMessage(socketChannel, scanner.nextLine());
-//                    if (receiveMessage(socketChannel).equalsIgnoreCase("User name OK")) {
-//                        System.out.println("Enter password: ");
-//                        sendMessage(socketChannel, scanner.nextLine());
-//                        if (receiveMessage(socketChannel).equalsIgnoreCase("Password OK")) {
-//                            System.out.println("Sign-in successful");
-//                            break;
-//                        } else {
-//                            System.out.println("Incorrect password");
-//                        }
-//                    } else {
-//                        System.out.println("User name not found");
-//                    }
-//                }
-//            }
-
             JFrame messageFrame = new JFrame("User Conversation");
             messageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             messageFrame.setSize(400, 200);
