@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.Date;
 import java.util.UUID;
 
-@WebServlet(name = "AddMessage", urlPatterns = {"/AddMessage"})
+@WebServlet(name = "AddMessageServlet", urlPatterns = {"/AddMessage"})
 public class AddMessageServlet extends javax.servlet.http.HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

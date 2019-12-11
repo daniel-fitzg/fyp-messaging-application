@@ -49,13 +49,21 @@ public class Client extends JFrame {
                 JTextArea emailTextArea = new JTextArea(1, 15);
                 registerFrame.add(emailTextArea);
 
+                JLabel passwordLabel = new JLabel("Password: ");
+                registerFrame.add(passwordLabel);
+                JTextArea passwordTextArea = new JTextArea(1, 15);
+                registerFrame.add(passwordTextArea);
+
                 JButton registerButton = new JButton("Register");
                 registerFrame.add(registerButton);
                 registerButton.addActionListener(new ActionListener() {
                      @Override
                      public void actionPerformed(ActionEvent e) {
                          // TODO: Input validation needed here for fields
-                         RegisterUser user = new RegisterUser(firstNameTextArea.getText(), lastNameTextArea.getText(), emailTextArea.getText());
+                         RegisterUser user = new RegisterUser(firstNameTextArea.getText(),
+                                 lastNameTextArea.getText(),
+                                 emailTextArea.getText(),
+                                 passwordTextArea.getText());
 
                          try {
                              URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "RegisterUser");
