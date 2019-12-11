@@ -54,7 +54,38 @@ public class Client extends JFrame {
                 registerButton.addActionListener(new ActionListener() {
                      @Override
                      public void actionPerformed(ActionEvent e) {
-                        
+                         // TODO: Input validation needed here for fields
+                         RegisterUser user = new RegisterUser(firstNameTextArea.getText(), lastNameTextArea.getText(), emailTextArea.getText());
+
+                         try {
+                             URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "RegisterUser");
+                             HttpURLConnection httpUrlConnection = (HttpURLConnection) link.openConnection();
+                             httpUrlConnection.setDoOutput(true);
+                             httpUrlConnection.setDoInput(true);
+                             httpUrlConnection.setRequestProperty("Content-Type", "application/octet_stream");
+
+                             ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpUrlConnection.getOutputStream());
+                             objectOutputStream.writeObject(user);
+
+                             ObjectInputStream objectInputStream = new ObjectInputStream(httpUrlConnection.getInputStream());
+                              try {
+                                 if (objectInputStream.readObject().equals("true")) {
+                                     JOptionPane.showMessageDialog(registerFrame, "Registration successful");
+                                 } else if (objectInputStream.readObject().equals("false")) {
+                                     JOptionPane.showMessageDialog(registerFrame, "Registration failed");
+                                 }
+                              } catch (ClassNotFoundException exception) {
+                                 exception.printStackTrace();
+                              }
+
+                             registerFrame.dispose();
+
+                             objectOutputStream.close();
+                             objectInputStream.close();
+                         } catch (IOException exception) {
+                             exception.printStackTrace();
+                         }
+
                      }
                  });
 
