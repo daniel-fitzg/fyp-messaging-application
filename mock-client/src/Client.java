@@ -37,24 +37,28 @@ public class Client extends JFrame {
                     try {
                         String message = userEntryArea.getText();
 
-                        URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "AddMessage");
-                        HttpURLConnection httpUrlConnection = (HttpURLConnection) link.openConnection();
-                        httpUrlConnection.setDoOutput(true);
-                        httpUrlConnection.setDoInput(true);
-                        httpUrlConnection.setRequestProperty("Content-Type", "application/octet_stream");
+                        if (!message.equalsIgnoreCase("")) {
+                            URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "AddMessage");
+                            HttpURLConnection httpUrlConnection = (HttpURLConnection) link.openConnection();
+                            httpUrlConnection.setDoOutput(true);
+                            httpUrlConnection.setDoInput(true);
+                            httpUrlConnection.setRequestProperty("Content-Type", "application/octet_stream");
 
-                        ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpUrlConnection.getOutputStream());
-                        objectOutputStream.writeObject(message);
+                            ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpUrlConnection.getOutputStream());
+                            objectOutputStream.writeObject(message);
 
-                        ObjectInputStream objectInputStream = new ObjectInputStream(httpUrlConnection.getInputStream());
-                        try {
-                            returnTextField.setText((String) objectInputStream.readObject());
-                        } catch (ClassNotFoundException exception) {
-                            exception.printStackTrace();
+                            ObjectInputStream objectInputStream = new ObjectInputStream(httpUrlConnection.getInputStream());
+                            try {
+                                returnTextField.setText((String) objectInputStream.readObject());
+                            } catch (ClassNotFoundException exception) {
+                                exception.printStackTrace();
+                            }
+
+                            objectOutputStream.close();
+                            objectInputStream.close();
+                        } else if (message.equalsIgnoreCase("")) {
+                            JOptionPane.showMessageDialog(messageFrame, "Please enter valid text");
                         }
-
-                        objectOutputStream.close();
-                        objectInputStream.close();
                     } catch (IOException exception) {
                       exception.printStackTrace();
                     }
