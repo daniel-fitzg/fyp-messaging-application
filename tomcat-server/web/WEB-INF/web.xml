@@ -5,6 +5,6 @@
          version="4.0">
     <servlet>
         <servlet-name>AddMessage</servlet-name>
-        <servlet-class>AddMessage</servlet-class>
+        <servlet-class>AddMessageServlet</servlet-class>
     </servlet>
 </web-app>
