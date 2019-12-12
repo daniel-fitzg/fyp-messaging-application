@@ -29,7 +29,7 @@ class UserDao {
             user.setLastName(row.getString("last_name"));
             user.setPassword(row.getString("password"));
             user.setEmail(row.getString("email"));
-            //user.setRegisterDate((Date) row.getDate("register_date"));
+            user.setRegisterDate(row.getTimestamp("register_date"));
 
             users.add(user);
         });
@@ -61,7 +61,7 @@ class UserDao {
         user.setLastName(row.getString("last_name"));
         user.setPassword(row.getString("password"));
         user.setEmail(row.getString("email"));
-        //user.setRegisterDate(row.getDate("register_date"));
+        user.setRegisterDate(row.getTimestamp("register_date"));
 
         return user;
     }
