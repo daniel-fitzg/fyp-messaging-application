@@ -15,13 +15,17 @@ public class AddMessageServlet extends javax.servlet.http.HttpServlet {
         ObjectInputStream objectInputStream = new ObjectInputStream(request.getInputStream());
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(response.getOutputStream());
 
+        CassandraDataStore cassandraDataStore = new CassandraDataStore();
+
         try {
             String incomingMessage = (String) objectInputStream.readObject();
-            String returnedMessage = new CassandraDataStore().addMessage(UUID.randomUUID(), UUID.randomUUID(), new Date(), incomingMessage);
+            String returnedMessage = cassandraDataStore.addMessage(UUID.randomUUID(), UUID.randomUUID(), new Date(), incomingMessage);
             objectOutputStream.writeObject(returnedMessage);
         } catch (ClassNotFoundException exception) {
             exception.printStackTrace();
         }
+
+        cassandraDataStore.close();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

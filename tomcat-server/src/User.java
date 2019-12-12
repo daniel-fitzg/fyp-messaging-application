@@ -1,5 +1,3 @@
-import com.datastax.driver.core.LocalDate;
-
 import java.util.Date;
 import java.util.UUID;
 

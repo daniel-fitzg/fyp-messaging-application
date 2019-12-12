@@ -76,15 +76,18 @@ public class Client extends JFrame {
                              objectOutputStream.writeObject(user);
 
                              ObjectInputStream objectInputStream = new ObjectInputStream(httpUrlConnection.getInputStream());
-                              try {
-                                 if (objectInputStream.readObject().equals("true")) {
+
+                             try {
+                                 String serverResponse = (String) objectInputStream.readObject();
+                                 if (serverResponse.equals("true")) {
                                      JOptionPane.showMessageDialog(registerFrame, "Registration successful");
-                                 } else if (objectInputStream.readObject().equals("false")) {
+                                 } else if (serverResponse.equals("false")) {
                                      JOptionPane.showMessageDialog(registerFrame, "Registration failed");
                                  }
-                              } catch (ClassNotFoundException exception) {
+                             } catch (ClassNotFoundException exception) {
                                  exception.printStackTrace();
-                              }
+                             }
+
 
                              registerFrame.dispose();
 
