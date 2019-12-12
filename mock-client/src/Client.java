@@ -22,6 +22,8 @@ public class Client extends JFrame {
         welcomeFrame.add(welcomeHeader);
         JButton registerButton = new JButton("Register");
         welcomeFrame.add(registerButton);
+        JButton signInButton = new JButton("Sign-in");
+        welcomeFrame.add(signInButton);
 
         registerButton.addActionListener(new ActionListener() {
             @Override
@@ -79,9 +81,9 @@ public class Client extends JFrame {
 
                              try {
                                  String serverResponse = (String) objectInputStream.readObject();
-                                 if (serverResponse.equals("true")) {
+                                 if (serverResponse.equalsIgnoreCase("true")) {
                                      JOptionPane.showMessageDialog(registerFrame, "Registration successful");
-                                 } else if (serverResponse.equals("false")) {
+                                 } else if (serverResponse.equalsIgnoreCase("false")) {
                                      JOptionPane.showMessageDialog(registerFrame, "Registration failed");
                                  }
                              } catch (ClassNotFoundException exception) {
@@ -104,6 +106,79 @@ public class Client extends JFrame {
                 //setBounds( 400, 400, 0, 0);
 
                 registerFrame.setVisible(true);
+            }
+        });
+
+        signInButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame signInFrame = new JFrame("Sign-in Frame");
+                signInFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                signInFrame.setSize(280, 200);
+                signInFrame.setLayout(new FlowLayout());
+                JLabel signInHeader = new JLabel("Sign-in Screen");
+                signInHeader.setFont(new Font("Calibri", Font.PLAIN, 24));
+                signInFrame.add(signInHeader);
+
+                JLabel enterEmailLabel = new JLabel("Email: ");
+                signInFrame.add(enterEmailLabel);
+                JTextArea enterEmailTextArea = new JTextArea(1, 15);
+                signInFrame.add(enterEmailTextArea);
+
+                JLabel enterPasswordLabel = new JLabel("Password: ");
+                signInFrame.add(enterPasswordLabel);
+                JTextArea enterPasswordTextArea = new JTextArea(1, 15);
+                signInFrame.add(enterPasswordTextArea);
+
+                JButton signInSubmitButton = new JButton("Sign-in");
+                signInFrame.add(signInSubmitButton);
+                registerButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // TODO: input validation needed here
+                        User user = new User();
+                        user.setEmail(enterEmailTextArea.getText());
+                        user.setPassword(enterPasswordTextArea.getText());
+
+                        try {
+                            URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "SignInUser");
+                            HttpURLConnection httpUrlConnection = (HttpURLConnection) link.openConnection();
+                            httpUrlConnection.setDoOutput(true);
+                            httpUrlConnection.setDoInput(true);
+                            httpUrlConnection.setRequestProperty("Content-Type", "application/octet_stream");
+
+                            ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpUrlConnection.getOutputStream());
+                            objectOutputStream.writeObject(user);
+
+                            ObjectInputStream objectInputStream = new ObjectInputStream(httpUrlConnection.getInputStream());
+
+                            try {
+                                String serverResponse = (String) objectInputStream.readObject();
+                                if (serverResponse.equalsIgnoreCase("true")) {
+                                    JOptionPane.showMessageDialog(signInFrame, "Sign-in successful");
+                                } else if (serverResponse.equalsIgnoreCase("false")) {
+                                    JOptionPane.showMessageDialog(signInFrame, "Sign-in failed");
+                                }
+                            } catch (ClassNotFoundException exception) {
+                                exception.printStackTrace();
+                            }
+
+
+                            signInFrame.dispose();
+
+                            objectOutputStream.close();
+                            objectInputStream.close();
+                        } catch (IOException exception) {
+                            exception.printStackTrace();
+                        }
+
+                    }
+                });
+
+                // TODO: Not working
+                //setBounds( 400, 400, 0, 0);
+
+                signInFrame.setVisible(true);
             }
         });
 
