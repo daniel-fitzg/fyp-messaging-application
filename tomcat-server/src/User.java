@@ -1,21 +1,25 @@
+import com.datastax.driver.core.LocalDate;
+
 import java.util.Date;
 import java.util.UUID;
 
 public class User {
     private UUID userId;
-    private String userName;
+    private String firstName;
+    private String lastName;
+    private String email;
     private String password;
     private Date registerDate;
-    private String email;
 
     public User() {}
 
-    public User(UUID userId, String userName, String password, Date registerDate, String email) {
+    public User(UUID userId, String firstName, String lastName, String email, String password, Date registerDate) {
         this.userId = userId;
-        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
         this.password = password;
         this.registerDate = registerDate;
-        this.email = email;
     }
 
     public UUID getUserId() {
@@ -26,12 +30,20 @@ public class User {
         this.userId = userId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getPassword() {

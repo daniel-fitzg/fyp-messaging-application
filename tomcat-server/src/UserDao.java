@@ -1,7 +1,4 @@
-import com.datastax.driver.core.PreparedStatement;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import com.datastax.driver.core.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,10 +25,11 @@ class UserDao {
         resultSet.forEach(row -> {
             User user = new User();
             user.setUserId(row.getUUID("user_id"));
-            user.setUserName(row.getString("user_name"));
+            user.setFirstName(row.getString("first_name"));
+            user.setLastName(row.getString("last_name"));
             user.setPassword(row.getString("password"));
-            user.setRegisterDate(row.getTimestamp("register_date"));
             user.setEmail(row.getString("email"));
+            //user.setRegisterDate((Date) row.getDate("register_date"));
 
             users.add(user);
         });
@@ -39,27 +37,31 @@ class UserDao {
         return users;
     }
 
-    User addUser(String userName, String password, Date registerDate, String email) {
+    User registerUser(RegisterUser user) {
+        UUID userId = UUID.randomUUID();
+
         PreparedStatement preparedStatement = session.prepare("INSERT INTO " + tableName +
-                " (user_id, user_name, password, register_date, email) VALUES (?, ?, ?, ?, ?)");
+                " (user_id, first_name, last_name, email, password, register_date) VALUES (?, ?, ?, ?, ?, ?)");
 
-        session.execute(preparedStatement.bind(UUID.randomUUID(), userName, password, registerDate, email));
+        session.execute(preparedStatement.bind(userId, user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), new Date()));
 
-        return getUser(userName);
+        return getUser(userId);
     }
 
-    User getUser(String userName) {
+    User getUser(UUID userId) {
         // Allow filtering enables search by user_name, avoid this by including user_name in table primary key
-        PreparedStatement preparedStatement = session.prepare("SELECT user_id FROM " + tableName + " WHERE user_name = '" + userName + "' ALLOW FILTERING;");
+        PreparedStatement preparedStatement = session.prepare("SELECT * FROM " + tableName + " WHERE user_id = " + userId);
         ResultSet resultSet = session.execute(preparedStatement.bind());
 
         // Populate User with DB results
         User user = new User();
         Row row = resultSet.one();
         user.setUserId(row.getUUID("user_id"));
-        user.setUserName(row.getString("user_name"));
+        user.setFirstName(row.getString("first_name"));
+        user.setLastName(row.getString("last_name"));
         user.setPassword(row.getString("password"));
         user.setEmail(row.getString("email"));
+        //user.setRegisterDate(row.getDate("register_date"));
 
         return user;
     }

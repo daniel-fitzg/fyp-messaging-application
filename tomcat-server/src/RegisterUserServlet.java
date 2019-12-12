@@ -18,6 +18,8 @@ public class RegisterUserServlet extends HttpServlet {
 
         try {
             RegisterUser user = (RegisterUser) objectInputStream.readObject();
+            // TODO: Input validation needed here
+            new CassandraDataStore().registerUser(user);
             objectOutputStream.writeObject("true");
         } catch (ClassNotFoundException exception) {
             exception.printStackTrace();
