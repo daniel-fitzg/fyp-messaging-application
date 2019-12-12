@@ -114,7 +114,7 @@ public class Client extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 JFrame signInFrame = new JFrame("Sign-in Frame");
                 signInFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                signInFrame.setSize(280, 200);
+                signInFrame.setSize(200, 200);
                 signInFrame.setLayout(new FlowLayout());
                 JLabel signInHeader = new JLabel("Sign-in Screen");
                 signInHeader.setFont(new Font("Calibri", Font.PLAIN, 24));
@@ -132,7 +132,7 @@ public class Client extends JFrame {
 
                 JButton signInSubmitButton = new JButton("Sign-in");
                 signInFrame.add(signInSubmitButton);
-                registerButton.addActionListener(new ActionListener() {
+                signInSubmitButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         // TODO: input validation needed here
@@ -141,7 +141,7 @@ public class Client extends JFrame {
                         user.setPassword(enterPasswordTextArea.getText());
 
                         try {
-                            URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "SignInUser");
+                            URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "AuthenticateUser");
                             HttpURLConnection httpUrlConnection = (HttpURLConnection) link.openConnection();
                             httpUrlConnection.setDoOutput(true);
                             httpUrlConnection.setDoInput(true);

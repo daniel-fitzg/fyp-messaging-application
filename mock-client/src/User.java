@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public class User {
+public class User implements Serializable {
     private UUID userId;
     private String firstName;
     private String lastName;
@@ -9,7 +10,7 @@ public class User {
     private String password;
     private Date registerDate;
 
-    public User() {}
+    User() {}
 
     public User(UUID userId, String firstName, String lastName, String email, String password, Date registerDate) {
         this.userId = userId;
