@@ -1,5 +1,3 @@
-import com.sun.codemodel.internal.JForEach;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,7 +13,7 @@ public class RegisterUserServlet extends HttpServlet {
 
     private CassandraDataStore cassandraDataStore;
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         response.setContentType("application/octet-stream");
         ObjectInputStream objectInputStream = new ObjectInputStream(request.getInputStream());
@@ -35,7 +33,7 @@ public class RegisterUserServlet extends HttpServlet {
 
         if (newUser != null) {
             try {
-                authenticateNewUser(newUser);
+                validateNewUser(newUser);
                 cassandraDataStore.registerUser(newUser);
                 objectOutputStream.writeObject("true");
             } catch (IOException exception) {
@@ -49,7 +47,7 @@ public class RegisterUserServlet extends HttpServlet {
         cassandraDataStore.close();
     }
 
-    private void authenticateNewUser(RegisterUser newUser) throws IOException {
+    private void validateNewUser(RegisterUser newUser) throws IOException {
         if (newUser.getFirstName().equalsIgnoreCase("")
         || newUser.getLastName().equalsIgnoreCase("")
         || newUser.getEmail().equalsIgnoreCase("")
@@ -57,11 +55,12 @@ public class RegisterUserServlet extends HttpServlet {
             throw new IOException();
         }
 
+        // TODO: Move to DAO
         List<User> users = cassandraDataStore.getUsers();
         String newUserEmail = newUser.getEmail();
 
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getEmail().equalsIgnoreCase(newUserEmail)) {
+        for (User user : users) {
+            if (user.getEmail().equalsIgnoreCase(newUserEmail)) {
                 throw new IOException();
             }
         }

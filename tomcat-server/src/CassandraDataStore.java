@@ -23,8 +23,12 @@ public class CassandraDataStore {
     }
 
 
-    public User registerUser(RegisterUser user) {
-        return new UserDao(session).registerUser(user);
+    public User registerUser(RegisterUser newUser) {
+        return new UserDao(session).registerUser(newUser);
+    }
+
+    User authenticateUser(User user) {
+        return new UserDao(session).authenticateUser(user);
     }
 
     public User getUser(UUID userId) {

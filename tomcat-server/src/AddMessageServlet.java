@@ -9,7 +9,7 @@ import java.util.UUID;
 @WebServlet(name = "AddMessageServlet", urlPatterns = {"/AddMessage"})
 public class AddMessageServlet extends javax.servlet.http.HttpServlet {
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         response.setContentType("application/octet-stream");
         ObjectInputStream objectInputStream = new ObjectInputStream(request.getInputStream());

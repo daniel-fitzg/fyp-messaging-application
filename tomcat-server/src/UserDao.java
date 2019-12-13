@@ -1,5 +1,6 @@
 import com.datastax.driver.core.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,15 +38,32 @@ class UserDao {
         return users;
     }
 
-    User registerUser(RegisterUser user) {
+    User registerUser(RegisterUser newUser) {
         UUID userId = UUID.randomUUID();
 
         PreparedStatement preparedStatement = session.prepare("INSERT INTO " + tableName +
                 " (user_id, first_name, last_name, email, password, register_date) VALUES (?, ?, ?, ?, ?, ?)");
 
-        session.execute(preparedStatement.bind(userId, user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), new Date()));
+        session.execute(preparedStatement.bind(userId, newUser.getFirstName(), newUser.getLastName(), newUser.getEmail(), newUser.getPassword(), new Date()));
 
         return getUser(userId);
+    }
+
+    User authenticateUser(User existingUser) {
+        List<User> users = getUsers();
+        String existingUserEmail = existingUser.getEmail();
+
+        for (User user : users) {
+            if (user.getEmail().equalsIgnoreCase(existingUserEmail)) {
+                if (user.getPassword().equalsIgnoreCase(existingUser.getPassword())) {
+                    return user;
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        return null;
     }
 
     User getUser(UUID userId) {
