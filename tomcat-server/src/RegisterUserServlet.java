@@ -6,12 +6,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
 
 @WebServlet(name = "RegisterUserServlet", urlPatterns = {"/RegisterUser"})
 public class RegisterUserServlet extends HttpServlet {
-
-    private CassandraDataStore cassandraDataStore;
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -19,7 +16,7 @@ public class RegisterUserServlet extends HttpServlet {
         ObjectInputStream objectInputStream = new ObjectInputStream(request.getInputStream());
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(response.getOutputStream());
 
-        this.cassandraDataStore = new CassandraDataStore();
+        CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
         RegisterUser newUser;
         try {
@@ -31,13 +28,12 @@ public class RegisterUserServlet extends HttpServlet {
             newUser = null;
         }
 
-        if (newUser != null) {
-            try {
-                validateNewUser(newUser);
-                cassandraDataStore.registerUser(newUser);
+        if (newUser != null && validateNewUser(newUser)) {
+            User registeredUser = cassandraDataStore.registerUser(newUser);
+
+            if (registeredUser != null) {
                 objectOutputStream.writeObject("true");
-            } catch (IOException exception) {
-                exception.printStackTrace();
+            } else {
                 objectOutputStream.writeObject("false");
             }
         } else {
@@ -47,23 +43,11 @@ public class RegisterUserServlet extends HttpServlet {
         cassandraDataStore.close();
     }
 
-    private void validateNewUser(RegisterUser newUser) throws IOException {
-        if (newUser.getFirstName().equalsIgnoreCase("")
-        || newUser.getLastName().equalsIgnoreCase("")
-        || newUser.getEmail().equalsIgnoreCase("")
-        || newUser.getPassword().equalsIgnoreCase("")) {
-            throw new IOException();
-        }
-
-        // TODO: Move to DAO
-        List<User> users = cassandraDataStore.getUsers();
-        String newUserEmail = newUser.getEmail();
-
-        for (User user : users) {
-            if (user.getEmail().equalsIgnoreCase(newUserEmail)) {
-                throw new IOException();
-            }
-        }
+    private boolean validateNewUser(RegisterUser newUser) throws IOException {
+        return !newUser.getFirstName().equalsIgnoreCase("")
+                && !newUser.getLastName().equalsIgnoreCase("")
+                && !newUser.getEmail().equalsIgnoreCase("")
+                && !newUser.getPassword().equalsIgnoreCase("");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

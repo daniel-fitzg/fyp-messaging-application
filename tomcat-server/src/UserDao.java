@@ -1,6 +1,5 @@
 import com.datastax.driver.core.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,11 +12,11 @@ class UserDao {
     final String tableName = "users";
     private Session session;
 
-    public UserDao(Session session) {
+    UserDao(Session session) {
         this.session = session;
     }
 
-    public List<User> getUsers() {
+    List<User> getUsers() {
         List<User> users = new ArrayList<>();
 
         PreparedStatement preparedStatement = session.prepare("SELECT * FROM " + tableName);
@@ -39,8 +38,17 @@ class UserDao {
     }
 
     User registerUser(RegisterUser newUser) {
-        UUID userId = UUID.randomUUID();
+        List<User> users = getUsers();
+        String newUserEmail = newUser.getEmail();
 
+        for (User user : users) {
+            if (user.getEmail().equalsIgnoreCase(newUserEmail)) {
+                System.out.println("User already exists");
+                return null;
+            }
+        }
+
+        UUID userId = UUID.randomUUID();
         PreparedStatement preparedStatement = session.prepare("INSERT INTO " + tableName +
                 " (user_id, first_name, last_name, email, password, register_date) VALUES (?, ?, ?, ?, ?, ?)");
 

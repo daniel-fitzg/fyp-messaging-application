@@ -1,4 +1,3 @@
-
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 
@@ -12,9 +11,8 @@ public class CassandraDataStore {
     private String localHostAddress = "127.0.0.1";
     private int portNumber = 9042;
 
-    public CassandraDataStore() {
+    CassandraDataStore() {
         cluster = Cluster.builder().addContactPoint(localHostAddress).withPort(portNumber).build();
-        // TODO: catch com.datastax.driver.core.exceptions.NoHostAvailableException
         session = cluster.connect("messaging_app");
     }
 
@@ -23,7 +21,7 @@ public class CassandraDataStore {
     }
 
 
-    public User registerUser(RegisterUser newUser) {
+    User registerUser(RegisterUser newUser) {
         return new UserDao(session).registerUser(newUser);
     }
 
@@ -35,7 +33,7 @@ public class CassandraDataStore {
         return new UserDao(session).getUser(userId);
     }
 
-    public String addMessage(UUID messageId, UUID userId, Date createDate, String message) {
+    String addMessage(UUID messageId, UUID userId, Date createDate, String message) {
         return new MessageDao(session).addMessage(messageId, userId, createDate, message);
     }
 
@@ -43,7 +41,7 @@ public class CassandraDataStore {
         return new MessageDao(session).getMessage(messageId, userId);
     }
 
-    public void close() {
+    void close() {
         session.close();
         cluster.close();
     }
