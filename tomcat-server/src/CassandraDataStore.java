@@ -20,13 +20,16 @@ public class CassandraDataStore {
         return new UserDao(session).getUsers();
     }
 
-
     User registerUser(RegisterUser newUser) {
         return new UserDao(session).registerUser(newUser);
     }
 
     User authenticateUser(User user) {
         return new UserDao(session).authenticateUser(user);
+    }
+
+    List<Conversation> getUserConversations(UUID userId) {
+        return new UserConversationsDao(session).getUserConversations(userId);
     }
 
     public User getUser(UUID userId) {

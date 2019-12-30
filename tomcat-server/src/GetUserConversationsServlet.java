@@ -29,7 +29,7 @@ public class GetUserConversationsServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
-        List<Conversation> conversations = new ArrayList<Conversation>();
+        List<Conversation> userConversations = new ArrayList<Conversation>();
 
         if (userId != null) {
             userConversations = cassandraDataStore.getUserConversations(userId);
