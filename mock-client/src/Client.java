@@ -7,6 +7,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+import java.util.UUID;
 
 
 public class Client extends JFrame {
@@ -136,9 +138,9 @@ public class Client extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         // TODO: input validation needed here
-                        User user = new User();
-                        user.setEmail(enterEmailTextArea.getText());
-                        user.setPassword(enterPasswordTextArea.getText());
+                        User userToAuthenticate = new User();
+                        userToAuthenticate.setEmail(enterEmailTextArea.getText());
+                        userToAuthenticate.setPassword(enterPasswordTextArea.getText());
 
                         try {
                             URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "AuthenticateUser");
@@ -148,23 +150,31 @@ public class Client extends JFrame {
                             httpUrlConnection.setRequestProperty("Content-Type", "application/octet_stream");
 
                             ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpUrlConnection.getOutputStream());
-                            objectOutputStream.writeObject(user);
+                            objectOutputStream.writeObject(userToAuthenticate);
 
                             ObjectInputStream objectInputStream = new ObjectInputStream(httpUrlConnection.getInputStream());
 
                             try {
-                                String serverResponse = (String) objectInputStream.readObject();
-                                if (serverResponse.equalsIgnoreCase("true")) {
+                                User returnedUser = (User) objectInputStream.readObject();
+                                if (returnedUser != null) {
                                     JOptionPane.showMessageDialog(signInFrame, "Sign-in successful");
-                                } else if (serverResponse.equalsIgnoreCase("false")) {
+                                    signInFrame.dispose();
+
+                                    JFrame conversationListFrame = createConversationListFrame(returnedUser);
+
+                                    if (conversationListFrame != null) {
+                                        welcomeFrame.dispose();
+                                        conversationListFrame.setVisible(true);
+                                    }
+                                } else {
                                     JOptionPane.showMessageDialog(signInFrame, "Sign-in failed");
+                                    signInFrame.dispose();
                                 }
                             } catch (ClassNotFoundException exception) {
                                 exception.printStackTrace();
                             }
 
 
-                            signInFrame.dispose();
 
                             objectOutputStream.close();
                             objectInputStream.close();
@@ -237,6 +247,45 @@ public class Client extends JFrame {
 //        });
 //
 //        messageFrame.setVisible(true);
+    }
+
+    private JFrame createConversationListFrame(User user) throws IOException {
+        URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "GetUserConversations");
+        HttpURLConnection httpUrlConnection = (HttpURLConnection) link.openConnection();
+        httpUrlConnection.setDoOutput(true);
+        httpUrlConnection.setDoInput(true);
+        httpUrlConnection.setRequestProperty("Content-Type", "application/octet_stream");
+
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpUrlConnection.getOutputStream());
+//        objectOutputStream.writeObject(user.getUserId());
+        objectOutputStream.writeObject(UUID.fromString("7c5dad8e-2eef-47fd-a4e3-f1fe4ec4fba3"));
+
+        ObjectInputStream objectInputStream = new ObjectInputStream(httpUrlConnection.getInputStream());
+
+        List<Conversation> conversationList;
+        try {
+            conversationList = (List<Conversation>) objectInputStream.readObject();
+        } catch (ClassNotFoundException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+
+        JFrame conversationListFrame = new JFrame();
+        conversationListFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        conversationListFrame.setSize(500, 500);
+        conversationListFrame.setLayout(new FlowLayout());
+        JLabel signInHeader = new JLabel("Conversations");
+        signInHeader.setFont(new Font("Calibri", Font.PLAIN, 24));
+        conversationListFrame.add(signInHeader);
+
+        conversationList.forEach(conversation -> {
+            conversationListFrame.add(new JLabel(conversation.getSecondaryUserId().toString()));
+        });
+
+        objectOutputStream.close();
+        objectInputStream.close();
+
+        return conversationListFrame;
     }
 
     public static void main (String[] args) {
