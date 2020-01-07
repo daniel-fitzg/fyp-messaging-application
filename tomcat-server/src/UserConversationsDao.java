@@ -17,6 +17,7 @@ public class UserConversationsDao {
     }
 
     List<Conversation> getUserConversations(UUID userId) {
+
         List<Conversation> userConversations = new ArrayList<>();
 
         getUserConversations = session.prepare("SELECT * FROM " + tableName + " WHERE user_id = " + userId);
@@ -27,7 +28,9 @@ public class UserConversationsDao {
            conversation.setUserId(row.getUUID("user_id"));
            conversation.setConversationId(row.getUUID("conversation_id"));
            conversation.setSecondaryUserId(row.getUUID("secondary_user_id"));
+           conversation.setSecondaryUserName(row.getString("secondary_user_name"));
            conversation.setCreateDate(row.getTimestamp("create_date"));
+           conversation.setLastUpdated(row.getTimestamp("last_updated"));
 
            userConversations.add(conversation);
         });

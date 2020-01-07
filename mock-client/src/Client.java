@@ -272,12 +272,12 @@ public class Client extends JFrame {
 
         JFrame conversationListFrame = new JFrame();
         conversationListFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        conversationListFrame.setSize(500, 500);
+        conversationListFrame.setSize(350, 5350);
         conversationListFrame.setLayout(new FlowLayout());
         JLabel signInHeader = new JLabel("Conversations");
         signInHeader.setFont(new Font("Calibri", Font.PLAIN, 24));
         conversationListFrame.add(signInHeader);
-
+        
         conversationList.forEach(conversation -> {
             conversationListFrame.add(new JLabel(conversation.getSecondaryUserId().toString()));
         });

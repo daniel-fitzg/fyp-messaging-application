@@ -28,17 +28,12 @@ public class AuthenticateUserServlet extends HttpServlet {
         } catch (ClassNotFoundException exception) {
             exception.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            //objectOutputStream.writeObject("false");
             user = null;
         }
 
         if (user != null && validateExistingUser(user)) {
             User authenticatedUser = cassandraDataStore.authenticateUser(user);
-//            if (authenticatedUser != null) {
-                objectOutputStream.writeObject(authenticatedUser);
-//            } else {
-//                objectOutputStream.writeObject("false");
-//            }
+            objectOutputStream.writeObject(authenticatedUser);
         } else {
             objectOutputStream.writeObject(null);
         }
