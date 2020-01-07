@@ -272,14 +272,48 @@ public class Client extends JFrame {
 
         JFrame conversationListFrame = new JFrame();
         conversationListFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        conversationListFrame.setSize(350, 5350);
+        conversationListFrame.setSize(270, 350);
         conversationListFrame.setLayout(new FlowLayout());
         JLabel signInHeader = new JLabel("Conversations");
         signInHeader.setFont(new Font("Calibri", Font.PLAIN, 24));
         conversationListFrame.add(signInHeader);
-        
+
         conversationList.forEach(conversation -> {
-            conversationListFrame.add(new JLabel(conversation.getSecondaryUserId().toString()));
+            conversationListFrame.add(new JLabel(conversation.getSecondaryUserName()));
+            JButton button = new JButton("View Messages");
+            conversationListFrame.add(button);
+
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    UUID conversationId = conversation.getConversationId();
+
+                    try {
+                        URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "GetMessages");
+                        HttpURLConnection httpUrlConnection = (HttpURLConnection) link.openConnection();
+                        httpUrlConnection.setDoOutput(true);
+                        httpUrlConnection.setDoInput(true);
+                        httpUrlConnection.setRequestProperty("Content-Type", "application/octet_stream");
+
+                        ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpUrlConnection.getOutputStream());
+                        objectOutputStream.writeObject(conversationId);
+
+                        ObjectInputStream objectInputStream = new ObjectInputStream(httpUrlConnection.getInputStream());
+
+                        try {
+                            String operationResult = (String) objectInputStream.readObject();
+                        } catch (ClassNotFoundException exception) {
+                            exception.printStackTrace();
+                        }
+
+                        objectOutputStream.close();
+                        objectInputStream.close();
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            });
         });
 
         objectOutputStream.close();
