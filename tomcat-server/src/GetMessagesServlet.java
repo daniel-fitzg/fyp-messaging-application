@@ -30,10 +30,9 @@ public class GetMessagesServlet extends HttpServlet {
         }
 
         // TODO conversation_content table - conversation_id, author_id, content, date_created
-        List<ConversationEntry> conversationEntries = new ArrayList();
+        List<ConversationEntry> conversationEntries = new ArrayList<>();
         if (conversationId != null) {
-            // getConversationContent - return List of entries?
-
+            conversationEntries = cassandraDataStore.getConversationEntries(conversationId);
         }
 
         objectOutputStream.writeObject(null);

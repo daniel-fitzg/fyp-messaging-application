@@ -2,15 +2,18 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class MessageDao {
-    private final String tableName = "messages";
+    private final String tableName = "conversation_content";
     private Session session;
 
     private PreparedStatement addMessage;
     private PreparedStatement getMessage;
+    private PreparedStatement getConversationEntries;
 
     MessageDao(Session session) {
         this.session = session;
@@ -30,5 +33,14 @@ public class MessageDao {
         ResultSet resultSet = session.execute(getMessage.bind());
 
         return resultSet.one().getString("content");
+    }
+
+    List<ConversationEntry> getConversationEntries(UUID conversationId) {
+        List<ConversationEntry> conversationEntries = new ArrayList<>();
+
+        getConversationEntries = session.prepare("SELECT * FROM " + tableName + " WHERE conversation_id = " + conversationId);
+        ResultSet resultSet = session.execute(getConversationEntries.bind());
+
+        return conversationEntries;
     }
 }

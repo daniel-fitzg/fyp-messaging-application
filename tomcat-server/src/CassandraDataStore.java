@@ -40,6 +40,10 @@ public class CassandraDataStore {
         return new MessageDao(session).addMessage(messageId, userId, createDate, message);
     }
 
+    List<ConversationEntry> getConversationEntries(UUID conversationId) {
+        return new MessageDao(session).getConversationEntries(conversationId);
+    }
+
     public String getMessage(UUID messageId, UUID userId) {
         return new MessageDao(session).getMessage(messageId, userId);
     }
