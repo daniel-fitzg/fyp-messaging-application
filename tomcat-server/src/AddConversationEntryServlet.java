@@ -1,8 +1,11 @@
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+
+/*
+* Adds an entry to a conversation for a user
+* */
 
 @WebServlet(name = "AddConversationEntryServlet", urlPatterns = {"/AddConversationEntry"})
 public class AddConversationEntryServlet extends javax.servlet.http.HttpServlet {
@@ -28,11 +31,11 @@ public class AddConversationEntryServlet extends javax.servlet.http.HttpServlet 
         cassandraDataStore.close();
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         processRequest(request, response);
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         processRequest(request, response);
     }
 }

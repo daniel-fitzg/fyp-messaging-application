@@ -7,7 +7,6 @@ import java.util.UUID;
 
 // TODO For each table add comment block specifying columns
 
-
 class UserDao {
     final String tableName = "users";
     private Session session;
@@ -75,7 +74,6 @@ class UserDao {
     }
 
     User getUser(UUID userId) {
-        // Allow filtering enables search by user_name, avoid this by including user_name in table primary key
         PreparedStatement preparedStatement = session.prepare("SELECT * FROM " + tableName + " WHERE user_id = " + userId);
         ResultSet resultSet = session.execute(preparedStatement.bind());
 

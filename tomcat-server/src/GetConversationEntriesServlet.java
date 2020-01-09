@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/*
+* Servlet gets and returns the entries of a single conversation for the user
+* */
+
 @WebServlet(name = "GetConversationEntriesServlet", urlPatterns = {"/GetConversationEntries"})
 public class GetConversationEntriesServlet extends HttpServlet {
 

@@ -44,10 +44,6 @@ public class CassandraDataStore {
         return new ConversationContentDao(session).getConversationEntries(conversationId, authorId, secondaryAuthorId);
     }
 
-    public String getMessage(UUID messageId, UUID userId) {
-        return new ConversationContentDao(session).getMessage(messageId, userId);
-    }
-
     void close() {
         session.close();
         cluster.close();

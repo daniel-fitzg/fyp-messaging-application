@@ -1,4 +1,3 @@
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +8,10 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+/*
+* Servlet gets and returns the conversations to which a single user belongs
+* */
 
 @WebServlet(name = "GetUserConversationsServlet", urlPatterns = {"/GetUserConversations"})
 public class GetUserConversationsServlet extends HttpServlet {
@@ -40,11 +43,11 @@ public class GetUserConversationsServlet extends HttpServlet {
         cassandraDataStore.close();
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         processRequest(request, response);
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         processRequest(request, response);
     }
 }
