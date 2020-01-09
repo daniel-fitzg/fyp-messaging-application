@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -207,37 +208,42 @@ public class Client extends JFrame {
 //        messageFrame.add(userEntryArea);
 //        JButton sendTextButton = new JButton("SEND");
 //        messageFrame.add(sendTextButton);
-//        JLabel returnTextLabel = new JLabel("Text returned from server: ");
-//        messageFrame.add(returnTextLabel);
-//        JTextField returnTextField = new JTextField(15);
-//        messageFrame.add(returnTextField);
 //
 //        sendTextButton.addActionListener(new ActionListener() {
 //            @Override
 //            public void actionPerformed(ActionEvent e) {
 //                try {
-//                    String message = userEntryArea.getText();
+//                    String content = userEntryArea.getText();
 //
-//                    if (!message.equalsIgnoreCase("")) {
-//                        URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "AddMessage");
+//                    ConversationEntry newConversationEntry = new ConversationEntry(UUID.randomUUID(), UUID.randomUUID(),
+//                            new Date(), content);
+//
+//                    if (!content.equalsIgnoreCase("")) {
+//                        URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "AddConversationEntry");
 //                        HttpURLConnection httpUrlConnection = (HttpURLConnection) link.openConnection();
 //                        httpUrlConnection.setDoOutput(true);
 //                        httpUrlConnection.setDoInput(true);
 //                        httpUrlConnection.setRequestProperty("Content-Type", "application/octet_stream");
 //
 //                        ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpUrlConnection.getOutputStream());
-//                        objectOutputStream.writeObject(message);
+//                        objectOutputStream.writeObject(newConversationEntry);
 //
 //                        ObjectInputStream objectInputStream = new ObjectInputStream(httpUrlConnection.getInputStream());
+//
+//                        String operationResult = null;
 //                        try {
-//                            returnTextField.setText((String) objectInputStream.readObject());
+//                            operationResult = (String) objectInputStream.readObject();
 //                        } catch (ClassNotFoundException exception) {
 //                            exception.printStackTrace();
 //                        }
 //
+//                        if (operationResult != null) {
+//                            JOptionPane.showMessageDialog(messageFrame, "Message stored successfully");
+//                        }
+//
 //                        objectOutputStream.close();
 //                        objectInputStream.close();
-//                    } else if (message.equalsIgnoreCase("")) {
+//                    } else if (content.equalsIgnoreCase("")) {
 //                        JOptionPane.showMessageDialog(messageFrame, "Please enter valid text");
 //                    }
 //                } catch (IOException exception) {
@@ -290,7 +296,7 @@ public class Client extends JFrame {
                     UUID conversationId = conversation.getConversationId();
 
                     try {
-                        URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "GetMessages");
+                        URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "GetConversationEntries");
                         HttpURLConnection httpUrlConnection = (HttpURLConnection) link.openConnection();
                         httpUrlConnection.setDoOutput(true);
                         httpUrlConnection.setDoInput(true);

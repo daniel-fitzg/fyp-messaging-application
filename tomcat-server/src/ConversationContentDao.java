@@ -7,24 +7,22 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class MessageDao {
+public class ConversationContentDao {
     private final String tableName = "conversation_content";
     private Session session;
 
-    private PreparedStatement addMessage;
+    private PreparedStatement addConversationEntry;
     private PreparedStatement getMessage;
     private PreparedStatement getConversationEntries;
 
-    MessageDao(Session session) {
+    ConversationContentDao(Session session) {
         this.session = session;
     }
 
-    String addMessage(UUID messageId, UUID userId, Date createDate, String message) {
-        addMessage = session.prepare("INSERT INTO " + tableName + " (message_id, creator_id, create_date, content) " +
+    void addConversationEntry(UUID conversationId, UUID authorId, Date createDate, String content) {
+        addConversationEntry = session.prepare("INSERT INTO " + tableName + " (conversation_id, author_id, create_date, content) " +
                 "VALUES (?, ?, ?, ?)");
-        session.execute(addMessage.bind(messageId, userId, createDate, message));
-
-        return getMessage(messageId, userId);
+        session.execute(addConversationEntry.bind(conversationId, authorId, createDate, content));
     }
 
     String getMessage(UUID messageId, UUID userId) {

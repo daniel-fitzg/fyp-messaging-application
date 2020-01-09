@@ -1,17 +1,13 @@
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.Date;
 import java.util.UUID;
 
-@WebServlet(name = "GetMessagesServlet", urlPatterns = {"/GetMessages"})
-public class GetMessagesServlet extends HttpServlet {
+@WebServlet(name = "AddConversationEntryServlet", urlPatterns = {"/AddConversationEntry"})
+public class AddConversationEntryServlet extends javax.servlet.http.HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -20,22 +16,16 @@ public class GetMessagesServlet extends HttpServlet {
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(response.getOutputStream());
 
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
-        UUID conversationId = null;
 
         try {
-            conversationId = (UUID) objectInputStream.readObject();
+            ConversationEntry newConversationEntry = (ConversationEntry) objectInputStream.readObject();
+            cassandraDataStore.addConversationEntry(newConversationEntry.getConversationId(), newConversationEntry.getAuthorId(),
+                    newConversationEntry.getDateCreated(), newConversationEntry.getContent());
         } catch (ClassNotFoundException exception) {
             exception.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
-        // TODO conversation_content table - conversation_id, author_id, content, date_created
-        List<ConversationEntry> conversationEntries = new ArrayList<>();
-        if (conversationId != null) {
-            conversationEntries = cassandraDataStore.getConversationEntries(conversationId);
-        }
-
-        objectOutputStream.writeObject(null);
+        objectOutputStream.writeObject("true");
 
         cassandraDataStore.close();
     }

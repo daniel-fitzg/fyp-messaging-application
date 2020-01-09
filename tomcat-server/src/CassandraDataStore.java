@@ -36,16 +36,16 @@ public class CassandraDataStore {
         return new UserDao(session).getUser(userId);
     }
 
-    String addMessage(UUID messageId, UUID userId, Date createDate, String message) {
-        return new MessageDao(session).addMessage(messageId, userId, createDate, message);
+    void addConversationEntry(UUID conversationId, UUID authorId, Date createDate, String content) {
+        new ConversationContentDao(session).addConversationEntry(conversationId, authorId, createDate, content);
     }
 
     List<ConversationEntry> getConversationEntries(UUID conversationId) {
-        return new MessageDao(session).getConversationEntries(conversationId);
+        return new ConversationContentDao(session).getConversationEntries(conversationId);
     }
 
     public String getMessage(UUID messageId, UUID userId) {
-        return new MessageDao(session).getMessage(messageId, userId);
+        return new ConversationContentDao(session).getMessage(messageId, userId);
     }
 
     void close() {
