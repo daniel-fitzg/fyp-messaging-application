@@ -264,7 +264,7 @@ public class Client extends JFrame {
 
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpUrlConnection.getOutputStream());
 //        objectOutputStream.writeObject(user.getUserId());
-        objectOutputStream.writeObject(UUID.fromString("7c5dad8e-2eef-47fd-a4e3-f1fe4ec4fba3"));
+        objectOutputStream.writeObject(UUID.fromString("51dca0e3-f008-4dd6-baf8-63b60348a119"));
 
         ObjectInputStream objectInputStream = new ObjectInputStream(httpUrlConnection.getInputStream());
 
@@ -294,6 +294,8 @@ public class Client extends JFrame {
                 public void actionPerformed(ActionEvent e) {
 
                     UUID conversationId = conversation.getConversationId();
+                    UUID authorId = conversation.getUserId();
+                    UUID secondaryAuthorId = conversation.getSecondaryUserId();
 
                     try {
                         URL link = new URL("http://localhost:8080/tomcat_server_war_exploded/" + "GetConversationEntries");
@@ -304,11 +306,14 @@ public class Client extends JFrame {
 
                         ObjectOutputStream objectOutputStream = new ObjectOutputStream(httpUrlConnection.getOutputStream());
                         objectOutputStream.writeObject(conversationId);
+                        objectOutputStream.writeObject(authorId);
+                        objectOutputStream.writeObject(secondaryAuthorId);
 
                         ObjectInputStream objectInputStream = new ObjectInputStream(httpUrlConnection.getInputStream());
 
+                        List<ConversationEntry> conversationEntries = null;
                         try {
-                            String operationResult = (String) objectInputStream.readObject();
+                            conversationEntries = (List<ConversationEntry>) objectInputStream.readObject();
                         } catch (ClassNotFoundException exception) {
                             exception.printStackTrace();
                         }

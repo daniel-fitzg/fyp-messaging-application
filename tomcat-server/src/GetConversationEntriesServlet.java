@@ -1,4 +1,3 @@
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,30 +20,33 @@ public class GetConversationEntriesServlet extends HttpServlet {
 
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
         UUID conversationId = null;
+        UUID authorId = null;
+        UUID secondaryAuthorId = null;
 
         try {
             conversationId = (UUID) objectInputStream.readObject();
+            authorId = (UUID) objectInputStream.readObject();
+            secondaryAuthorId = (UUID) objectInputStream.readObject();
         } catch (ClassNotFoundException exception) {
             exception.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
-        // TODO conversation_content table - conversation_id, author_id, content, date_created
         List<ConversationEntry> conversationEntries = new ArrayList<>();
-        if (conversationId != null) {
-            conversationEntries = cassandraDataStore.getConversationEntries(conversationId);
+        if (conversationId != null && authorId != null && secondaryAuthorId != null) {
+            conversationEntries = cassandraDataStore.getConversationEntries(conversationId, authorId, secondaryAuthorId);
         }
 
-        objectOutputStream.writeObject(null);
+        objectOutputStream.writeObject(conversationEntries);
 
         cassandraDataStore.close();
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         processRequest(request, response);
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         processRequest(request, response);
     }
 }

@@ -33,11 +33,57 @@ public class ConversationContentDao {
         return resultSet.one().getString("content");
     }
 
-    List<ConversationEntry> getConversationEntries(UUID conversationId) {
+    List<ConversationEntry> getConversationEntries(UUID conversationId, UUID authorId, UUID secondaryAuthorId) {
         List<ConversationEntry> conversationEntries = new ArrayList<>();
 
-        getConversationEntries = session.prepare("SELECT * FROM " + tableName + " WHERE conversation_id = " + conversationId);
+        getConversationEntries = session.prepare("SELECT * FROM " + tableName + " WHERE conversation_id = " + conversationId
+        + " AND author_id = " + authorId);
         ResultSet resultSet = session.execute(getConversationEntries.bind());
+
+//        resultSet.forEach(row -> {
+//            ConversationEntry conversationEntry = new ConversationEntry();
+//
+//            conversationEntry.setConversationId(row.getUUID("conversation_id"));
+//            conversationEntry.setAuthorId(row.getUUID("author_id"));
+//            conversationEntry.setDateCreated(row.getTimestamp("create_date"));
+//            conversationEntry.setContent(row.getString("content"));
+//
+//            conversationEntries.add(conversationEntry);
+//        });
+
+        conversationEntries = populateConversationEntriesList(resultSet, conversationEntries);
+
+        getConversationEntries = session.prepare("SELECT * FROM " + tableName + " WHERE conversation_id = " + conversationId
+                + " AND author_id = " + secondaryAuthorId);
+        resultSet = session.execute(getConversationEntries.bind());
+
+//        resultSet.forEach(row -> {
+//            ConversationEntry conversationEntry = new ConversationEntry();
+//
+//            conversationEntry.setConversationId(row.getUUID("conversation_id"));
+//            conversationEntry.setAuthorId(row.getUUID("author_id"));
+//            conversationEntry.setDateCreated(row.getTimestamp("create_date"));
+//            conversationEntry.setContent(row.getString("content"));
+//
+//            conversationEntries.add(conversationEntry);
+//        });
+
+        conversationEntries = populateConversationEntriesList(resultSet, conversationEntries);
+
+        return conversationEntries;
+    }
+
+    private List<ConversationEntry> populateConversationEntriesList(ResultSet resultSet, List<ConversationEntry> conversationEntries) {
+        resultSet.forEach(row -> {
+            ConversationEntry conversationEntry = new ConversationEntry();
+
+            conversationEntry.setConversationId(row.getUUID("conversation_id"));
+            conversationEntry.setAuthorId(row.getUUID("author_id"));
+            conversationEntry.setDateCreated(row.getTimestamp("create_date"));
+            conversationEntry.setContent(row.getString("content"));
+
+            conversationEntries.add(conversationEntry);
+        });
 
         return conversationEntries;
     }

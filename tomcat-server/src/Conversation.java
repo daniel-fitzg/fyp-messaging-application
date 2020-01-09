@@ -7,10 +7,9 @@ public class Conversation implements Serializable {
     private UUID conversationId;
     private UUID secondaryUserId;
     private String secondaryUserName;
-
     private Date createDate;
-
     private Date lastUpdated;
+
     public UUID getUserId() {
         return userId;
     }

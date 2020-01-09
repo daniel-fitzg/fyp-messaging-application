@@ -15,6 +15,13 @@ public class ConversationEntry implements Serializable {
         this.content = content;
     }
 
+    ConversationEntry() {
+        this.conversationId = null;
+        this.authorId = null;
+        this.dateCreated = null;
+        this.content = null;
+    }
+
     public UUID getConversationId() {
         return conversationId;
     }

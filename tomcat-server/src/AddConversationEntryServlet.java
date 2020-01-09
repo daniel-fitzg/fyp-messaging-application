@@ -3,8 +3,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.Date;
-import java.util.UUID;
 
 @WebServlet(name = "AddConversationEntryServlet", urlPatterns = {"/AddConversationEntry"})
 public class AddConversationEntryServlet extends javax.servlet.http.HttpServlet {
