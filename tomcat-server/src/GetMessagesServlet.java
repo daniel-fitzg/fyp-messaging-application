@@ -30,6 +30,11 @@ public class GetMessagesServlet extends HttpServlet {
         }
 
         // TODO conversation_content table - conversation_id, author_id, content, date_created
+        List<ConversationEntry> conversationEntries = new ArrayList();
+        if (conversationId != null) {
+            // getConversationContent - return List of entries?
+
+        }
 
         objectOutputStream.writeObject(null);
 
