@@ -1,3 +1,5 @@
+import org.json.simple.JSONObject;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,10 +32,20 @@ public class AuthenticateUserServlet extends HttpServlet {
             user = null;
         }
 
+//        JSONObject jsonObject = new JSONObject();
         if (user != null && validateExistingUser(user)) {
             User authenticatedUser = cassandraDataStore.authenticateUser(user);
+
+//            jsonObject.put("userId", authenticatedUser.getUserId());
+//            jsonObject.put("firstName", authenticatedUser.getFirstName());
+//            jsonObject.put("lastName", authenticatedUser.getLastName());
+//            objectOutputStream.writeObject(jsonObject.toJSONString());
+
             objectOutputStream.writeObject(authenticatedUser);
         } else {
+//            jsonObject.put("serverResponse", Boolean.FALSE);
+//            objectOutputStream.writeObject(jsonObject.toJSONString());
+
             objectOutputStream.writeObject(null);
         }
 
