@@ -30,6 +30,7 @@
           <element id="library" level="project" name="Maven: org.ow2.asm:asm:5.0.3" />
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.7" />
           <element id="library" level="project" name="org.slf4j:slf4j-nop:1.7.25" />
+          <element id="library" level="project" name="com.googlecode.json-simple:json-simple:1.1.1" />
         </element>
       </element>
     </root>

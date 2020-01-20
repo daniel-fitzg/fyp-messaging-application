@@ -312,8 +312,10 @@ public class Client extends JFrame {
                         ObjectInputStream objectInputStream = new ObjectInputStream(httpUrlConnection.getInputStream());
 
                         List<ConversationEntry> conversationEntries = null;
+                        String jsonString = null;
                         try {
-                            conversationEntries = (List<ConversationEntry>) objectInputStream.readObject();
+                            jsonString = (String) objectInputStream.readObject();
+//                            conversationEntries = (List<ConversationEntry>) objectInputStream.readObject();
                         } catch (ClassNotFoundException exception) {
                             exception.printStackTrace();
                         }
