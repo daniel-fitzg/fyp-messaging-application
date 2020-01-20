@@ -1,3 +1,5 @@
+import org.json.simple.JSONObject;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +27,11 @@ public class AddConversationEntryServlet extends javax.servlet.http.HttpServlet 
         } catch (ClassNotFoundException exception) {
             exception.printStackTrace();
         }
+
+        // TODO: JSON to be used to send data to JavaScript Client, below code working OK
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put("serverResponse", Boolean.TRUE);
+//        objectOutputStream.writeObject(jsonObject);
 
         objectOutputStream.writeObject("true");
 
