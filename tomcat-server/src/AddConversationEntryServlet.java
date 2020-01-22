@@ -28,10 +28,10 @@ public class AddConversationEntryServlet extends javax.servlet.http.HttpServlet 
             exception.printStackTrace();
         }
 
-        // TODO: JSON to be used to send data to JavaScript Client, below code working OK
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("serverResponse", Boolean.TRUE);
-        objectOutputStream.writeObject(jsonObject.toJSONString());
+//        // TODO: JSON to be used to send data to JavaScript Client, below code working OK
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put("serverResponse", Boolean.TRUE);
+//        objectOutputStream.writeObject(jsonObject.toJSONString());
 
         objectOutputStream.writeObject("true");
 
