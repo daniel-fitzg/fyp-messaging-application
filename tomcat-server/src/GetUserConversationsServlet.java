@@ -1,3 +1,6 @@
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +40,22 @@ public class GetUserConversationsServlet extends HttpServlet {
         if (userId != null) {
             userConversations = cassandraDataStore.getUserConversations(userId);
         }
+
+        // TODO: JSON to be used to send data to JavaScript Client, code below requires testing
+//        JSONArray jsonArray = new JSONArray();
+//        userConversations.forEach(conversation -> {
+//            JSONObject jsonObject = new JSONObject();
+//            jsonObject.put("userId", conversation.getUserId());
+//            jsonObject.put("conversationId", conversation.getConversationId());
+//            jsonObject.put("secondaryUserId", conversation.getSecondaryUserId());
+//            jsonObject.put("secondaryUserName", conversation.getSecondaryUserName());
+//            jsonObject.put("userId", conversation.getUserId());
+//            jsonObject.put("lastUpdated", conversation.getLastUpdated());
+//
+//            jsonArray.add(jsonObject);
+//        });
+//
+//        objectOutputStream.writeObject(jsonArray);
 
         objectOutputStream.writeObject(userConversations);
 
