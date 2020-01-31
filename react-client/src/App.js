@@ -9,7 +9,6 @@ class App extends React.Component {
     return (
       <div>
         <TitleHeader />
-        <h3>Main frame for the app</h3>
         <MessagesList />
         <SendMessage />
       </div>

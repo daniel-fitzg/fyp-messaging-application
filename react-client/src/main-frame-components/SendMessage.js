@@ -3,7 +3,7 @@ import React from "react"
 class SendMessage extends React.Component {
   render() {
     return (
-      <div>
+      <div className="send-message">
         <p>Send Message Field</p>
       </div>
     )
