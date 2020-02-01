@@ -7,7 +7,7 @@ import SendMessage from "./main-frame-components/SendMessage"
 class App extends React.Component {
   render() {
     return (
-      <div>
+      <div className="app">
         <TitleHeader />
         <MessagesList />
         <SendMessage />
