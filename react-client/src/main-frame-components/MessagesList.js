@@ -4,24 +4,18 @@ class MessagesList extends React.Component {
   render() {
     return (
       <div className="message-list">
-        <p>Message List component</p>
-        <ul>
-          <li>Message1</li>
-          <br />
-          <br />
-          <li>Message2</li>
-          <br />
-          <br />
-          <li>Message3</li>
-          <br />
-          <br />
-          <li>Message4</li>
-          <br />
-          <br />
-          <li>Message5</li>
-          <br />
-          <br />
-        </ul>
+        {this.props.messages.map(message => {
+          return (
+            <div>
+              <div>
+                <p>{message.id}</p>
+              </div>
+              <div>
+                <p><span>{message.text}</span></p>
+              </div>
+            </div>
+          )
+        })}
       </div>
     )
   }

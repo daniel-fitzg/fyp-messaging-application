@@ -17,6 +17,18 @@
   height: 435px;
   background-color: White;
   padding: 5px;
+  overflow: scroll;
+}
+
+.message-text {
+  color: White;
+}
+
+p span {
+  background-color: #3366ff;
+  padding: 5px 5px 5px 5px;
+  border-radius: 10px;
+  color: White;
 }
 
 .send-message {
