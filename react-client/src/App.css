@@ -45,6 +45,7 @@ input {
   background-color: #b3c6ff;
   color: Black;
   font-size: 16px;
+  width: 600px;
 }
 
 input:focus, textarea:focus, select:focus {
