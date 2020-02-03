@@ -17,7 +17,7 @@ const dummyMessagesData = [
   {
     id: 4,
     senderId: "John",
-    text: "Sure. Making anything cool"
+    text: "Sure. Making anything cool?"
   },
   {
     id: 5,

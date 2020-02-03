@@ -22,6 +22,7 @@ class SendMessage extends React.Component {
 
   handleSubmit(event) {
     alert("Message: " + this.state.message)
+    this.props.sendMessage()
   }
 
   render() {
