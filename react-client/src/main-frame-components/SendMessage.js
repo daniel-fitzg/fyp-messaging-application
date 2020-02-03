@@ -3,8 +3,13 @@ import React from "react"
 class SendMessage extends React.Component {
   render() {
     return (
-      <div className="send-message">
-        <p>Send Message Field</p>
+      <div>
+        <form  className="send-message">
+          <input
+            placeholder="Input message here"
+            type="text"
+          />
+        </form>
       </div>
     )
   }

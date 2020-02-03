@@ -20,8 +20,8 @@
   overflow: scroll;
 }
 
-.message-text {
-  color: White;
+.sender-id {
+  font-size: 12px;
 }
 
 p span {
@@ -32,6 +32,21 @@ p span {
 }
 
 .send-message {
+  display: flex;
+  flex-direction: row;
   background-color: #b3c6ff;
   padding: 5px;
+  height: 20px;
+  padding: 20px 20px;
 }
+
+input {
+  border: none;
+  background-color: #b3c6ff;
+  color: Black;
+  font-size: 16px;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+  }

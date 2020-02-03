@@ -8,7 +8,7 @@ class MessagesList extends React.Component {
           return (
             <div>
               <div>
-                <p>{message.id}</p>
+                <p className="sender-id">{message.senderId}</p>
               </div>
               <div>
                 <p><span>{message.text}</span></p>
