@@ -11,18 +11,29 @@ class App extends React.Component {
       super()
       this.state = {
         messages: dummyMessagesData,
+        text: []
       }
 
       this.sendMessage = this.sendMessage.bind(this)
   }
 
-  sendMessage() {
-    alert("in sendMessage")
+  sendMessage(event) {
+    alert("Sending Request")
+    //event.preventDefault()
 
-    // Not working. Re-render appears to reload dummy data into messages array
-    const newMessages = this.state.messages.map(message => Object.assign({}, message))
-    newMessages[1].text = "Good Day!"
-    this.setState({messages: newMessages})
+    var xhr = new XMLHttpRequest();
+
+    xhr.addEventListener("readystatechange", function () {
+      if (this.readyState === 4) {
+        var data = xhr.responseText
+        alert(data)
+        console.log(data)
+        var parsedJSON = JSON.parse(data)
+      }
+    });
+
+    xhr.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetUserConversations', true);
+    xhr.send();
   }
 
   render() {

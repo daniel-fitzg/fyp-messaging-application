@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,25 +22,38 @@ public class GetUserConversationsServlet extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        response.setContentType("application/octet-stream");
-        ObjectInputStream objectInputStream = new ObjectInputStream(request.getInputStream());
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(response.getOutputStream());
+       // response.setContentType("application/octet-stream");
+        // Needed to circumvent Cross Origin Resource-Sharing
+        response.setHeader("Access-Control-Allow-Origin", "*");
 
-        CassandraDataStore cassandraDataStore = new CassandraDataStore();
-        UUID userId = null;
+//        ObjectInputStream objectInputStream = new ObjectInputStream(request.getInputStream());
+        //ObjectOutputStream objectOutputStream = new ObjectOutputStream(response.getOutputStream());
 
-        try {
-            userId = (UUID) objectInputStream.readObject();
-        } catch (ClassNotFoundException exception) {
-            exception.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
+//        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
+//        response.getWriter().write("Hello World");
 
-        List<Conversation> userConversations = new ArrayList<>();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("serverResponse", Boolean.FALSE);
+        response.getWriter().write(jsonObject.toJSONString());
+        System.out.println();
 
-        if (userId != null) {
-            userConversations = cassandraDataStore.getUserConversations(userId);
-        }
+//        CassandraDataStore cassandraDataStore = new CassandraDataStore();
+//        UUID userId = null;
+
+//        try {
+//            userId = (UUID) objectInputStream.readObject();
+        // userId = UUID.fromString("51dca0e3-f008-4dd6-baf8-63b60348a119");
+//        } catch (ClassNotFoundException exception) {
+//            exception.printStackTrace();
+//            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+//        }
+
+//        List<Conversation> userConversations = new ArrayList<>();
+//
+//        if (userId != null) {
+//            userConversations = cassandraDataStore.getUserConversations(userId);
+//        }
 
         // TODO: JSON to be used to send data to JavaScript Client, code below requires testing
 //        JSONArray jsonArray = new JSONArray();
@@ -54,12 +68,12 @@ public class GetUserConversationsServlet extends HttpServlet {
 //
 //            jsonArray.add(jsonObject);
 //        });
-//
+
+
 //        objectOutputStream.writeObject(jsonArray);
+//        objectOutputStream.writeObject(userConversations);
 
-        objectOutputStream.writeObject(userConversations);
-
-        cassandraDataStore.close();
+//        cassandraDataStore.close();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
