@@ -13,6 +13,13 @@ public class RegisterUser implements Serializable {
         this.password = password;
     }
 
+    RegisterUser() {
+        this.firstName = null;
+        this.lastName = null;
+        this.email = null;
+        this.password = null;
+    }
+
     public String getFirstName() {
         return firstName;
     }

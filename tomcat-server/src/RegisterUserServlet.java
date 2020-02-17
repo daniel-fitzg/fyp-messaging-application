@@ -1,12 +1,13 @@
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 /*
 * Servlet registers a new user
@@ -17,53 +18,39 @@ public class RegisterUserServlet extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        response.setContentType("application/octet-stream");
-        ObjectInputStream objectInputStream = new ObjectInputStream(request.getInputStream());
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(response.getOutputStream());
+        response.setHeader("Access-Control-Allow-Origin", "*");
+
+        BufferedReader bufferedReader = new BufferedReader(request.getReader());
+        String incomingJsonString = bufferedReader.readLine();
+        JSONParser jsonParser = new JSONParser();
+        JSONObject incomingJsonObject = null;
+
+        try {
+            incomingJsonObject = (JSONObject) jsonParser.parse(incomingJsonString);
+        } catch (ParseException exception) {
+            exception.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
 
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
-        RegisterUser newUser;
-        try {
-            newUser = (RegisterUser) objectInputStream.readObject();
-        } catch (ClassNotFoundException exception) {
-            exception.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        RegisterUser newUser = new RegisterUser();
+        newUser.setEmail((String) incomingJsonObject.get("email"));
+        newUser.setPassword((String) incomingJsonObject.get("password"));
+        newUser.setFirstName((String) incomingJsonObject.get("firstName"));
+        newUser.setLastName((String) incomingJsonObject.get("lastName"));
 
-//            // TODO: JSON to be used to send data to JavaScript Client, code needs testing
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("serverResponse", Boolean.FALSE);
-//            objectOutputStream.writeObject(jsonObject.toJSONString());
-
-            objectOutputStream.writeObject("false");
-            newUser = null;
-        }
-
-        if (newUser != null && validateNewUser(newUser)) {
+        // validateNewUser = Validates that user input does not contain empty strings
+        if (validateNewUser(newUser)) {
             User registeredUser = cassandraDataStore.registerUser(newUser);
 
             if (registeredUser != null) {
-                // TODO: JSON to be used to send data to JavaScript Client, below code working OK
-//                JSONObject jsonObject = new JSONObject();
-//                jsonObject.put("serverResponse", Boolean.TRUE);
-//                objectOutputStream.writeObject(jsonObject.toJSONString());
-
-                objectOutputStream.writeObject("true");
+                System.out.println("User registered successfully");
             } else {
-//                // TODO: JSON to be used to send data to JavaScript Client, code needs testing
-//                JSONObject jsonObject = new JSONObject();
-//                jsonObject.put("serverResponse", Boolean.FALSE);
-//                objectOutputStream.writeObject(jsonObject.toJSONString());
-
-                objectOutputStream.writeObject("false");
+                response.setStatus(HttpServletResponse.SC_CONFLICT, "Email already registered");
             }
         } else {
-            // TODO: JSON to be used to send data to JavaScript Client, code needs testing
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("serverResponse", Boolean.FALSE);
-//            objectOutputStream.writeObject(jsonObject.toJSONString());
-
-            objectOutputStream.writeObject("false");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
 
         cassandraDataStore.close();

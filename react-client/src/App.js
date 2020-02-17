@@ -32,11 +32,11 @@ class App extends React.Component {
       }
     });
 
-    request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetUserConversations', true)
+    request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/RegisterUser', true)
     // request.setRequestHeader("Access-Control-Allow-Origin", "*")
     // request.setRequestHeader("Content-Type", "text/plain;charset=UTF-8")
     //request.send(JSON.stringify({ message: message}))
-    request.send(JSON.stringify({ userId: "51dca0e3-f008-4dd6-baf8-63b60348a119" }))
+    request.send(JSON.stringify({ email: "tim@yahoo.ie", password: "happycat9", firstName: "Tim", lastName: "McGinty" }))
     //request.send(message)
     //request.send();
 
