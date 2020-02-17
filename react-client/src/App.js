@@ -17,23 +17,27 @@ class App extends React.Component {
       this.sendMessage = this.sendMessage.bind(this)
   }
 
-  sendMessage(event) {
+  sendMessage(event, message) {
     alert("Sending Request")
     //event.preventDefault()
 
-    var xhr = new XMLHttpRequest();
+    var request = new XMLHttpRequest();
 
-    xhr.addEventListener("readystatechange", function () {
+    request.addEventListener("readystatechange", function () {
       if (this.readyState === 4) {
-        var data = xhr.responseText
+        var data = request.responseText
         alert(data)
         console.log(data)
         var parsedJSON = JSON.parse(data)
       }
     });
 
-    xhr.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetUserConversations', true);
-    xhr.send();
+    request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetUserConversations', true)
+    // request.setRequestHeader("Access-Control-Allow-Origin", "*")
+    // request.setRequestHeader("Content-Type", "text/plain;charset=UTF-8")
+    request.send(JSON.stringify({ message: message}))
+    //request.send(message)
+    //request.send();
   }
 
   render() {

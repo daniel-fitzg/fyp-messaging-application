@@ -1,10 +1,13 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -22,10 +25,19 @@ public class GetUserConversationsServlet extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-       // response.setContentType("application/octet-stream");
+//        response.setContentType("application/octet-stream");
         // Needed to circumvent Cross Origin Resource-Sharing
         response.setHeader("Access-Control-Allow-Origin", "*");
-
+        //response.setHeader("Access-Control-Allow-Methods", "post");
+        BufferedReader bufferedReader = new BufferedReader(request.getReader());
+        String incomingJsonString = bufferedReader.readLine();
+        JSONParser parser = new JSONParser();
+        JSONObject json = null;
+        try {
+            json = (JSONObject) parser.parse(incomingJsonString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 //        ObjectInputStream objectInputStream = new ObjectInputStream(request.getInputStream());
         //ObjectOutputStream objectOutputStream = new ObjectOutputStream(response.getOutputStream());
 
@@ -36,6 +48,9 @@ public class GetUserConversationsServlet extends HttpServlet {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("serverResponse", Boolean.FALSE);
         response.getWriter().write(jsonObject.toJSONString());
+        response.getWriter().flush();
+        response.getWriter().close();
+
         System.out.println();
 
 //        CassandraDataStore cassandraDataStore = new CassandraDataStore();
