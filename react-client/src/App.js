@@ -32,12 +32,14 @@ class App extends React.Component {
       }
     });
 
-    request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/AddConversationEntry', true)
+    request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/AuthenticateUser', true)
     // request.setRequestHeader("Access-Control-Allow-Origin", "*")
     // request.setRequestHeader("Content-Type", "text/plain;charset=UTF-8")
-    request.send(JSON.stringify({ message: message}))
+    //request.send(JSON.stringify({ message: message}))
+    request.send(JSON.stringify({ email: "z", password: "z"}))
     //request.send(message)
     //request.send();
+
   }
 
   render() {
