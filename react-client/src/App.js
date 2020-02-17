@@ -32,11 +32,11 @@ class App extends React.Component {
       }
     });
 
-    request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetConversationEntries', true)
+    request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetUserConversations', true)
     // request.setRequestHeader("Access-Control-Allow-Origin", "*")
     // request.setRequestHeader("Content-Type", "text/plain;charset=UTF-8")
     //request.send(JSON.stringify({ message: message}))
-    request.send(JSON.stringify({ conversationId: "cf88e803-4f31-4719-b726-ae3ac6fa10e3", authorId: "7db251f0-a3ef-4787-830a-9bc0b1dbd0de", secondaryAuthorId: "51dca0e3-f008-4dd6-baf8-63b60348a119" }))
+    request.send(JSON.stringify({ userId: "51dca0e3-f008-4dd6-baf8-63b60348a119" }))
     //request.send(message)
     //request.send();
 
