@@ -1,9 +1,13 @@
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.Date;
+import java.util.UUID;
 
 /*
 * Adds an entry to a conversation for a user
@@ -14,27 +18,30 @@ public class AddConversationEntryServlet extends javax.servlet.http.HttpServlet 
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        response.setContentType("application/octet-stream");
-        ObjectInputStream objectInputStream = new ObjectInputStream(request.getInputStream());
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(response.getOutputStream());
+//        response.setHeader("Access-Control-Allow-Origin", "*");
+
+        BufferedReader bufferedReader = new BufferedReader(request.getReader());
+        String incomingJsonString = bufferedReader.readLine();
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = null;
+
+        try {
+            jsonObject = (JSONObject) jsonParser.parse(incomingJsonString);
+        } catch (ParseException exception) {
+            exception.printStackTrace();
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "JSON Parse Exception Thrown");
+        }
 
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
-        try {
-            ConversationEntry newConversationEntry = (ConversationEntry) objectInputStream.readObject();
-            cassandraDataStore.addConversationEntry(newConversationEntry.getConversationId(), newConversationEntry.getAuthorId(),
-                    newConversationEntry.getDateCreated(), newConversationEntry.getContent());
-        } catch (ClassNotFoundException exception) {
-            exception.printStackTrace();
-        }
+        ConversationEntry conversationEntry = new ConversationEntry();
+        // TODO Replace random UUIDs with actual UUIDs from client
+        conversationEntry.setConversationId(UUID.randomUUID());
+        conversationEntry.setAuthorId(UUID.randomUUID());
+        conversationEntry.setDateCreated(new Date());
+        conversationEntry.setContent((String) jsonObject.get("message"));
 
-//        // TODO: JSON to be used to send data to JavaScript Client, below code working OK
-//        JSONObject jsonObject = new JSONObject();
-//        jsonObject.put("serverResponse", Boolean.TRUE);
-//        objectOutputStream.writeObject(jsonObject.toJSONString());
-
-        objectOutputStream.writeObject("true");
-
+        cassandraDataStore.addConversationEntry(conversationEntry);
         cassandraDataStore.close();
     }
 

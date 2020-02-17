@@ -18,10 +18,11 @@ public class ConversationContentDao {
         this.session = session;
     }
 
-    void addConversationEntry(UUID conversationId, UUID authorId, Date createDate, String content) {
+    void addConversationEntry(ConversationEntry conversationEntry) {
         addConversationEntry = session.prepare("INSERT INTO " + tableName + " (conversation_id, author_id, create_date, content) " +
                 "VALUES (?, ?, ?, ?)");
-        session.execute(addConversationEntry.bind(conversationId, authorId, createDate, content));
+        session.execute(addConversationEntry.bind(conversationEntry.getConversationId(),
+                conversationEntry.getAuthorId(), conversationEntry.getDateCreated(), conversationEntry.getContent()));
     }
 
     List<ConversationEntry> getConversationEntries(UUID conversationId, UUID authorId, UUID secondaryAuthorId) {

@@ -36,8 +36,8 @@ public class CassandraDataStore {
         return new UserDao(session).getUser(userId);
     }
 
-    void addConversationEntry(UUID conversationId, UUID authorId, Date createDate, String content) {
-        new ConversationContentDao(session).addConversationEntry(conversationId, authorId, createDate, content);
+    void addConversationEntry(ConversationEntry conversationEntry) {
+        new ConversationContentDao(session).addConversationEntry(conversationEntry);
     }
 
     List<ConversationEntry> getConversationEntries(UUID conversationId, UUID authorId, UUID secondaryAuthorId) {
