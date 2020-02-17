@@ -1,13 +1,14 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,48 +21,47 @@ import java.util.UUID;
 public class GetConversationEntriesServlet extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setHeader("Access-Control-Allow-Origin", "*");
 
-        response.setContentType("application/octet-stream");
-        ObjectInputStream objectInputStream = new ObjectInputStream(request.getInputStream());
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(response.getOutputStream());
-
-        CassandraDataStore cassandraDataStore = new CassandraDataStore();
-        UUID conversationId = null;
-        UUID authorId = null;
-        UUID secondaryAuthorId = null;
+        BufferedReader bufferedReader = new BufferedReader(request.getReader());
+        String incomingJsonString = bufferedReader.readLine();
+        JSONParser jsonParser = new JSONParser();
+        JSONObject incomingJsonObject = null;
 
         try {
-            conversationId = (UUID) objectInputStream.readObject();
-            authorId = (UUID) objectInputStream.readObject();
-            secondaryAuthorId = (UUID) objectInputStream.readObject();
-        } catch (ClassNotFoundException exception) {
+            incomingJsonObject = (JSONObject) jsonParser.parse(incomingJsonString);
+        } catch (ParseException exception) {
             exception.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "JSON Parse Exception thrown");
         }
+
+        UUID conversationId = UUID.fromString((String) incomingJsonObject.get("conversationId"));
+        UUID authorId = UUID.fromString((String) incomingJsonObject.get("authorId"));
+        UUID secondaryAuthorId = UUID.fromString((String) incomingJsonObject.get("secondaryAuthorId"));
+
+        CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
         List<ConversationEntry> conversationEntries = new ArrayList<>();
         if (conversationId != null && authorId != null && secondaryAuthorId != null) {
             conversationEntries = cassandraDataStore.getConversationEntries(conversationId, authorId, secondaryAuthorId);
+
+            JSONArray jsonArray = new JSONArray();
+            conversationEntries.forEach(entry -> {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("authorId", entry.getAuthorId());
+                jsonObject.put("conversationId", entry.getConversationId());
+                jsonObject.put("dateCreated", entry.getDateCreated());
+                jsonObject.put("content", entry.getContent());
+
+                jsonArray.add(jsonObject);
+            });
+
+            response.getWriter().write(jsonArray.toJSONString());
+            response.getWriter().flush();
+            response.getWriter().close();
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-
-        // TODO: JSON to be used to send data to JavaScript Client, below code working OK
-//        JSONArray jsonArray = new JSONArray();
-//        conversationEntries.forEach(entry -> {
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("authorId", entry.getAuthorId());
-//            jsonObject.put("conversationId", entry.getConversationId());
-//            jsonObject.put("dateCreated", entry.getDateCreated());
-//            jsonObject.put("content", entry.getContent());
-//
-//            jsonArray.add(jsonObject);
-//        });
-
-
-
-//        objectOutputStream.writeObject(jsonArray.toJSONString());
-
-        objectOutputStream.writeObject(conversationEntries);
-
 
         cassandraDataStore.close();
     }
