@@ -3,7 +3,7 @@ import './App.css';
 import TitleHeader from "./main-frame-components/TitleHeader"
 import MessagesList from "./main-frame-components/MessagesList"
 import SendMessage from "./main-frame-components/SendMessage"
-import WelcomeIcon from "./main-frame-components/welcome-page/WelcomeIcon"
+import WelcomeScreen from "./main-frame-components/welcome-page/WelcomeScreen"
 import LoginButton from "./main-frame-components/welcome-page/LoginButton"
 import dummyMessagesData from "./dummyMessagesData"
 
@@ -12,36 +12,19 @@ class App extends React.Component {
   constructor() {
       super()
       this.state = {
-        messages: dummyMessagesData,
-        text: []
+        showWelcomeScreen: true,
+        showUserConversations: false,
+        showConversationMessages: false
       }
 
-      this.authenicateUser = this.authenticateUser.bind(this)
       this.getUserConversations = this.getUserConversations.bind(this)
       this.sendMessage = this.sendMessage.bind(this)
   }
 
-  authenticateUser(event, emailCredentials) {
-    alert("Authenticating User Email: " + emailCredentials)
-    var request = new XMLHttpRequest();
-
-    request.addEventListener("readystatechange", function () {
-      if (this.readyState === 4 && this.status === 200) {
-        var user = JSON.parse(request.responseText)
-
-        if (user.userId == null) {
-          alert("User not found")
-
-        } else {
-          alert(user.registerDate)
-        }
-      }
+  updateShowWelcomeScreen() {
+    this.setState({
+      showWelcomeScreen: !this.state.showWelcomeScreen
     })
-
-    request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/AuthenticateUser', true)
-    request.send(JSON.stringify({
-      email: emailCredentials
-    }))
   }
 
   getUserConversations() {
@@ -82,8 +65,10 @@ class App extends React.Component {
   render() {
     return (
       <div className="app">
-        <WelcomeIcon
-          authenticateUser={this.authenticateUser}/>
+        <WelcomeScreen
+        updateShowWelcomeScreen={this.updateShowWelcomeScreen}
+        showWelcomeScreen={this.state.showWelcomeScreen}
+        />
       </div>
     )
   }

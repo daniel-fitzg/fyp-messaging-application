@@ -5,7 +5,7 @@ class LoginForm extends React.Component {
   constructor() {
     super()
     this.state = {
-      email: '',
+      email: ''
     }
 
     this.handleChange = this.handleChange.bind(this)

@@ -5,8 +5,7 @@ class RegisterForm extends React.Component {
   constructor() {
     super()
     this.state = {
-      email: '',
-      password: ''
+      email: ''
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -23,7 +22,7 @@ class RegisterForm extends React.Component {
 
   handleSubmit(event) {
     //alert("Message: " + this.state.message)
-    this.props.sendMessage(event, this.state.message)
+    this.props.authenticateUser(event, this.state.email)
   }
 
   render() {
@@ -35,7 +34,7 @@ class RegisterForm extends React.Component {
             id="email-input"
             placeholder="Email"
             type="text"
-            onChange={event => this.handleChange}
+            onChange={this.handleChange}
           />
         </form>
       </div>

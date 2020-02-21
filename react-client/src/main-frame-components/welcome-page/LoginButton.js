@@ -18,21 +18,24 @@ class LoginButton extends React.Component {
       showLoginForm: !this.state.showLoginForm
     })
 
-    this.props.changeRegisterButtonState()
+    this.props.updateShowRegisterButton()
+  }
+  
+  renderLoginForm() {
+    if (this.state.showLoginForm) {
+      return (
+        <LoginForm authenticateUser={this.props.authenticateUser}/>
+      )  
+    }  
   }
 
   getComponent() {
-    if (this.state.showLoginForm) {
+    if (this.props.showLoginButton) {
       return (
         <div>
-          <LoginForm 
-            authenticateUser={this.props.authenticateUser}
-          />
+          <button className="login-button" onClick={this.handleClick}>Login</button>
+          {this.renderLoginForm()}
         </div>
-      )
-    } else {
-      return (
-        null
       )
     }
   }
@@ -40,7 +43,6 @@ class LoginButton extends React.Component {
   render() {
     return (
       <div>
-        <button className="login-button" onClick={this.handleClick}>Login</button>
         {this.getComponent()}
       </div>
     )

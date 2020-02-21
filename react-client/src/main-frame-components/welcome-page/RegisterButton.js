@@ -18,19 +18,24 @@ class RegisterButton extends React.Component {
       showRegisterForm: !this.state.showRegisterForm
     })
 
-    this.props.changeLoginButtonState()
+    this.props.updateShowLoginButton()
+  }
+
+  renderRegisterForm() {
+    if (this.state.showRegisterForm) {
+      return (
+        <RegisterForm authenticateUser={this.props.authenticateUser}/>
+      )
+    }
   }
 
   getComponent() {
-    if (this.state.showRegisterForm) {
+    if (this.props.showRegisterButton) {
       return (
         <div>
-          <RegisterForm />
+          <button className="register-button" onClick={this.handleClick}>Register</button>
+          {this.renderRegisterForm()}
         </div>
-      )
-    } else {
-      return (
-        null
       )
     }
   }
@@ -38,7 +43,6 @@ class RegisterButton extends React.Component {
   render() {
     return (
       <div>
-        <button className="register-button" onClick={this.handleClick}>Register</button>
         {this.getComponent()}
       </div>
     )
