@@ -4,8 +4,8 @@ import RegisterButton from "./RegisterButton"
 
 class WelcomeIcon extends React.Component {
 
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       showLoginButton: true,
       showRegisterButton: true
@@ -21,7 +21,9 @@ class WelcomeIcon extends React.Component {
     if (this.state.showLoginButton) {
       return (
         <LoginButton
-          changeRegisterButtonState={this.changeRegisterButtonState} />
+          changeRegisterButtonState={this.changeRegisterButtonState}
+          authenticateUser={this.props.authenticateUser}
+        />
       )
     }
   }

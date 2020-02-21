@@ -25,7 +25,9 @@ class LoginButton extends React.Component {
     if (this.state.showLoginForm) {
       return (
         <div>
-          <LoginForm />
+          <LoginForm 
+            authenticateUser={this.props.authenticateUser}
+          />
         </div>
       )
     } else {

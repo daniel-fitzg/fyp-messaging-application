@@ -6,7 +6,6 @@ class LoginForm extends React.Component {
     super()
     this.state = {
       email: '',
-      password: ''
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -22,8 +21,9 @@ class LoginForm extends React.Component {
   }
 
   handleSubmit(event) {
+    alert("Text being sent: " + this.state.email)
     //alert("Message: " + this.state.message)
-    this.props.sendMessage(event, this.state.message)
+    this.props.authenticateUser(event, this.state.email)
   }
 
   render() {
@@ -32,10 +32,9 @@ class LoginForm extends React.Component {
         <form  className="login-form" onSubmit={this.handleSubmit}>
           <input
             className="email-input"
-            id="email-input"
             placeholder="Email"
             type="text"
-            onChange={event => this.handleChange}
+            onChange={this.handleChange}
           />
         </form>
       </div>

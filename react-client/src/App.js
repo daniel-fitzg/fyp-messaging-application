@@ -16,26 +16,31 @@ class App extends React.Component {
         text: []
       }
 
+      this.authenicateUser = this.authenticateUser.bind(this)
+      this.getUserConversations = this.getUserConversations.bind(this)
       this.sendMessage = this.sendMessage.bind(this)
   }
 
-  sendMessage(event, message) {
-    //alert("Sending Request")
+  authenticateUser(event, emailCredentials) {
+    alert("Authenticating User Email: " + emailCredentials)
     var request = new XMLHttpRequest();
 
     request.addEventListener("readystatechange", function () {
-      if (this.readyState === 4) {
-        var data = request.responseText
-        var parsedJSON = JSON.parse(data)
+      if (this.readyState === 4 && this.status === 200) {
+        var user = JSON.parse(request.responseText)
+
+        if (user.userId == null) {
+          alert("User not found")
+
+        } else {
+          alert(user.registerDate)
+        }
       }
     })
 
-    request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/AddConversationEntry', true)
+    request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/AuthenticateUser', true)
     request.send(JSON.stringify({
-      conversationId: "2cd9c01a-dc32-460f-bb8d-735c07d2d130",
-      authorId: "e6d290bc-a9d0-4906-be17-6bb694b43a8f",
-      createDate: new Date(),
-      content: message
+      email: emailCredentials
     }))
   }
 
@@ -54,10 +59,31 @@ class App extends React.Component {
     }))
   }
 
+  sendMessage(event, message) {
+    alert("Sending Request" + message)
+    var request = new XMLHttpRequest();
+
+    request.addEventListener("readystatechange", function () {
+      if (this.readyState === 4) {
+        var data = request.responseText
+        var parsedJSON = JSON.parse(data)
+      }
+    })
+
+    request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/AddConversationEntry', true)
+    request.send(JSON.stringify({
+      conversationId: "2cd9c01a-dc32-460f-bb8d-735c07d2d130",
+      authorId: "e6d290bc-a9d0-4906-be17-6bb694b43a8f",
+      createDate: new Date(),
+      content: message
+    }))
+  }
+
   render() {
     return (
       <div className="app">
-        <WelcomeIcon />
+        <WelcomeIcon
+          authenticateUser={this.authenticateUser}/>
       </div>
     )
   }
