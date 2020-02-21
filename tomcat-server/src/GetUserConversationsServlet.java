@@ -39,10 +39,7 @@ public class GetUserConversationsServlet extends HttpServlet {
 
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
-        List<Conversation> userConversations = new ArrayList<>();
-        if (userId != null) {
-            userConversations = cassandraDataStore.getUserConversations(userId);
-        }
+        List<Conversation> userConversations = cassandraDataStore.getUserConversations(userId);
 
         JSONArray jsonArray = new JSONArray();
         userConversations.forEach(conversation -> {

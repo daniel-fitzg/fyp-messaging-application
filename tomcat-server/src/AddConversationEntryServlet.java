@@ -6,6 +6,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -18,15 +19,15 @@ public class AddConversationEntryServlet extends javax.servlet.http.HttpServlet 
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-//        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Origin", "*");
 
         BufferedReader bufferedReader = new BufferedReader(request.getReader());
         String incomingJsonString = bufferedReader.readLine();
         JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject = null;
+        JSONObject incomingJsonObject = null;
 
         try {
-            jsonObject = (JSONObject) jsonParser.parse(incomingJsonString);
+            incomingJsonObject = (JSONObject) jsonParser.parse(incomingJsonString);
         } catch (ParseException exception) {
             exception.printStackTrace();
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "JSON Parse Exception Thrown");
@@ -35,11 +36,19 @@ public class AddConversationEntryServlet extends javax.servlet.http.HttpServlet 
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
         ConversationEntry conversationEntry = new ConversationEntry();
-        // TODO Replace random UUIDs with actual UUIDs from client
-        conversationEntry.setConversationId(UUID.randomUUID());
-        conversationEntry.setAuthorId(UUID.randomUUID());
-        conversationEntry.setDateCreated(new Date());
-        conversationEntry.setContent((String) jsonObject.get("message"));
+        conversationEntry.setConversationId(UUID.fromString((String) incomingJsonObject.get("conversationId")));
+        conversationEntry.setAuthorId(UUID.fromString((String) incomingJsonObject.get("authorId")));
+
+        SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
+        Date date = null;
+        try {
+             date = myFormat.parse((String) incomingJsonObject.get("createDate"));
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+
+        conversationEntry.setDateCreated(date);
+        conversationEntry.setContent((String) incomingJsonObject.get("content"));
 
         cassandraDataStore.addConversationEntry(conversationEntry);
         cassandraDataStore.close();
