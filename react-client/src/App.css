@@ -22,26 +22,55 @@
   border-radius: 5px;
   background-color: #3366ff;
 }
+.form-login-button {
+  position: absolute;
+  top: 95%;
+  left: 20%;
+  -ms-transform: translate(-50%, -50%);
+  color: white;
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #3366ff;
+}
 
 .login-form {
   width: 25%;
   position: absolute;
-  top: 55%;
+  top: 45%;
   left: 55%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   color: black;
   font-size: 16px;
   padding: 5px 5px;
-  border: 1px solid black;
+  border: none;
   cursor: pointer;
   border-radius: 5px;
   background-color: white;
 }
 
-.email-input {
+.user-input {
   width: 100%;
   background-color: white;
+  border: 1px solid black;
+  margin: 5px 0px 1px 0px;
+  border-radius: 5px;
+  padding: 4px;
+}
+
+.email-login-input {
+  width: 100%;
+  background-color: white;
+  color: black;
+}
+
+.password-login-input {
+  width: 100%;
+  background-color: white;
+  color: black;  
 }
 
 .register-button {
@@ -69,10 +98,24 @@
   color: black;
   font-size: 16px;
   padding: 5px 5px;
-  border: 1px solid black;
+  border: none;
   cursor: pointer;
   border-radius: 5px;
   background-color: white;
+}
+
+.form-register-button {
+  position: absolute;
+  top: 100%;
+  left: 10%;
+  -ms-transform: translate(-50%, -50%);
+  color: white;
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #3366ff;
 }
 
 .main-frame-container {

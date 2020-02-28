@@ -5,7 +5,10 @@ class RegisterForm extends React.Component {
   constructor() {
     super()
     this.state = {
-      email: ''
+      email: '',
+      password: '',
+      firstName: '',
+      lastName: ''
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -16,13 +19,13 @@ class RegisterForm extends React.Component {
   handleChange(event) {
     // setState() does not immediately update the component, there is a delay
     this.setState({
-      email: event.target.value
+      [event.target.name]: event.target.value
     })
   }
 
   handleSubmit(event) {
-    //alert("Message: " + this.state.message)
-    this.props.authenticateUser(event, this.state.email)
+    alert("Text: " + this.state.email + this.state.password + this.state.firstName + this.state.lastName)
+    this.props.registerUser(event, this.state.email, this.state.password, this.state.firstName, this.state.lastName)
   }
 
   render() {
@@ -30,12 +33,38 @@ class RegisterForm extends React.Component {
       <div>
         <form  className="register-form" onSubmit={this.handleSubmit}>
           <input
-            className="email-input"
-            id="email-input"
+            className="user-input"
+            name="email"
             placeholder="Email"
             type="text"
             onChange={this.handleChange}
           />
+          
+          <input
+            className="user-input"
+            name="password"
+            placeholder="Password"
+            type="password"
+            onChange={this.handleChange}
+          />
+          
+          <input
+            className="user-input"
+            name="firstName"
+            placeholder="First Name"
+            type="text"
+            onChange={this.handleChange}
+          />
+          
+          <input
+            className="user-input"
+            name="lastName"
+            placeholder="Last Name"
+            type="text"
+            onChange={this.handleChange}
+          />
+          
+          <button className="form-register-button">REGISTER</button>
         </form>
       </div>
     )

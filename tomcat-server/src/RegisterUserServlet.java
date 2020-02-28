@@ -40,18 +40,27 @@ public class RegisterUserServlet extends HttpServlet {
         newUser.setFirstName((String) incomingJsonObject.get("firstName"));
         newUser.setLastName((String) incomingJsonObject.get("lastName"));
 
+        JSONObject outgoingJsonObject = new JSONObject();
+
         // validateNewUser = Validates that user input does not contain empty strings
         if (validateNewUser(newUser)) {
             User registeredUser = cassandraDataStore.registerUser(newUser);
 
             if (registeredUser != null) {
                 System.out.println("User registered successfully");
+                outgoingJsonObject.put("serverResponse", true);
             } else {
-                response.setStatus(HttpServletResponse.SC_CONFLICT, "Email already registered");
+                //response.setStatus(HttpServletResponse.SC_CONFLICT, "Email already registered");
+                outgoingJsonObject.put("serverResponse", false);
             }
         } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            //response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            outgoingJsonObject.put("serverResponse", false);
         }
+
+        response.getWriter().write(outgoingJsonObject.toJSONString());
+        response.getWriter().flush();
+        response.getWriter().close();
 
         cassandraDataStore.close();
     }

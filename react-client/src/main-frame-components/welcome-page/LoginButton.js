@@ -19,6 +19,7 @@ class LoginButton extends React.Component {
     })
 
     this.props.updateShowRegisterButton()
+    this.props.updateShowLoginButton()
   }
   
   renderLoginForm() {
@@ -34,9 +35,14 @@ class LoginButton extends React.Component {
       return (
         <div>
           <button className="login-button" onClick={this.handleClick}>Login</button>
-          {this.renderLoginForm()}
         </div>
       )
+    } else {
+      return (
+        <div>
+          {this.renderLoginForm()}
+        </div>
+      )  
     }
   }
 

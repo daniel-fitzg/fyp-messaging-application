@@ -35,7 +35,7 @@ public class AuthenticateUserServlet extends HttpServlet {
 
         User user = new User();
         user.setEmail((String) incomingJsonObject.get("email"));
-        //user.setPassword((String) incomingJsonObject.get("password"));
+        user.setPassword((String) incomingJsonObject.get("password"));
 
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
@@ -69,11 +69,7 @@ public class AuthenticateUserServlet extends HttpServlet {
 
     // Checks if user has entered empty strings for credentials
     private boolean validateExistingUser(User existingUser) throws IOException {
-//        if (existingUser.getEmail().equalsIgnoreCase("") || existingUser.getPassword().equalsIgnoreCase("")) {
-//            return false;
-//        }
-
-        if (existingUser.getEmail().equalsIgnoreCase("")) {
+        if (existingUser.getEmail().equalsIgnoreCase("") || existingUser.getPassword().equalsIgnoreCase("")) {
             return false;
         }
 

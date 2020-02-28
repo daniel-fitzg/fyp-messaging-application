@@ -5,7 +5,8 @@ class LoginForm extends React.Component {
   constructor() {
     super()
     this.state = {
-      email: ''
+      email: '',
+      password: ''
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -16,27 +17,38 @@ class LoginForm extends React.Component {
   handleChange(event) {
     // setState() does not immediately update the component, there is a delay
     this.setState({
-      email: event.target.value
+      [event.target.name]: event.target.value
     })
   }
 
   handleSubmit(event) {
-    alert("Text being sent: " + this.state.email)
+    alert("Email being sent: " + this.state.email + ", Password: " + this.state.password)
     //alert("Message: " + this.state.message)
-    this.props.authenticateUser(event, this.state.email)
+    this.props.authenticateUser(event, this.state.email, this.state.password)
   }
 
   render() {
     return (
       <div>
         <form  className="login-form" onSubmit={this.handleSubmit}>
-          <input
-            className="email-input"
-            placeholder="Email"
-            type="text"
-            onChange={this.handleChange}
-          />
-        </form>
+            <input
+              className="user-input"
+              name="email"
+              placeholder="Email"
+              type="text"
+              onChange={this.handleChange}
+            />
+          
+            <input
+              className="user-input"
+              name="password"
+              placeholder="Password"
+              type="password"
+              onChange={this.handleChange}
+            />
+          
+            <button className="form-login-button">LOGIN</button>
+        </form>        
       </div>
     )
   }

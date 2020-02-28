@@ -11,15 +11,14 @@ class WelcomeScreen extends React.Component {
       showRegisterButton: true
     }
 
-    this.renderLoginButton = this.renderLoginButton.bind(this)
-    this.renderRegisterButton = this.renderRegisterButton.bind(this)
     this.updateShowLoginButton = this.updateShowLoginButton.bind(this)
     this.updateShowRegisterButton = this.updateShowRegisterButton.bind(this)
     this.authenicateUser = this.authenticateUser.bind(this)
+    this.registerUser = this.registerUser.bind(this)
   }
 
-  authenticateUser(event, emailCredentials) {
-    alert("Authenticating User Email: " + emailCredentials)
+  authenticateUser(event, email, password) {
+    alert("Authenticating User Email: " + email + " " + password)
     var request = new XMLHttpRequest();
 
     request.addEventListener("readystatechange", function () {
@@ -27,7 +26,7 @@ class WelcomeScreen extends React.Component {
         var user = JSON.parse(request.responseText)
 
         if (user.userId == null) {
-          alert("User not found")
+          alert("Login failed")
 
         } else {
           alert(user.registerDate)
@@ -37,7 +36,34 @@ class WelcomeScreen extends React.Component {
 
     request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/AuthenticateUser', true)
     request.send(JSON.stringify({
-      email: emailCredentials
+      email: email,
+      password: password
+    }))
+  }
+
+  registerUser(event, email, password, firstName, lastName) {
+    alert("RU fields: " + email + " " + password + " " + firstName + " " + lastName)
+    var request = new XMLHttpRequest();
+
+    request.addEventListener("readystatechange", function () {
+      if (this.readyState === 4 && this.status === 200) {
+        var result = JSON.parse(request.responseText)
+
+        if (result.serverResponse) {
+          alert("Registraton successful")
+
+        } else {
+          alert("Registration failed")
+        }
+      }
+    })
+
+    request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/RegisterUser', true)
+    request.send(JSON.stringify({
+      email: email,
+      password: password,
+      firstName: firstName,
+      lastName: lastName
     }))
   }
 
@@ -53,26 +79,6 @@ class WelcomeScreen extends React.Component {
     })
   }
 
-  renderLoginButton() {
-    if (this.state.showLoginButton) {
-      return (
-        <LoginButton
-          changeRegisterButtonState={this.changeRegisterButtonState}
-          authenticateUser={this.authenticateUser}
-        />
-      )
-    }
-  }
-
-  renderRegisterButton() {
-    if (this.state.showRegisterButton) {
-      return (
-        <RegisterButton
-          changeLoginButtonState={this.changeLoginButtonState} />
-      )
-    }
-  }
-
   getComponent() {
     if (this.props.showWelcomeScreen) {
       return (
@@ -85,14 +91,12 @@ class WelcomeScreen extends React.Component {
           showLoginButton={this.state.showLoginButton} />
 
           <RegisterButton
-          authenticateUser={this.authenticateUser}
+          registerUser={this.registerUser}
           updateShowLoginButton={this.updateShowLoginButton}
           updateShowRegisterButton={this.updateShowRegisterButton}
           showRegisterButton={this.state.showRegisterButton} />
         </div>
       )
-    } else {
-      return <p>nah</p>
     }
   }
 
