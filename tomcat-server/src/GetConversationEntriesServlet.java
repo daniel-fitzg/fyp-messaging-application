@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class GetConversationEntriesServlet extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
         response.setHeader("Access-Control-Allow-Origin", "*");
 
         BufferedReader bufferedReader = new BufferedReader(request.getReader());
@@ -35,22 +37,25 @@ public class GetConversationEntriesServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "JSON Parse Exception thrown");
         }
 
-        UUID conversationId = UUID.fromString((String) incomingJsonObject.get("conversationId"));
+//        UUID conversationId = UUID.fromString((String) incomingJsonObject.get("conversationId"));
+        UUID conversationId = UUID.fromString("cf88e803-4f31-4719-b726-ae3ac6fa10e3");
         UUID authorId = UUID.fromString((String) incomingJsonObject.get("authorId"));
-        UUID secondaryAuthorId = UUID.fromString((String) incomingJsonObject.get("secondaryAuthorId"));
+//        UUID secondaryAuthorId = UUID.fromString((String) incomingJsonObject.get("secondaryAuthorId"));
+        UUID secondaryAuthorId = UUID.fromString("7db251f0-a3ef-4787-830a-9bc0b1dbd0de");
 
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
         List<ConversationEntry> conversationEntries = new ArrayList<>();
         if (conversationId != null && authorId != null && secondaryAuthorId != null) {
             conversationEntries = cassandraDataStore.getConversationEntries(conversationId, authorId, secondaryAuthorId);
+            Collections.sort(conversationEntries);
 
             JSONArray jsonArray = new JSONArray();
             conversationEntries.forEach(entry -> {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("authorId", entry.getAuthorId());
-                jsonObject.put("conversationId", entry.getConversationId());
-                jsonObject.put("dateCreated", entry.getDateCreated());
+                jsonObject.put("authorId", entry.getAuthorId().toString());
+                jsonObject.put("conversationId", entry.getConversationId().toString());
+                jsonObject.put("dateCreated", entry.getDateCreated().toString());
                 jsonObject.put("content", entry.getContent());
 
                 jsonArray.add(jsonObject);

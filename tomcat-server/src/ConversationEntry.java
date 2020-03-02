@@ -2,7 +2,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public class ConversationEntry implements Serializable {
+public class ConversationEntry implements Serializable, Comparable<ConversationEntry> {
     private UUID conversationId;
     private UUID authorId;
     private Date dateCreated;
@@ -52,5 +52,10 @@ public class ConversationEntry implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public int compareTo(ConversationEntry conversationEntry) {
+        return getDateCreated().compareTo(conversationEntry.getDateCreated());
     }
 }

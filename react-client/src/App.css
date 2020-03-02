@@ -70,7 +70,7 @@
 .password-login-input {
   width: 100%;
   background-color: white;
-  color: black;  
+  color: black;
 }
 
 .register-button {
@@ -131,6 +131,26 @@
   text-align: center;
   color: White;
   padding: 5px;
+}
+
+.conversation {
+  background-color: white;
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.select-conversation-button {
+  position: relative;
+  top: 40%;
+  left: 40%;
+  -ms-transform: translate(-50%, -50%);
+  color: white;
+  font-size: 10px;
+  padding: 12px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #3366ff;
 }
 
 .message-list {

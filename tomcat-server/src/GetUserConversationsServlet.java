@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,17 +40,17 @@ public class GetUserConversationsServlet extends HttpServlet {
 
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
-        List<Conversation> userConversations = cassandraDataStore.getUserConversations(userId);
+        List<Conversation> userConversations = cassandraDataStore.getUserConversations(UUID.fromString("51dca0e3-f008-4dd6-baf8-63b60348a119"));
 
         JSONArray jsonArray = new JSONArray();
         userConversations.forEach(conversation -> {
             JSONObject userConversationJsonObject = new JSONObject();
-            userConversationJsonObject.put("conversationId", conversation.getConversationId());
-            userConversationJsonObject.put("secondaryUserId", conversation.getSecondaryUserId());
+            userConversationJsonObject.put("conversationId", conversation.getConversationId().toString());
+            userConversationJsonObject.put("secondaryUserId", conversation.getSecondaryUserId().toString());
             userConversationJsonObject.put("secondaryUserName", conversation.getSecondaryUserName());
-            userConversationJsonObject.put("userId", conversation.getUserId());
-            userConversationJsonObject.put("lastUpdated", conversation.getLastUpdated());
-            userConversationJsonObject.put("createDate", conversation.getCreateDate());
+            userConversationJsonObject.put("userId", conversation.getUserId().toString());
+            userConversationJsonObject.put("lastUpdated", new Date().toString());
+            userConversationJsonObject.put("createDate", new Date().toString());
 
             jsonArray.add(userConversationJsonObject);
         });

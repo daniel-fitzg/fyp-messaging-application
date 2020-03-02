@@ -4,8 +4,8 @@ import RegisterButton from "./RegisterButton"
 
 class WelcomeScreen extends React.Component {
 
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       showLoginButton: true,
       showRegisterButton: true
@@ -34,6 +34,7 @@ class WelcomeScreen extends React.Component {
       }
     })
 
+    //alert(this.props.myString)
     request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/AuthenticateUser', true)
     request.send(JSON.stringify({
       email: email,
@@ -80,7 +81,7 @@ class WelcomeScreen extends React.Component {
   }
 
   getComponent() {
-    if (this.props.showWelcomeScreen) {
+  //  if (this.props.showWelcomeScreen) {
       return (
         <div>
           <img className="welcome-icon" src={require(`${"./speech-bubble.jpg"}`)} />
@@ -97,7 +98,7 @@ class WelcomeScreen extends React.Component {
           showRegisterButton={this.state.showRegisterButton} />
         </div>
       )
-    }
+  //  }
   }
 
   render() {

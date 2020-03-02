@@ -8,10 +8,10 @@ render() {
        return (
          <div>
            <div>
-             <p className="sender-id">{message.senderId}</p>
+             <p className="sender-id">{message.authorId}</p>
            </div>
            <div>
-             <p><span>{message.text}</span></p>
+             <p><span>{message.content}</span></p>
            </div>
          </div>
        )

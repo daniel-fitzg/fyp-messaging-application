@@ -60,7 +60,6 @@ class UserDao {
         List<User> users = getUsers();
         String existingUserEmail = existingUser.getEmail();
 
-        // TODO Re-integrate when able to send password data from client
         for (User user : users) {
             if (user.getEmail().equalsIgnoreCase(existingUserEmail)) {
                 if (user.getPassword().equalsIgnoreCase(existingUser.getPassword())) {

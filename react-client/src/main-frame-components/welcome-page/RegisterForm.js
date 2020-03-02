@@ -24,7 +24,7 @@ class RegisterForm extends React.Component {
   }
 
   handleSubmit(event) {
-    alert("Text: " + this.state.email + this.state.password + this.state.firstName + this.state.lastName)
+    event.preventDefault()
     this.props.registerUser(event, this.state.email, this.state.password, this.state.firstName, this.state.lastName)
   }
 

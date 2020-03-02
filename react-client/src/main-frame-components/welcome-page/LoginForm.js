@@ -22,6 +22,7 @@ class LoginForm extends React.Component {
   }
 
   handleSubmit(event) {
+    event.preventDefault()
     alert("Email being sent: " + this.state.email + ", Password: " + this.state.password)
     //alert("Message: " + this.state.message)
     this.props.authenticateUser(event, this.state.email, this.state.password)
