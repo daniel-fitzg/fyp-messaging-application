@@ -17,6 +17,7 @@ class App extends React.Component {
         showMessagesScreen: false,
         showLoginForm: false,
         showRegisterForm: false,
+        showLoadingScreen: false,
         userId: "",
         conversationList: [],
         conversationId: "",
@@ -28,6 +29,7 @@ class App extends React.Component {
       this.loadMessagesScreen = this.loadMessagesScreen.bind(this)
       this.loadLoginForm = this.loadLoginForm.bind(this)
       this.loadRegisterForm = this.loadRegisterForm.bind(this)
+      this.updateLoadingScreen = this.updateLoadingScreen.bind(this)
       this.updateConversationId = this.updateConversationId.bind(this)
       this.authenticateUser = this.authenticateUser.bind(this)
       this.registerUser = this.registerUser.bind(this)
@@ -76,9 +78,11 @@ class App extends React.Component {
       showRegisterForm: !this.state.showRegisterForm
     })
   }
-
-  myCallback() {
-    alert("Callback!")
+  
+  updateLoadingScreen() {
+   this.setState({
+     showLoadingScreen: !this.state.showLoadingScreen
+   })  
   }
 
   updateConversationId(conversationId) {
@@ -101,6 +105,7 @@ class App extends React.Component {
 
            if (user.userId != null) {
              console.log("User login successful")
+             this.updateLoadingScreen()
              this.loadConversationsScreen(user.userId)
            } else {
              console.log("User login failed")
@@ -152,6 +157,7 @@ class App extends React.Component {
           this.setState({
             conversationList: conversationList
           })
+          this.updateLoadingScreen()
           console.log(conversationList)
         }
      };
@@ -233,19 +239,27 @@ class App extends React.Component {
     } else if (this.state.showConversationsScreen) {
       var list = this.state.conversationList.map((conversation) =>
         <Conversation conversation={conversation} loadMessagesScreen={this.loadMessagesScreen}/>);
-
-      return (
-        <div>
-          <TitleHeader />
-          {list}
-          <button onClick={this.loadMessagesScreen}>Load Messages</button>
-        </div>
-      )
+      
+      if (this.state.showLoadingScreen) {
+        return (
+          <div style={{backgroundColor: "white"}}>
+            <TitleHeader />
+            <h1 className="loading-screen">LOADING</h1>
+          </div>
+        )
+       } else {
+        return (
+          <div style={{backgroundColor: "white"}}>
+            <TitleHeader />
+            {list}
+          </div>
+        )
+      }
     } else if (this.state.showMessagesScreen) {
       return (
         <div>
           <TitleHeader />
-          <MessagesList messages={this.state.messages}/>
+          <MessagesList userId={this.state.userId} messages={this.state.messages}/>
           <SendMessage addConversationEntry={this.addConversationEntry}/>
         </div>
       )

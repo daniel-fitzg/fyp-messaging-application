@@ -12,18 +12,18 @@ class SendMessage extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
-  // Updates the value of message as user enters input characters
   handleChange(event) {
-    // setState() does not immediately update the component, there is a delay
     this.setState({
       message: event.target.value
     })
   }
 
   handleSubmit(event) {
-    //alert("Message: " + this.state.message)
     event.preventDefault()
     this.props.addConversationEntry(event, this.state.message)
+    this.setState({
+      message: ""
+    })
   }
 
   render() {
@@ -33,6 +33,7 @@ class SendMessage extends React.Component {
           <input
             placeholder="Input message here"
             type="text"
+            value={this.state.message}
             onChange={this.handleChange}
           />
         </form>

@@ -50,6 +50,11 @@ public class GetConversationEntriesServlet extends HttpServlet {
             conversationEntries = cassandraDataStore.getConversationEntries(conversationId, authorId, secondaryAuthorId);
             Collections.sort(conversationEntries);
 
+//            String authorName = cassandraDataStore.getUser(authorId).getFirstName();
+            String authorName = cassandraDataStore.getUser(UUID.fromString("2003c2f5-0d6d-4b05-8e79-ec90518a5675")).getFirstName();
+//            String secondaryAuthorName = cassandraDataStore.getUser(secondaryAuthorId).getFirstName();
+            String secondaryAuthorName = cassandraDataStore.getUser(UUID.fromString("2ebcb689-d31e-4d85-8dff-351e8f902d6c")).getFirstName();
+
             JSONArray jsonArray = new JSONArray();
             conversationEntries.forEach(entry -> {
                 JSONObject jsonObject = new JSONObject();
@@ -57,6 +62,12 @@ public class GetConversationEntriesServlet extends HttpServlet {
                 jsonObject.put("conversationId", entry.getConversationId().toString());
                 jsonObject.put("dateCreated", entry.getDateCreated().toString());
                 jsonObject.put("content", entry.getContent());
+
+                if (entry.getAuthorId().toString().equalsIgnoreCase("51dca0e3-f008-4dd6-baf8-63b60348a119")) {
+                    jsonObject.put("authorName", "Alesia");
+                } else {
+                    jsonObject.put("authorName", "Danny");
+                }
 
                 jsonArray.add(jsonObject);
             });

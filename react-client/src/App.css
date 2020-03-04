@@ -131,12 +131,21 @@
   text-align: center;
   color: White;
   padding: 5px;
+  border-radius: 5px;
+}
+
+.loading-screen {
+  position: absolute;
+  left: 40%;
+  top: 40%;
+  color: #3366ff;
 }
 
 .conversation {
-  background-color: white;
+  background-color: gray;
   border: 1px solid black;
   padding: 5px;
+  color: white;
 }
 
 .select-conversation-button {
@@ -154,30 +163,29 @@
 }
 
 .message-list {
-  height: 435px;
+  height: 430px;
   background-color: White;
   padding: 5px;
   overflow: scroll;
 }
 
-.sender-id {
+.author-name {
   font-size: 12px;
 }
 
 p span {
-  background-color: #3366ff;
   padding: 5px 5px 5px 5px;
   border-radius: 10px;
   color: White;
 }
 
 .send-message {
+  position: fixed;
   display: flex;
   flex-direction: row;
   background-color: #b3c6ff;
-  padding: 5px;
+  padding: 15px;
   height: 20px;
-  padding: 20px 20px;
 }
 
 input {
