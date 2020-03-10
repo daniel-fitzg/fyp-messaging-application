@@ -258,7 +258,7 @@ class App extends React.Component {
     } else if (this.state.showMessagesScreen) {
       return (
         <div>
-          <TitleHeader />
+          <TitleHeader loadConversationsScreen={this.loadConversationsScreen} updateLoadingScreen={this.updateLoadingScreen}/>
           <MessagesList userId={this.state.userId} messages={this.state.messages}/>
           <SendMessage addConversationEntry={this.addConversationEntry}/>
         </div>
