@@ -27,15 +27,29 @@ public class UserConversationsDao {
 
         Row row = resultSet.one();
         if (row != null) {
-            conversation = new Conversation();
-            conversation.setConversationId(row.getUUID("conversation_id"));
-            conversation.setUserId(authorId);
-            conversation.setSecondaryUserId(secondaryAuthorId);
-            conversation.setCreateDate(row.getTimestamp("create_date"));
-            conversation.setLastUpdated(row.getTimestamp("last_updated"));
-        } else {
-            conversation = insertNewConversation(authorId, secondaryAuthorId);
+            return buildConversation(row, authorId, secondaryAuthorId);
         }
+
+        getConversation = session.prepare("SELECT * FROM " + tableName + " WHERE user_id = " + secondaryAuthorId +
+                " AND secondary_user_id = " + authorId);
+        resultSet = session.execute(getConversation.bind());
+
+        row = resultSet.one();
+        if (row != null) {
+            return buildConversation(row, authorId, secondaryAuthorId);
+        }
+
+        return insertNewConversation(authorId, secondaryAuthorId);
+    }
+
+    private Conversation buildConversation(Row row, UUID authorId, UUID secondaryAuthorId) {
+        Conversation conversation = new Conversation();
+
+        conversation.setConversationId(row.getUUID("conversation_id"));
+        conversation.setUserId(authorId);
+        conversation.setSecondaryUserId(secondaryAuthorId);
+        conversation.setCreateDate(row.getTimestamp("create_date"));
+        conversation.setLastUpdated(row.getTimestamp("last_updated"));
 
         return conversation;
     }
