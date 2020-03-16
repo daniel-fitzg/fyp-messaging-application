@@ -33,31 +33,32 @@ public class AddConversationEntryServlet extends javax.servlet.http.HttpServlet 
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "JSON Parse Exception Thrown");
         }
 
+        UUID secondaryAuthorId = UUID.fromString((String) incomingJsonObject.get("secondaryAuthorId"));
+
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
         ConversationEntry conversationEntry = new ConversationEntry();
-        //conversationEntry.setConversationId(UUID.fromString((String) incomingJsonObject.get("conversationId")));
-        conversationEntry.setConversationId(UUID.fromString("cf88e803-4f31-4719-b726-ae3ac6fa10e3"));
-//        conversationEntry.setAuthorId(UUID.fromString((String) incomingJsonObject.get("authorId")));
-        conversationEntry.setAuthorId(UUID.fromString("51dca0e3-f008-4dd6-baf8-63b60348a119"));
+        conversationEntry.setConversationId(UUID.fromString((String) incomingJsonObject.get("conversationId")));
+        conversationEntry.setAuthorId(UUID.fromString((String) incomingJsonObject.get("authorId")));
+        conversationEntry.setContent((String) incomingJsonObject.get("content"));
 
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
         Date date = null;
         try {
-             date = myFormat.parse((String) incomingJsonObject.get("createDate"));
+            date = myFormat.parse((String) incomingJsonObject.get("createDate"));
         } catch (java.text.ParseException e) {
             e.printStackTrace();
         }
-
         conversationEntry.setDateCreated(date);
-        conversationEntry.setContent((String) incomingJsonObject.get("content"));
-
         cassandraDataStore.addConversationEntry(conversationEntry);
 
+        String authorName = cassandraDataStore.getUser(conversationEntry.getAuthorId()).getFirstName();
+        String secondaryAuthorName = cassandraDataStore.getUser(secondaryAuthorId).getFirstName();
+
         List<ConversationEntry> conversationEntries = new ArrayList<>();
-        conversationEntries = cassandraDataStore.getConversationEntries(UUID.fromString("cf88e803-4f31-4719-b726-ae3ac6fa10e3"),
-                UUID.fromString("51dca0e3-f008-4dd6-baf8-63b60348a119"),
-                UUID.fromString("7db251f0-a3ef-4787-830a-9bc0b1dbd0de"));
+
+        conversationEntries = cassandraDataStore.getConversationEntries(conversationEntry.getConversationId(),
+                conversationEntry.getAuthorId(), secondaryAuthorId, authorName, secondaryAuthorName);
 
         Collections.sort(conversationEntries);
 
@@ -68,6 +69,7 @@ public class AddConversationEntryServlet extends javax.servlet.http.HttpServlet 
             jsonObject.put("conversationId", entry.getConversationId().toString());
             jsonObject.put("dateCreated", entry.getDateCreated().toString());
             jsonObject.put("content", entry.getContent());
+            jsonObject.put("authorName", entry.getAuthorName());
 
             jsonArray.add(jsonObject);
         });

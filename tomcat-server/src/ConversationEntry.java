@@ -7,12 +7,14 @@ public class ConversationEntry implements Serializable, Comparable<ConversationE
     private UUID authorId;
     private Date dateCreated;
     private String content;
+    private String authorName;
 
-    ConversationEntry(UUID conversationId, UUID authorId, Date dateCreated, String content) {
+    ConversationEntry(UUID conversationId, UUID authorId, Date dateCreated, String content, String authorName) {
         this.conversationId = conversationId;
         this.authorId = authorId;
         this.dateCreated = dateCreated;
         this.content = content;
+        this.authorName = authorName;
     }
 
     ConversationEntry() {
@@ -20,6 +22,7 @@ public class ConversationEntry implements Serializable, Comparable<ConversationE
         this.authorId = null;
         this.dateCreated = null;
         this.content = null;
+        this.authorName = null;
     }
 
     public UUID getConversationId() {
@@ -52,6 +55,14 @@ public class ConversationEntry implements Serializable, Comparable<ConversationE
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
     }
 
     @Override

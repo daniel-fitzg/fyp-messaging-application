@@ -9,10 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 /*
 * Servlet gets and returns the conversations to which a single user belongs
@@ -20,6 +19,8 @@ import java.util.UUID;
 
 @WebServlet(name = "GetUserConversationsServlet", urlPatterns = {"/GetUserConversations"})
 public class GetUserConversationsServlet extends HttpServlet {
+
+    // TODO Large scale refactor needed of this servlet
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Needed to circumvent Cross Origin Resource-Sharing
@@ -40,19 +41,38 @@ public class GetUserConversationsServlet extends HttpServlet {
 
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
-        List<Conversation> userConversations = cassandraDataStore.getUserConversations(UUID.fromString("51dca0e3-f008-4dd6-baf8-63b60348a119"));
+        // If userId belongs to a newly registered user, all users are returned to allow the new user to start a conversation.
+        // In reality, this method would be replaced by the users contact book sync to generate available users to interact with
+       // boolean isNewUser = cassandraDataStore.isNewUser(userId);
+
+        List<User> users = cassandraDataStore.getAllUsers();
+        User duplicateUser = null;
+        // Removes the current user from the user list to be sent back to the client
+//        users.forEach(user -> {
+//           if (user.getUserId().equals(userId)) {
+//               duplicateUser.set(user);
+//           }
+//        });
+
+        for (User user : users) {
+            if (user.getUserId().equals(userId)) {
+                duplicateUser = user;
+                break;
+            }
+        }
+
+        users.remove(duplicateUser);
+
+        //userConversations = cassandraDataStore.getUserConversations(UUID.fromString("51dca0e3-f008-4dd6-baf8-63b60348a119"));
 
         JSONArray jsonArray = new JSONArray();
-        userConversations.forEach(conversation -> {
-            JSONObject userConversationJsonObject = new JSONObject();
-            userConversationJsonObject.put("conversationId", conversation.getConversationId().toString());
-            userConversationJsonObject.put("secondaryUserId", conversation.getSecondaryUserId().toString());
-            userConversationJsonObject.put("secondaryUserName", conversation.getSecondaryUserName());
-            userConversationJsonObject.put("userId", conversation.getUserId().toString());
-            userConversationJsonObject.put("lastUpdated", new Date().toString());
-            userConversationJsonObject.put("createDate", new Date().toString());
+        users.forEach(user -> {
+            JSONObject userJsonObject = new JSONObject();
+            userJsonObject.put("userId", user.getUserId().toString());
+            userJsonObject.put("firstName", user.getFirstName());
+            userJsonObject.put("lastName", user.getLastName());
 
-            jsonArray.add(userConversationJsonObject);
+            jsonArray.add(userJsonObject);
         });
 
         response.getWriter().write(jsonArray.toJSONString());

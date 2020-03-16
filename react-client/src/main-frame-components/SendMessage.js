@@ -20,6 +20,7 @@ class SendMessage extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault()
+    // Need to send a secondary author id here
     this.props.addConversationEntry(event, this.state.message)
     this.setState({
       message: ""

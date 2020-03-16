@@ -16,8 +16,8 @@ public class CassandraDataStore {
         session = cluster.connect("messaging_app");
     }
 
-    public List<User> getUsers() {
-        return new UserDao(session).getUsers();
+    public List<User> getAllUsers() {
+        return new UserDao(session).getAllUsers();
     }
 
     User registerUser(RegisterUser newUser) {
@@ -28,20 +28,27 @@ public class CassandraDataStore {
         return new UserDao(session).authenticateUser(user);
     }
 
-    List<Conversation> getUserConversations(UUID userId) {
-        return new UserConversationsDao(session).getUserConversations(userId);
+    List<Conversation> getUserConversations(UUID userId, boolean isNewUser) {
+        return new UserConversationsDao(session).getUserConversations(userId, isNewUser);
     }
 
     public User getUser(UUID userId) {
         return new UserDao(session).getUser(userId);
     }
 
+    Conversation getConversation(UUID authorId, UUID secondaryAuthorId) {
+        return new UserConversationsDao(session).getConversation(authorId, secondaryAuthorId);
+    }
+
     void addConversationEntry(ConversationEntry conversationEntry) {
         new ConversationContentDao(session).addConversationEntry(conversationEntry);
     }
 
-    List<ConversationEntry> getConversationEntries(UUID conversationId, UUID authorId, UUID secondaryAuthorId) {
-        return new ConversationContentDao(session).getConversationEntries(conversationId, authorId, secondaryAuthorId);
+    List<ConversationEntry> getConversationEntries(UUID conversationId, UUID authorId, UUID secondaryAuthorId,
+                                                   String authorName, String secondaryAuthorName) {
+
+        return new ConversationContentDao(session).getConversationEntries(conversationId, authorId, secondaryAuthorId,
+                authorName, secondaryAuthorName);
     }
 
     void close() {

@@ -15,7 +15,7 @@ class UserDao {
         this.session = session;
     }
 
-    List<User> getUsers() {
+    List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
 
         PreparedStatement preparedStatement = session.prepare("SELECT * FROM " + tableName);
@@ -37,7 +37,7 @@ class UserDao {
     }
 
     User registerUser(RegisterUser newUser) {
-        List<User> users = getUsers();
+        List<User> users = getAllUsers();
         String newUserEmail = newUser.getEmail();
 
         for (User user : users) {
@@ -57,7 +57,7 @@ class UserDao {
     }
 
     User authenticateUser(User existingUser) {
-        List<User> users = getUsers();
+        List<User> users = getAllUsers();
         String existingUserEmail = existingUser.getEmail();
 
         for (User user : users) {

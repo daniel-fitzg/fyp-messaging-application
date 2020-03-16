@@ -48,14 +48,14 @@ public class RegisterUserServlet extends HttpServlet {
 
             if (registeredUser != null) {
                 System.out.println("User registered successfully");
-                outgoingJsonObject.put("serverResponse", true);
+                outgoingJsonObject.put("registeredUserId", registeredUser.getUserId().toString());
             } else {
                 //response.setStatus(HttpServletResponse.SC_CONFLICT, "Email already registered");
-                outgoingJsonObject.put("serverResponse", false);
+                outgoingJsonObject.put("registeredUserId", false);
             }
         } else {
             //response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            outgoingJsonObject.put("serverResponse", false);
+            outgoingJsonObject.put("registeredUserId", false);
         }
 
         response.getWriter().write(outgoingJsonObject.toJSONString());

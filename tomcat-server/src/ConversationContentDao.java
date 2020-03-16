@@ -25,24 +25,36 @@ public class ConversationContentDao {
                 conversationEntry.getAuthorId(), conversationEntry.getDateCreated(), conversationEntry.getContent()));
     }
 
-    List<ConversationEntry> getConversationEntries(UUID conversationId, UUID authorId, UUID secondaryAuthorId) {
+    List<ConversationEntry> getConversationEntries(UUID conversationId,
+                                                   UUID authorId,
+                                                   UUID secondaryAuthorId,
+                                                   String authorName,
+                                                   String secondaryAuthorName) {
+
         List<ConversationEntry> conversationEntries = new ArrayList<>();
 
         getConversationEntries = session.prepare("SELECT * FROM " + tableName + " WHERE conversation_id = " + conversationId
         + " AND author_id = " + authorId);
         ResultSet resultSet = session.execute(getConversationEntries.bind());
         // conversationEntries = populateConversationEntriesList(resultSet, conversationEntries);   ???
-        populateConversationEntriesList(resultSet, conversationEntries);
+        populateConversationEntriesList(resultSet, conversationEntries, authorName);
 
         getConversationEntries = session.prepare("SELECT * FROM " + tableName + " WHERE conversation_id = " + conversationId
                 + " AND author_id = " + secondaryAuthorId);
         resultSet = session.execute(getConversationEntries.bind());
-        populateConversationEntriesList(resultSet, conversationEntries);
+        populateConversationEntriesList(resultSet, conversationEntries, secondaryAuthorName);
+
+//        if (conversationEntries.size() == 0) {
+//            conversationEntries.add(new ConversationEntry(conversationId, null, null, null, null));
+//        }
 
         return conversationEntries;
     }
 
-    private void populateConversationEntriesList(ResultSet resultSet, List<ConversationEntry> conversationEntries) {
+    private void populateConversationEntriesList(ResultSet resultSet,
+                                                 List<ConversationEntry> conversationEntries,
+                                                 String contentAuthor) {
+
         resultSet.forEach(row -> {
             ConversationEntry conversationEntry = new ConversationEntry();
 
@@ -50,6 +62,7 @@ public class ConversationContentDao {
             conversationEntry.setAuthorId(row.getUUID("author_id"));
             conversationEntry.setDateCreated(row.getTimestamp("create_date"));
             conversationEntry.setContent(row.getString("content"));
+            conversationEntry.setAuthorName(contentAuthor);
 
             conversationEntries.add(conversationEntry);
         });

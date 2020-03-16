@@ -2,7 +2,8 @@ import React from 'react';
 import './App.css';
 import LoginForm from "./main-frame-components/welcome-page/LoginForm"
 import RegisterForm from "./main-frame-components/welcome-page/RegisterForm"
-import TitleHeader from "./main-frame-components/TitleHeader"
+import TitleMessageList from "./main-frame-components/TitleMessageList"
+import TitleConversationsList from "./main-frame-components/TitleConversationsList"
 import Conversation from "./main-frame-components/user-conversations/Conversation"
 import MessagesList from "./main-frame-components/MessagesList"
 import SendMessage from "./main-frame-components/SendMessage"
@@ -19,6 +20,7 @@ class App extends React.Component {
         showRegisterForm: false,
         showLoadingScreen: false,
         userId: "",
+        secondaryUserId: "",
         conversationList: [],
         conversationId: "",
         messages: []
@@ -57,14 +59,15 @@ class App extends React.Component {
     this.getConversations()
   }
 
-  loadMessagesScreen(conversationId, authorId, secondaryAuthorId) {
+  loadMessagesScreen(authorId, secondaryAuthorId) {
     this.setState({
       showWelcomeScreen: false,
       showConversationsScreen: false,
       showMessagesScreen: true
     })
 
-    this.getConversationEntries(conversationId, authorId, secondaryAuthorId)
+    this.getConversation(authorId, secondaryAuthorId)
+    this.getConversationEntries(authorId, secondaryAuthorId)
   }
 
   loadLoginForm() {
@@ -78,11 +81,11 @@ class App extends React.Component {
       showRegisterForm: !this.state.showRegisterForm
     })
   }
-  
+
   updateLoadingScreen() {
    this.setState({
      showLoadingScreen: !this.state.showLoadingScreen
-   })  
+   })
   }
 
   updateConversationId(conversationId) {
@@ -129,9 +132,10 @@ class App extends React.Component {
          if (request.readyState === 4 && request.status === 200) {
            var result = JSON.parse(request.responseText)
 
-           if (result.serverResponse) {
+           if (result.registeredUserId != false) {
              console.log("User registraton successful")
-             this.loadConversationsScreen()
+             this.loadConversationsScreen(result.registeredUserId)
+             this.updateLoadingScreen()
            } else {
              alert("User registration failed")
            }
@@ -146,6 +150,7 @@ class App extends React.Component {
      }))
   }
 
+  // Refactor to getAllUsers
   getConversations() {
     alert("Getting conversations for " + this.state.userId)
 
@@ -158,7 +163,7 @@ class App extends React.Component {
             conversationList: conversationList
           })
           this.updateLoadingScreen()
-          console.log(conversationList)
+          console.log("Marker " + conversationList)
         }
      };
 
@@ -166,9 +171,35 @@ class App extends React.Component {
        userId: this.state.userId
      }))
   }
+  
+  getConversation(authorId, secondaryAuthorId) {
+    alert("Getting conversation for " + authorId + " and " + secondaryAuthorId)
+    this.setState({
+      secondaryUserId: secondaryAuthorId
+    })
 
-  getConversationEntries(conversationId, authorId, secondaryAuthorId) {
-    alert("Get convos for: " + conversationId + ", " + authorId + ", " + secondaryAuthorId)
+    const request = new XMLHttpRequest()
+    request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetConversation', true);
+    request.onreadystatechange = () => {
+        if (request.readyState === 4 && request.status === 200) {
+          var conversation = JSON.parse(request.responseText)
+          this.setState({
+            conversationId: conversation.conversationId
+          })
+          this.updateLoadingScreen()
+          console.log("Convo retrieved " + conversation.conversationId)
+        }
+     };
+
+     request.send(JSON.stringify({
+       authorId: authorId,
+       secondaryAuthorId: secondaryAuthorId
+     }))
+  }
+
+  getConversationEntries(authorId, secondaryAuthorId) {
+    // alert("Get convos for: " + conversationId + ", " + authorId + ", " + secondaryAuthorId)
+    alert("Get convos for: " + authorId)
 
     const request = new XMLHttpRequest()
     request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetConversationEntries', true);
@@ -183,14 +214,13 @@ class App extends React.Component {
      };
 
      request.send(JSON.stringify({
-       conversationId: conversationId,
        authorId: authorId,
        secondaryAuthorId: secondaryAuthorId
      }))
   }
 
   addConversationEntry(event, message) {
-    alert("Message: " + message)
+    alert("Convo: " + this.state.conversationId + " Message: " + message)
 
     const request = new XMLHttpRequest()
     request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/AddConversationEntry', true);
@@ -205,8 +235,11 @@ class App extends React.Component {
      };
 
      request.send(JSON.stringify({
+       conversationId: this.state.conversationId,
+       authorId: this.state.userId,
        content: message,
-       createDate: new Date()
+       createDate: new Date(),
+       secondaryAuthorId: this.state.secondaryUserId
      }))
   }
 
@@ -238,19 +271,22 @@ class App extends React.Component {
       )
     } else if (this.state.showConversationsScreen) {
       var list = this.state.conversationList.map((conversation) =>
-        <Conversation conversation={conversation} loadMessagesScreen={this.loadMessagesScreen}/>);
-      
+        <Conversation 
+        conversation={conversation} 
+        currentUserId={this.state.userId} 
+        loadMessagesScreen={this.loadMessagesScreen}/>);
+
       if (this.state.showLoadingScreen) {
         return (
           <div style={{backgroundColor: "white"}}>
-            <TitleHeader />
+            <TitleConversationsList />
             <h1 className="loading-screen">LOADING</h1>
           </div>
         )
        } else {
         return (
           <div style={{backgroundColor: "white"}}>
-            <TitleHeader />
+            <TitleConversationsList />
             {list}
           </div>
         )
@@ -258,9 +294,13 @@ class App extends React.Component {
     } else if (this.state.showMessagesScreen) {
       return (
         <div>
-          <TitleHeader loadConversationsScreen={this.loadConversationsScreen} updateLoadingScreen={this.updateLoadingScreen}/>
+          <TitleMessageList
+            loadConversationsScreen={this.loadConversationsScreen}
+            updateLoadingScreen={this.updateLoadingScreen}
+            userId={this.state.userId}
+            />
           <MessagesList userId={this.state.userId} messages={this.state.messages}/>
-          <SendMessage addConversationEntry={this.addConversationEntry}/>
+          <SendMessage addConversationEntry={this.addConversationEntry} messages={this.state.messages}/>
         </div>
       )
     }

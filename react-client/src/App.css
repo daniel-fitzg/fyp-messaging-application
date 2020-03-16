@@ -125,12 +125,20 @@
 
 .title-header {
   font-size: 20px;
-  display: flex;
-  flex-direction: column;
   background-color: #3366ff;
   text-align: center;
   color: White;
   padding: 5px;
+  border-radius: 5px;
+}
+
+.title-back-button {
+  position: absolute;
+  left: 5%;
+  top: 5%;
+  font-size: 16px;
+  background-color: white;
+  color: blue;
   border-radius: 5px;
 }
 
@@ -142,6 +150,8 @@
 }
 
 .conversation {
+  /* display: flex;
+  flex-direction: row; */
   background-color: gray;
   border: 1px solid black;
   padding: 5px;
@@ -149,10 +159,11 @@
 }
 
 .select-conversation-button {
-  position: relative;
+  /* position: relative;
   top: 40%;
   left: 40%;
-  -ms-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%); */
+  float: right;
   color: white;
   font-size: 10px;
   padding: 12px 12px;
