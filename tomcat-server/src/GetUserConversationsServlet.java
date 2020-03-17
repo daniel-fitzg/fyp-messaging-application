@@ -63,8 +63,6 @@ public class GetUserConversationsServlet extends HttpServlet {
 
         users.remove(duplicateUser);
 
-        //userConversations = cassandraDataStore.getUserConversations(UUID.fromString("51dca0e3-f008-4dd6-baf8-63b60348a119"));
-
         JSONArray jsonArray = new JSONArray();
         users.forEach(user -> {
             JSONObject userJsonObject = new JSONObject();

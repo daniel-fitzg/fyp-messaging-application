@@ -230,6 +230,7 @@ class App extends React.Component {
             messages: messages
           })
           console.log(messages)
+          this.updateLoadingScreen()
         }
      };
 
@@ -318,19 +319,27 @@ class App extends React.Component {
         )
       }
     } else if (this.state.showMessagesScreen) {
-      return (
-        <div>
-          <TitleMessageList
-            loadConversationsScreen={this.loadConversationsScreen}
-            updateLoadingScreen={this.updateLoadingScreen}
-            userId={this.state.userId}
-            firstName={this.state.firstName}
-            lastName={this.state.lastName}
-          />
-          <MessagesList userId={this.state.userId} messages={this.state.messages}/>
-          <SendMessage addConversationEntry={this.addConversationEntry} messages={this.state.messages}/>
-        </div>
-      )
+      if (this.state.showLoadingScreen) {
+        return (
+          <div style={{backgroundColor: "white"}}>
+            <h1 className="loading-screen">LOADING</h1>
+          </div>
+        )
+       } else {
+        return (
+          <div>
+            <TitleMessageList
+              loadConversationsScreen={this.loadConversationsScreen}
+              updateLoadingScreen={this.updateLoadingScreen}
+              userId={this.state.userId}
+              firstName={this.state.firstName}
+              lastName={this.state.lastName}
+            />
+            <MessagesList userId={this.state.userId} messages={this.state.messages}/>
+            <SendMessage addConversationEntry={this.addConversationEntry} messages={this.state.messages}/>
+          </div>
+        )
+      }
     }
   }
 
