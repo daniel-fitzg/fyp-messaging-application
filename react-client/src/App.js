@@ -47,6 +47,8 @@ class App extends React.Component {
       showConversationsScreen: false,
       showMessagesScreen: false
     })
+    
+    this.resetWelcomeScreen()
   }
 
   loadConversationsScreen(userId) {
@@ -297,7 +299,7 @@ class App extends React.Component {
        } else {
         return (
           <div style={{backgroundColor: "white"}}>
-            <TitleConversationsList />
+            <TitleConversationsList loadWelcomeScreen={this.loadWelcomeScreen}/>
             {list}
           </div>
         )
