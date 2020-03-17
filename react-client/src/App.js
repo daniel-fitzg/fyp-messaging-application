@@ -31,6 +31,7 @@ class App extends React.Component {
       this.loadMessagesScreen = this.loadMessagesScreen.bind(this)
       this.loadLoginForm = this.loadLoginForm.bind(this)
       this.loadRegisterForm = this.loadRegisterForm.bind(this)
+      this.resetWelcomeScreen = this.resetWelcomeScreen.bind(this)
       this.updateLoadingScreen = this.updateLoadingScreen.bind(this)
       this.updateConversationId = this.updateConversationId.bind(this)
       this.authenticateUser = this.authenticateUser.bind(this)
@@ -80,6 +81,13 @@ class App extends React.Component {
     this.setState({
       showRegisterForm: !this.state.showRegisterForm
     })
+  }
+  
+  resetWelcomeScreen() {
+    this.setState({
+      showLoginForm: false,
+      showRegisterForm: false
+    })  
   }
 
   updateLoadingScreen() {
@@ -252,6 +260,7 @@ class App extends React.Component {
           <div>
             <img className="welcome-icon" src={require(`${"./main-frame-components/welcome-page/speech-bubble.jpg"}`)} />
             <LoginForm authenticateUser={this.authenticateUser}/>
+            <button className="cancel-button" onClick={this.resetWelcomeScreen}>CANCEL</button>
           </div>
         )
       } else if (this.state.showRegisterForm) {
@@ -259,6 +268,7 @@ class App extends React.Component {
           <div>
             <img className="welcome-icon" src={require(`${"./main-frame-components/welcome-page/speech-bubble.jpg"}`)} />
             <RegisterForm registerUser={this.registerUser}/>
+            <button className="cancel-button" onClick={this.resetWelcomeScreen}>CANCEL</button>
           </div>
         )
       }
@@ -267,6 +277,7 @@ class App extends React.Component {
           <img className="welcome-icon" src={require(`${"./main-frame-components/welcome-page/speech-bubble.jpg"}`)} />
           <button className="login-button" onClick={this.loadLoginForm}>LOGIN</button>
           <button className="register-button" onClick={this.loadRegisterForm}>REGISTER</button>
+          <button className="cancel-button" onClick={this.resetWelcomeScreen}>CANCEL</button>
         </div>
       )
     } else if (this.state.showConversationsScreen) {

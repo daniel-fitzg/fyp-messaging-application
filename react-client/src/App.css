@@ -40,7 +40,7 @@
   width: 25%;
   position: absolute;
   top: 45%;
-  left: 55%;
+  left: 50%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   color: black;
@@ -91,8 +91,8 @@
 .register-form {
   width: 25%;
   position: absolute;
-  top: 45%;
-  left: 55%;
+  top: 40%;
+  left: 50%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   color: black;
@@ -116,6 +116,20 @@
   cursor: pointer;
   border-radius: 5px;
   background-color: #3366ff;
+}
+
+.cancel-button {
+  position: absolute;
+  top: 62%;
+  left: 42%;
+  -ms-transform: translate(-50%, -50%);
+  color: gray;
+  font-size: 12px;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #e1e4e8;
 }
 
 .main-frame-container {
@@ -152,10 +166,10 @@
 .conversation {
   /* display: flex;
   flex-direction: row; */
-  background-color: gray;
+  background-color: #e1e4e8;
   border: 1px solid black;
   padding: 5px;
-  color: white;
+  color: black;
 }
 
 .select-conversation-button {

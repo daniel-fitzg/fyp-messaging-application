@@ -15,7 +15,7 @@ class MessagesList extends React.Component {
      <div className="message-list">
        {this.props.messages.map(message => {
          console.log(message.authorId + " : " + this.props.messages.userId) 
-         if (message.authorId === "7db251f0-a3ef-4787-830a-9bc0b1dbd0de") {
+         if (message.authorId === this.state.userId) {
            return (
              <div>
                <div>
