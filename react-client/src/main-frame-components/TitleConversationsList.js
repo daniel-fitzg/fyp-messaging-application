@@ -18,7 +18,7 @@ class TitleConversationsList extends React.Component {
           <button className="title-back-button" onClick={this.handleClick}>LOGOUT</button>
         </div>
         <div>
-          <p>Messaging Application</p>
+          <p>{this.props.firstName} {this.props.lastName}</p>
         </div>
       </div>
     )

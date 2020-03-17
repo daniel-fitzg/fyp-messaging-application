@@ -20,6 +20,8 @@ class App extends React.Component {
         showRegisterForm: false,
         showLoadingScreen: false,
         userId: "",
+        firstName: "",
+        lastName: "",
         secondaryUserId: "",
         conversationList: [],
         conversationId: "",
@@ -118,6 +120,10 @@ class App extends React.Component {
 
            if (user.userId != null) {
              console.log("User login successful")
+             this.setState({
+               firstName: user.firstName,
+               lastName: user.lastName
+             })
              this.updateLoadingScreen()
              this.loadConversationsScreen(user.userId)
            } else {
@@ -144,6 +150,10 @@ class App extends React.Component {
 
            if (result.registeredUserId != false) {
              console.log("User registraton successful")
+             this.setState({
+               firstName: firstName,
+               lastName: lastName
+             })
              this.loadConversationsScreen(result.registeredUserId)
              this.updateLoadingScreen()
            } else {
@@ -292,14 +302,17 @@ class App extends React.Component {
       if (this.state.showLoadingScreen) {
         return (
           <div style={{backgroundColor: "white"}}>
-            <TitleConversationsList />
             <h1 className="loading-screen">LOADING</h1>
           </div>
         )
        } else {
         return (
           <div style={{backgroundColor: "white"}}>
-            <TitleConversationsList loadWelcomeScreen={this.loadWelcomeScreen}/>
+            <TitleConversationsList 
+              loadWelcomeScreen={this.loadWelcomeScreen}
+              firstName={this.state.firstName}
+              lastName={this.state.lastName}
+            />
             {list}
           </div>
         )
@@ -311,7 +324,9 @@ class App extends React.Component {
             loadConversationsScreen={this.loadConversationsScreen}
             updateLoadingScreen={this.updateLoadingScreen}
             userId={this.state.userId}
-            />
+            firstName={this.state.firstName}
+            lastName={this.state.lastName}
+          />
           <MessagesList userId={this.state.userId} messages={this.state.messages}/>
           <SendMessage addConversationEntry={this.addConversationEntry} messages={this.state.messages}/>
         </div>

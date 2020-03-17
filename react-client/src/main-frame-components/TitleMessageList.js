@@ -11,7 +11,6 @@ class TitleMessageList extends React.Component {
   }
 
   handleClick() {
-    //this.props.updateLoadingScreen()
     this.props.loadConversationsScreen(this.state.userId)
   }
 
@@ -22,7 +21,7 @@ class TitleMessageList extends React.Component {
           <button className="title-back-button" onClick={this.handleClick}>BACK</button>
         </div>
         <div>
-          <p>Messaging Application</p>
+          <p>{this.props.firstName} {this.props.lastName}</p>
         </div>
       </div>
     )
