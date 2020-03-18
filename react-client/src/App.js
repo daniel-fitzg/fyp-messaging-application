@@ -219,7 +219,7 @@ class App extends React.Component {
 
   getConversationEntries(authorId, secondaryAuthorId) {
     // alert("Get convos for: " + conversationId + ", " + authorId + ", " + secondaryAuthorId)
-    alert("Get convos for: " + authorId)
+    alert("Get convos for: " + authorId + " AND " + secondaryAuthorId)
 
     const request = new XMLHttpRequest()
     request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetConversationEntries', true);
@@ -335,7 +335,13 @@ class App extends React.Component {
               firstName={this.state.firstName}
               lastName={this.state.lastName}
             />
-            <MessagesList userId={this.state.userId} messages={this.state.messages}/>
+            <MessagesList 
+              userId={this.state.userId} 
+              secondaryUserId={this.state.secondaryUserId}
+              messages={this.state.messages}
+              getConversationEntries={this.getConversationEntries}
+              updateLoadingScreen={this.updateLoadingScreen}
+            />
             <SendMessage addConversationEntry={this.addConversationEntry} messages={this.state.messages}/>
           </div>
         )

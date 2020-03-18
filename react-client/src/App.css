@@ -194,6 +194,24 @@
   overflow: scroll;
 }
 
+.refresh-button {
+  position: absolute;
+  top: 70%;
+  left: 70%;
+  -ms-transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: #598eff;
+}
+
+.refresh-button:hover {
+  background-color: #3366ff;
+}
+
 .author-name {
   font-size: 12px;
 }
