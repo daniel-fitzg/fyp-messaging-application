@@ -122,9 +122,10 @@ class App extends React.Component {
              console.log("User login successful")
              this.setState({
                firstName: user.firstName,
-               lastName: user.lastName
+               lastName: user.lastName,
+               showLoadingScreen: true
              })
-             this.updateLoadingScreen()
+             //this.updateLoadingScreen()
              this.loadConversationsScreen(user.userId)
            } else {
              console.log("User login failed")
@@ -152,10 +153,11 @@ class App extends React.Component {
              console.log("User registraton successful")
              this.setState({
                firstName: firstName,
-               lastName: lastName
+               lastName: lastName,
+               showLoadingScreen: true
              })
              this.loadConversationsScreen(result.registeredUserId)
-             this.updateLoadingScreen()
+             //this.updateLoadingScreen()
            } else {
              alert("User registration failed")
            }
@@ -172,7 +174,7 @@ class App extends React.Component {
 
   // Refactor to getAllUsers
   getConversations() {
-    alert("Getting conversations for " + this.state.userId)
+    console.log("Getting conversations for " + this.state.userId)
 
     const request = new XMLHttpRequest()
     request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetUserConversations', true);
@@ -182,7 +184,10 @@ class App extends React.Component {
           this.setState({
             conversationList: conversationList
           })
-          this.updateLoadingScreen()
+          //this.updateLoadingScreen()
+          this.setState({
+            showLoadingScreen: false
+          })
           console.log("Marker " + conversationList)
         }
      };
@@ -206,7 +211,10 @@ class App extends React.Component {
           this.setState({
             conversationId: conversation.conversationId
           })
-          this.updateLoadingScreen()
+          //this.updateLoadingScreen()
+          this.setState({
+            showLoadingScreen: true
+          })
           console.log("Convo retrieved " + conversation.conversationId)
         }
      };
@@ -219,7 +227,7 @@ class App extends React.Component {
 
   getConversationEntries(authorId, secondaryAuthorId) {
     // alert("Get convos for: " + conversationId + ", " + authorId + ", " + secondaryAuthorId)
-    alert("Get convos for: " + authorId + " AND " + secondaryAuthorId)
+    console.log("Get convos for: " + authorId + " AND " + secondaryAuthorId)
 
     const request = new XMLHttpRequest()
     request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetConversationEntries', true);
@@ -230,7 +238,10 @@ class App extends React.Component {
             messages: messages
           })
           console.log(messages)
-          this.updateLoadingScreen()
+          //this.updateLoadingScreen()
+          this.setState({
+            showLoadingScreen: false
+          })
         }
      };
 
