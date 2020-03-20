@@ -3,56 +3,49 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class ConversationContentDao {
+class ConversationContentDao {
     private final String tableName = "conversation_content";
     private Session session;
-
-    private PreparedStatement addConversationEntry;
-    private PreparedStatement getConversationEntries;
 
     ConversationContentDao(Session session) {
         this.session = session;
     }
 
     void addConversationEntry(ConversationEntry conversationEntry) {
+        PreparedStatement addConversationEntry;
+
         addConversationEntry = session.prepare("INSERT INTO " + tableName + " (conversation_id, author_id, create_date, content) " +
                 "VALUES (?, ?, ?, ?)");
         session.execute(addConversationEntry.bind(conversationEntry.getConversationId(),
                 conversationEntry.getAuthorId(), conversationEntry.getDateCreated(), conversationEntry.getContent()));
     }
 
-    List<ConversationEntry> getConversationEntries(UUID conversationId,
-                                                   UUID authorId,
-                                                   UUID secondaryAuthorId,
-                                                   String authorName,
-                                                   String secondaryAuthorName) {
+    List<ConversationEntry> getConversationEntries(UUID conversationId, UUID authorId, UUID secondaryAuthorId,
+                                                   String authorName, String secondaryAuthorName) {
 
+        PreparedStatement getConversationEntries;
         List<ConversationEntry> conversationEntries = new ArrayList<>();
 
+        // Gets entries for the primary user of the conversation
         getConversationEntries = session.prepare("SELECT * FROM " + tableName + " WHERE conversation_id = " + conversationId
-        + " AND author_id = " + authorId);
+                + " AND author_id = " + authorId);
         ResultSet resultSet = session.execute(getConversationEntries.bind());
-        // conversationEntries = populateConversationEntriesList(resultSet, conversationEntries);   ???
         populateConversationEntriesList(resultSet, conversationEntries, authorName);
 
+        // gets entries for the secondary user of the conversation
         getConversationEntries = session.prepare("SELECT * FROM " + tableName + " WHERE conversation_id = " + conversationId
                 + " AND author_id = " + secondaryAuthorId);
         resultSet = session.execute(getConversationEntries.bind());
         populateConversationEntriesList(resultSet, conversationEntries, secondaryAuthorName);
 
-//        if (conversationEntries.size() == 0) {
-//            conversationEntries.add(new ConversationEntry(conversationId, null, null, null, null));
-//        }
-
         return conversationEntries;
     }
 
-    private void populateConversationEntriesList(ResultSet resultSet,
-                                                 List<ConversationEntry> conversationEntries,
+    // Compiles a single list of messages from both users of the conversation to be returned to client
+    private void populateConversationEntriesList(ResultSet resultSet, List<ConversationEntry> conversationEntries,
                                                  String contentAuthor) {
 
         resultSet.forEach(row -> {

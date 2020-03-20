@@ -26,51 +26,31 @@ public class Conversation implements Serializable {
         this.lastUpdated = null;
     }
 
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
+    void setUserId(UUID userId) {
         this.userId = userId;
     }
 
-    public UUID getConversationId() {
+    UUID getConversationId() {
         return conversationId;
     }
 
-    public void setConversationId(UUID conversationId) {
+    void setConversationId(UUID conversationId) {
         this.conversationId = conversationId;
     }
 
-    public UUID getSecondaryUserId() {
-        return secondaryUserId;
-    }
-
-    public void setSecondaryUserId(UUID secondaryUserId) {
+    void setSecondaryUserId(UUID secondaryUserId) {
         this.secondaryUserId = secondaryUserId;
     }
 
-    public String getSecondaryUserName() {
-        return secondaryUserName;
-    }
-
-    public void setSecondaryUserName(String secondaryUserName) {
+    void setSecondaryUserName(String secondaryUserName) {
         this.secondaryUserName = secondaryUserName;
     }
 
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
+    void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
 
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
+    void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 }

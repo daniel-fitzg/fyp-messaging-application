@@ -1,7 +1,6 @@
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,7 +15,7 @@ public class CassandraDataStore {
         session = cluster.connect("messaging_app");
     }
 
-    public List<User> getAllUsers() {
+    List<User> getAllUsers() {
         return new UserDao(session).getAllUsers();
     }
 
@@ -28,11 +27,7 @@ public class CassandraDataStore {
         return new UserDao(session).authenticateUser(user);
     }
 
-    List<Conversation> getUserConversations(UUID userId, boolean isNewUser) {
-        return new UserConversationsDao(session).getUserConversations(userId, isNewUser);
-    }
-
-    public User getUser(UUID userId) {
+    User getUser(UUID userId) {
         return new UserDao(session).getUser(userId);
     }
 
