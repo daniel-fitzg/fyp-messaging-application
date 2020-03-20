@@ -9,13 +9,6 @@ class MessagesList extends React.Component {
       userId: this.props.userId,
       secondaryAuthorId: this.props.secondaryUserId
     }
-    
-    this.handleClick = this.handleClick.bind(this)
-  }
-  
-  handleClick() {
-    this.props.updateLoadingScreen()
-    this.props.getConversationEntries(this.state.userId, this.state.secondaryAuthorId)
   }
   
   componentDidMount() {
@@ -31,7 +24,6 @@ class MessagesList extends React.Component {
   render() {    
    return (
      <div className="message-list">
-     <button className="refresh-button" onClick={this.handleClick}>REFRESH</button>
        {this.props.messages.map(message => {
          if (message.authorId === this.state.userId) {
            return (
