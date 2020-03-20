@@ -1,13 +1,10 @@
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Response;
-import java.io.BufferedReader;
+
 import java.io.IOException;
 
 /*
@@ -18,31 +15,26 @@ import java.io.IOException;
 public class AuthenticateUserServlet extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Allows resource sharing across different origins
         response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setContentType("application/json");
 
-        BufferedReader bufferedReader = new BufferedReader(request.getReader());
-        String incomingJsonString = bufferedReader.readLine();
-        JSONParser jsonParser = new JSONParser();
-        JSONObject incomingJsonObject = null;
+        ServletHelper servletHelper = new ServletHelper();
+        JSONObject incomingJsonObject = servletHelper.parseIncomingJSON(request, response);
 
-        try {
-            incomingJsonObject = (JSONObject) jsonParser.parse(incomingJsonString);
-        } catch (ParseException exception) {
-            exception.printStackTrace();
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "JSON Parse Exception Thrown");
-        }
-
+        // New user object to be passed to data store
         User user = new User();
         user.setEmail((String) incomingJsonObject.get("email"));
         user.setPassword((String) incomingJsonObject.get("password"));
 
+        // Cassandra DB instance
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
         JSONObject outgoingJsonObject = new JSONObject();
+        // Check if data from client is empty strings
         if (validateExistingUser(user)) {
             User authenticatedUser = cassandraDataStore.authenticateUser(user);
 
+            // If user is authenticated, assign user details to json object to be returned to client
             if (authenticatedUser != null) {
                 outgoingJsonObject.put("userId", authenticatedUser.getUserId().toString());
                 outgoingJsonObject.put("firstName", authenticatedUser.getFirstName());
@@ -68,7 +60,7 @@ public class AuthenticateUserServlet extends HttpServlet {
     }
 
     // Checks if user has entered empty strings for credentials
-    private boolean validateExistingUser(User existingUser) throws IOException {
+    private boolean validateExistingUser(User existingUser) {
         if (existingUser.getEmail().equalsIgnoreCase("") || existingUser.getPassword().equalsIgnoreCase("")) {
             return false;
         }
