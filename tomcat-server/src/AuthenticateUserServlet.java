@@ -52,9 +52,7 @@ public class AuthenticateUserServlet extends HttpServlet {
             outgoingJsonObject.put("userId", null);
         }
 
-        response.getWriter().write(outgoingJsonObject.toJSONString());
-        response.getWriter().flush();
-        response.getWriter().close();
+        servletHelper.writeJsonOutput(response, outgoingJsonObject.toJSONString());
 
         cassandraDataStore.close();
     }

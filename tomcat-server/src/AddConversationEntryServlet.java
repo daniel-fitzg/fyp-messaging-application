@@ -1,7 +1,5 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,32 +9,27 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /*
-* Adds an entry to a conversation for a user
+* Adds an entry to a conversation for a user. Once DB write occurs the servlet will read DB for all messages in the
+* conversation and return list to the client.
 * */
 
 @WebServlet(name = "AddConversationEntryServlet", urlPatterns = {"/AddConversationEntry"})
 public class AddConversationEntryServlet extends javax.servlet.http.HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+        // Allows resource sharing across different origins
         response.setHeader("Access-Control-Allow-Origin", "*");
 
-        BufferedReader bufferedReader = new BufferedReader(request.getReader());
-        String incomingJsonString = bufferedReader.readLine();
-        JSONParser jsonParser = new JSONParser();
-        JSONObject incomingJsonObject = null;
+        ServletHelper servletHelper = new ServletHelper();
+        JSONObject incomingJsonObject = servletHelper.parseIncomingJSON(request, response);
 
-        try {
-            incomingJsonObject = (JSONObject) jsonParser.parse(incomingJsonString);
-        } catch (ParseException exception) {
-            exception.printStackTrace();
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "JSON Parse Exception Thrown");
-        }
-
+        // User ID of the user on the other end of the conversation
         UUID secondaryAuthorId = UUID.fromString((String) incomingJsonObject.get("secondaryAuthorId"));
 
+        // Cassandra DB instance
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
+        // New conversation entry to be written to DB
         ConversationEntry conversationEntry = new ConversationEntry();
         conversationEntry.setConversationId(UUID.fromString((String) incomingJsonObject.get("conversationId")));
         conversationEntry.setAuthorId(UUID.fromString((String) incomingJsonObject.get("authorId")));
@@ -50,33 +43,23 @@ public class AddConversationEntryServlet extends javax.servlet.http.HttpServlet 
             e.printStackTrace();
         }
         conversationEntry.setDateCreated(date);
+        // DB write
         cassandraDataStore.addConversationEntry(conversationEntry);
 
+        // Names of the authors of the messages to be added to the array to be returned to the client
+        // Each message item in array will have an author name associated with it
         String authorName = cassandraDataStore.getUser(conversationEntry.getAuthorId()).getFirstName();
         String secondaryAuthorName = cassandraDataStore.getUser(secondaryAuthorId).getFirstName();
 
-        List<ConversationEntry> conversationEntries = new ArrayList<>();
-
-        conversationEntries = cassandraDataStore.getConversationEntries(conversationEntry.getConversationId(),
+        // Read DB for list of messages from the conversation to be sent to client
+        List<ConversationEntry> conversationEntries = cassandraDataStore.getConversationEntries(conversationEntry.getConversationId(),
                 conversationEntry.getAuthorId(), secondaryAuthorId, authorName, secondaryAuthorName);
 
         Collections.sort(conversationEntries);
 
-        JSONArray jsonArray = new JSONArray();
-        conversationEntries.forEach(entry -> {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("authorId", entry.getAuthorId().toString());
-            jsonObject.put("conversationId", entry.getConversationId().toString());
-            jsonObject.put("dateCreated", entry.getDateCreated().toString());
-            jsonObject.put("content", entry.getContent());
-            jsonObject.put("authorName", entry.getAuthorName());
-
-            jsonArray.add(jsonObject);
-        });
-
-        response.getWriter().write(jsonArray.toJSONString());
-        response.getWriter().flush();
-        response.getWriter().close();
+        // Build JSON array of messages and then send to client
+        JSONArray jsonArray = servletHelper.buildConversationEntriesJsonArray(conversationEntries);
+        servletHelper.writeJsonOutput(response, jsonArray.toJSONString());
 
         cassandraDataStore.close();
     }

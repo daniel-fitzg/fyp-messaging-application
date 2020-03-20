@@ -1,3 +1,4 @@
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -6,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 
 public class ServletHelper {
 
@@ -23,5 +25,28 @@ public class ServletHelper {
         }
 
         return incomingJsonObject;
+    }
+
+    JSONArray buildConversationEntriesJsonArray(List<ConversationEntry> conversationEntries) {
+        JSONArray jsonArray = new JSONArray();
+
+        conversationEntries.forEach(entry -> {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("authorId", entry.getAuthorId().toString());
+            jsonObject.put("conversationId", entry.getConversationId().toString());
+            jsonObject.put("dateCreated", entry.getDateCreated().toString());
+            jsonObject.put("content", entry.getContent());
+            jsonObject.put("authorName", entry.getAuthorName());
+
+            jsonArray.add(jsonObject);
+        });
+
+        return jsonArray;
+    }
+
+    void writeJsonOutput(HttpServletResponse response, String jsonString) throws IOException {
+        response.getWriter().write(jsonString);
+        response.getWriter().flush();
+        response.getWriter().close();
     }
 }
