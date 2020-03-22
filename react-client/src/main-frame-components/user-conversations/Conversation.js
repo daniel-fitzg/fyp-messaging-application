@@ -13,6 +13,7 @@ class Conversation extends React.Component {
 
   handleClick() {
     // this.props.loadMessagesScreen(this.state.conversationId, this.state.authorId, this.state.secondaryAuthorId)
+    this.props.updateLoadingScreen()
     this.props.loadMessagesScreen(this.state.authorId, this.state.secondaryAuthorId)
   }
 

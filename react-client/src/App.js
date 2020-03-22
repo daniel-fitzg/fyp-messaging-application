@@ -49,7 +49,7 @@ class App extends React.Component {
       showConversationsScreen: false,
       showMessagesScreen: false
     })
-    
+
     this.resetWelcomeScreen()
   }
 
@@ -86,12 +86,12 @@ class App extends React.Component {
       showRegisterForm: !this.state.showRegisterForm
     })
   }
-  
+
   resetWelcomeScreen() {
     this.setState({
       showLoginForm: false,
       showRegisterForm: false
-    })  
+    })
   }
 
   updateLoadingScreen() {
@@ -196,7 +196,7 @@ class App extends React.Component {
        userId: this.state.userId
      }))
   }
-  
+
   getConversation(authorId, secondaryAuthorId) {
     alert("Getting conversation for " + authorId + " and " + secondaryAuthorId)
     this.setState({
@@ -306,9 +306,10 @@ class App extends React.Component {
       )
     } else if (this.state.showConversationsScreen) {
       var list = this.state.conversationList.map((conversation) =>
-        <Conversation 
-        conversation={conversation} 
-        currentUserId={this.state.userId} 
+        <Conversation
+        conversation={conversation}
+        currentUserId={this.state.userId}
+        updateLoadingScreen={this.updateLoadingScreen}
         loadMessagesScreen={this.loadMessagesScreen}/>);
 
       if (this.state.showLoadingScreen) {
@@ -320,7 +321,7 @@ class App extends React.Component {
        } else {
         return (
           <div style={{backgroundColor: "white"}}>
-            <TitleConversationsList 
+            <TitleConversationsList
               loadWelcomeScreen={this.loadWelcomeScreen}
               firstName={this.state.firstName}
               lastName={this.state.lastName}
@@ -346,8 +347,8 @@ class App extends React.Component {
               firstName={this.state.firstName}
               lastName={this.state.lastName}
             />
-            <MessagesList 
-              userId={this.state.userId} 
+            <MessagesList
+              userId={this.state.userId}
               secondaryUserId={this.state.secondaryUserId}
               messages={this.state.messages}
               getConversationEntries={this.getConversationEntries}
