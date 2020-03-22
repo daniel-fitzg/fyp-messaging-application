@@ -2,7 +2,7 @@ import React from "react"
 import SendMessage from "./SendMessage"
 
 class MessagesList extends React.Component {
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -10,18 +10,18 @@ class MessagesList extends React.Component {
       secondaryAuthorId: this.props.secondaryUserId
     }
   }
-  
+
   componentDidMount() {
     this.interval = setInterval(() => {
       this.props.getConversationEntries(this.state.userId, this.state.secondaryAuthorId)
     }, 2000);
   }
-  
+
   componentWillUnmount() {
    clearInterval(this.interval)
  }
-  
-  render() {    
+
+  render() {
    return (
      <div className="message-list">
        {this.props.messages.map(message => {

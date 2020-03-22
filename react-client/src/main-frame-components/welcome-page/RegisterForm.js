@@ -15,9 +15,7 @@ class RegisterForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
-  // Updates the value of email and password as user enters input characters
   handleChange(event) {
-    // setState() does not immediately update the component, there is a delay
     this.setState({
       [event.target.name]: event.target.value
     })
@@ -39,7 +37,7 @@ class RegisterForm extends React.Component {
             type="text"
             onChange={this.handleChange}
           />
-          
+
           <input
             className="user-input"
             name="password"
@@ -47,7 +45,7 @@ class RegisterForm extends React.Component {
             type="password"
             onChange={this.handleChange}
           />
-          
+
           <input
             className="user-input"
             name="firstName"
@@ -55,7 +53,7 @@ class RegisterForm extends React.Component {
             type="text"
             onChange={this.handleChange}
           />
-          
+
           <input
             className="user-input"
             name="lastName"
@@ -63,12 +61,12 @@ class RegisterForm extends React.Component {
             type="text"
             onChange={this.handleChange}
           />
-          
+
           <button className="form-register-button">REGISTER</button>
         </form>
       </div>
     )
-  }  
+  }
 }
 
 export default RegisterForm

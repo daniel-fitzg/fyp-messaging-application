@@ -1,6 +1,6 @@
 .app {
-  width: 600px;
-  height: 600px;
+  width: 900px;
+  height: 700px;
 }
 
 .welcome-icon {
@@ -24,9 +24,9 @@
 }
 .form-login-button {
   position: absolute;
-  top: 95%;
-  left: 20%;
-  -ms-transform: translate(-50%, -50%);
+  top: 100%;
+  left: 30%;
+  /* -ms-transform: translate(-50%, -50%); */
   color: white;
   font-size: 16px;
   padding: 12px 24px;
@@ -39,7 +39,7 @@
 .login-form {
   width: 25%;
   position: absolute;
-  top: 45%;
+  top: 47%;
   left: 50%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
@@ -91,7 +91,7 @@
 .register-form {
   width: 25%;
   position: absolute;
-  top: 40%;
+  top: 43%;
   left: 50%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
@@ -107,8 +107,8 @@
 .form-register-button {
   position: absolute;
   top: 100%;
-  left: 10%;
-  -ms-transform: translate(-50%, -50%);
+  left: 25%;
+  /* -ms-transform: translate(-50%, -50%); */
   color: white;
   font-size: 16px;
   padding: 12px 24px;
@@ -121,7 +121,7 @@
 .cancel-button {
   position: absolute;
   top: 62%;
-  left: 42%;
+  left: 45%;
   -ms-transform: translate(-50%, -50%);
   color: gray;
   font-size: 12px;
@@ -188,7 +188,7 @@
 }
 
 .message-list {
-  height: 430px;
+  height: 530px;
   background-color: White;
   padding: 5px;
   overflow: scroll;
@@ -236,7 +236,7 @@ input {
   background-color: #b3c6ff;
   color: Black;
   font-size: 16px;
-  width: 600px;
+  width: 900px;
 }
 
 input:focus, textarea:focus, select:focus {

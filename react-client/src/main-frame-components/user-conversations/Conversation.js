@@ -21,7 +21,7 @@ class Conversation extends React.Component {
     return (
       <div className="conversation">
         <p>
-          {this.props.conversation.firstName} {this.props.conversation.lastName} 
+          {this.props.conversation.firstName} {this.props.conversation.lastName}
           <button className="select-conversation-button" onClick={this.handleClick}>SELECT</button>
         </p>
       </div>

@@ -109,13 +109,10 @@ class App extends React.Component {
   }
 
   authenticateUser(event, email, password) {
-    alert("Request params: " + email + password)
-
     const request = new XMLHttpRequest()
      request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/AuthenticateUser', true);
      request.onreadystatechange = () => {
          if (request.readyState === 4 && request.status === 200) {
-           console.log(request.responseText)
            var user = JSON.parse(request.responseText)
 
            if (user.userId != null) {
@@ -125,7 +122,6 @@ class App extends React.Component {
                lastName: user.lastName,
                showLoadingScreen: true
              })
-             //this.updateLoadingScreen()
              this.loadConversationsScreen(user.userId)
            } else {
              console.log("User login failed")
@@ -141,8 +137,6 @@ class App extends React.Component {
   }
 
   registerUser(event, email, password, firstName, lastName) {
-    alert("Request params" + email + ", " + password + ", " + firstName + ", " + lastName)
-
     const request = new XMLHttpRequest()
      request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/RegisterUser', true);
      request.onreadystatechange = () => {
@@ -157,7 +151,6 @@ class App extends React.Component {
                showLoadingScreen: true
              })
              this.loadConversationsScreen(result.registeredUserId)
-             //this.updateLoadingScreen()
            } else {
              alert("User registration failed")
            }
@@ -172,10 +165,8 @@ class App extends React.Component {
      }))
   }
 
-  // Refactor to getAllUsers
+  // Called when the conversation list screen is activated
   getConversations() {
-    console.log("Getting conversations for " + this.state.userId)
-
     const request = new XMLHttpRequest()
     request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetUserConversations', true);
     request.onreadystatechange = () => {
@@ -198,7 +189,6 @@ class App extends React.Component {
   }
 
   getConversation(authorId, secondaryAuthorId) {
-    alert("Getting conversation for " + authorId + " and " + secondaryAuthorId)
     this.setState({
       secondaryUserId: secondaryAuthorId
     })
@@ -211,10 +201,9 @@ class App extends React.Component {
           this.setState({
             conversationId: conversation.conversationId
           })
-          //this.updateLoadingScreen()
-          this.setState({
-            showLoadingScreen: true
-          })
+          // this.setState({
+          //   showLoadingScreen: true
+          // })
           console.log("Convo retrieved " + conversation.conversationId)
         }
      };
@@ -226,9 +215,6 @@ class App extends React.Component {
   }
 
   getConversationEntries(authorId, secondaryAuthorId) {
-    // alert("Get convos for: " + conversationId + ", " + authorId + ", " + secondaryAuthorId)
-    console.log("Get convos for: " + authorId + " AND " + secondaryAuthorId)
-
     const request = new XMLHttpRequest()
     request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetConversationEntries', true);
     request.onreadystatechange = () => {
@@ -282,7 +268,7 @@ class App extends React.Component {
       if (this.state.showLoginForm) {
         return (
           <div>
-            <img className="welcome-icon" src={require(`${"./main-frame-components/welcome-page/speech-bubble.jpg"}`)} />
+            <img className="welcome-icon" src={require(`${"./main-frame-components/welcome-page/NewLogo.jpg"}`)} />
             <LoginForm authenticateUser={this.authenticateUser}/>
             <button className="cancel-button" onClick={this.resetWelcomeScreen}>CANCEL</button>
           </div>
@@ -290,7 +276,7 @@ class App extends React.Component {
       } else if (this.state.showRegisterForm) {
         return (
           <div>
-            <img className="welcome-icon" src={require(`${"./main-frame-components/welcome-page/speech-bubble.jpg"}`)} />
+            <img className="welcome-icon" src={require(`${"./main-frame-components/welcome-page/NewLogo.jpg"}`)} />
             <RegisterForm registerUser={this.registerUser}/>
             <button className="cancel-button" onClick={this.resetWelcomeScreen}>CANCEL</button>
           </div>
@@ -298,7 +284,7 @@ class App extends React.Component {
       }
       return (
         <div>
-          <img className="welcome-icon" src={require(`${"./main-frame-components/welcome-page/speech-bubble.jpg"}`)} />
+          <img className="welcome-icon" src={require(`${"./main-frame-components/welcome-page/NewLogo.jpg"}`)} />
           <button className="login-button" onClick={this.loadLoginForm}>LOGIN</button>
           <button className="register-button" onClick={this.loadRegisterForm}>REGISTER</button>
           <button className="cancel-button" onClick={this.resetWelcomeScreen}>CANCEL</button>

@@ -13,9 +13,7 @@ class LoginForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
-  // Updates the value of email and password as user enters input characters
   handleChange(event) {
-    // setState() does not immediately update the component, there is a delay
     this.setState({
       [event.target.name]: event.target.value
     })
@@ -23,8 +21,6 @@ class LoginForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault()
-    alert("Email being sent: " + this.state.email + ", Password: " + this.state.password)
-    //alert("Message: " + this.state.message)
     this.props.authenticateUser(event, this.state.email, this.state.password)
   }
 
@@ -39,7 +35,7 @@ class LoginForm extends React.Component {
               type="text"
               onChange={this.handleChange}
             />
-          
+
             <input
               className="user-input"
               name="password"
@@ -47,9 +43,9 @@ class LoginForm extends React.Component {
               type="password"
               onChange={this.handleChange}
             />
-          
+
             <button className="form-login-button">LOGIN</button>
-        </form>        
+        </form>
       </div>
     )
   }
