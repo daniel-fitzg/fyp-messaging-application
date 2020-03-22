@@ -1,12 +1,9 @@
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 
 /*
@@ -17,21 +14,13 @@ import java.io.IOException;
 public class RegisterUserServlet extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+        // Allows resource sharing across different origins
         response.setHeader("Access-Control-Allow-Origin", "*");
 
-        BufferedReader bufferedReader = new BufferedReader(request.getReader());
-        String incomingJsonString = bufferedReader.readLine();
-        JSONParser jsonParser = new JSONParser();
-        JSONObject incomingJsonObject = null;
+        ServletHelper servletHelper = new ServletHelper();
+        JSONObject incomingJsonObject = servletHelper.parseIncomingJSON(request, response);
 
-        try {
-            incomingJsonObject = (JSONObject) jsonParser.parse(incomingJsonString);
-        } catch (ParseException exception) {
-            exception.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
-
+        // Cassandra DB instance
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
         RegisterUser newUser = new RegisterUser();
@@ -58,9 +47,9 @@ public class RegisterUserServlet extends HttpServlet {
             outgoingJsonObject.put("registeredUserId", false);
         }
 
-        response.getWriter().write(outgoingJsonObject.toJSONString());
-        response.getWriter().flush();
-        response.getWriter().close();
+        // Sends response to server
+        // New user ID if registration successful, boolean: false is registration fails
+        servletHelper.writeJsonOutput(response, outgoingJsonObject.toString());
 
         cassandraDataStore.close();
     }

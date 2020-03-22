@@ -16,8 +16,6 @@ import java.util.UUID;
 @WebServlet(name = "GetUserConversationsServlet", urlPatterns = {"/GetUserConversations"})
 public class GetUserConversationsServlet extends HttpServlet {
 
-    // TODO Large scale refactor needed of this servlet
-
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Allows resource sharing across different origins
         response.setHeader("Access-Control-Allow-Origin", "*");
