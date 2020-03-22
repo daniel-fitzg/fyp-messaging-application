@@ -3,16 +3,12 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 public class UserConversationsDao {
     private final String tableName = "user_conversations";
     private Session session;
-
-    private PreparedStatement getUserConversations;
 
     UserConversationsDao(Session session) {
         this.session = session;
@@ -21,25 +17,30 @@ public class UserConversationsDao {
     Conversation getConversation(UUID authorId, UUID secondaryAuthorId) {
         Conversation conversation = null;
 
+        // Checks for a conversation based on user ID and secondary user ID
         PreparedStatement getConversation = session.prepare("SELECT * FROM " + tableName + " WHERE user_id = " + authorId +
                 " AND secondary_user_id = " + secondaryAuthorId);
         ResultSet resultSet = session.execute(getConversation.bind());
 
+        // If conversation exists in table build conversation object and return result
         Row row = resultSet.one();
         if (row != null) {
             return buildConversation(row, authorId, secondaryAuthorId);
         }
 
+        // Second check for the same conversation but with the user and secondary user IDs switched
         getConversation = session.prepare("SELECT * FROM " + tableName + " WHERE user_id = " + secondaryAuthorId +
                 " AND secondary_user_id = " + authorId);
         resultSet = session.execute(getConversation.bind());
 
+        // If conversation exists in table build conversation object and return result
         row = resultSet.one();
         if (row != null) {
             return buildConversation(row, authorId, secondaryAuthorId);
         }
 
-        return insertNewConversation(authorId, secondaryAuthorId);
+        // If both reads do not find a conversation entry a new conversation is created
+        return createNewConversation(authorId, secondaryAuthorId);
     }
 
     private Conversation buildConversation(Row row, UUID authorId, UUID secondaryAuthorId) {
@@ -54,7 +55,7 @@ public class UserConversationsDao {
         return conversation;
     }
 
-    private Conversation insertNewConversation(UUID authorId, UUID secondaryAuthorId) {
+    private Conversation createNewConversation(UUID authorId, UUID secondaryAuthorId) {
         UUID conversationId = UUID.randomUUID();
         Date create_date = new Date();
         Date last_updated = create_date;
@@ -64,27 +65,5 @@ public class UserConversationsDao {
         ResultSet resultSet = session.execute(insertConversation.bind(authorId, secondaryAuthorId, conversationId, new Date(), new Date()));
 
         return new Conversation(authorId, secondaryAuthorId, conversationId, create_date, last_updated);
-    }
-
-    List<Conversation> getUserConversations(UUID userId, boolean isNewUser) {
-
-        List<Conversation> userConversations = new ArrayList<>();
-
-        getUserConversations = session.prepare("SELECT * FROM " + tableName);
-        ResultSet resultSet = session.execute(getUserConversations.bind());
-
-        resultSet.forEach(row -> {
-            Conversation conversation = new Conversation();
-            conversation.setUserId(row.getUUID("user_id"));
-            conversation.setConversationId(row.getUUID("conversation_id"));
-            conversation.setSecondaryUserId(row.getUUID("secondary_user_id"));
-            conversation.setSecondaryUserName(row.getString("secondary_user_name"));
-            conversation.setCreateDate(row.getTimestamp("create_date"));
-            conversation.setLastUpdated(row.getTimestamp("last_updated"));
-
-            userConversations.add(conversation);
-        });
-
-        return userConversations;
     }
 }

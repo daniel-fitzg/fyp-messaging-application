@@ -10,62 +10,60 @@ public class User implements Serializable {
     private String password;
     private Date registerDate;
 
-    User() {}
-
-    public User(UUID userId, String firstName, String lastName, String email, String password, Date registerDate) {
-        this.userId = userId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.registerDate = registerDate;
+    User() {
+        this.userId = null;
+        this.firstName = null;
+        this.lastName = null;
+        this.email = null;
+        this.password = null;
+        this.registerDate = null;
     }
 
-    public UUID getUserId() {
+    UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    void setUserId(UUID userId) {
         this.userId = userId;
     }
 
-    public String getFirstName() {
+    String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public String getLastName() {
+    String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public String getPassword() {
+    String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    void setPassword(String password) {
         this.password = password;
     }
 
-    public Date getRegisterDate() {
+    Date getRegisterDate() {
         return registerDate;
     }
 
-    public void setRegisterDate(Date registerDate) {
+    void setRegisterDate(Date registerDate) {
         this.registerDate = registerDate;
     }
 
-    public String getEmail() {
+    String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    void setEmail(String email) {
         this.email = email;
     }
 }

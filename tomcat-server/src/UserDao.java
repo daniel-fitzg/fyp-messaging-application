@@ -40,6 +40,7 @@ class UserDao {
         List<User> users = getAllUsers();
         String newUserEmail = newUser.getEmail();
 
+        // Checks if user email alreay exists in the users table
         for (User user : users) {
             if (user.getEmail().equalsIgnoreCase(newUserEmail)) {
                 System.out.println("User already exists");
@@ -47,12 +48,14 @@ class UserDao {
             }
         }
 
+        // Writes new user data to DB
         UUID userId = UUID.randomUUID();
         PreparedStatement preparedStatement = session.prepare("INSERT INTO " + tableName +
                 " (user_id, first_name, last_name, email, password, register_date) VALUES (?, ?, ?, ?, ?, ?)");
 
         session.execute(preparedStatement.bind(userId, newUser.getFirstName(), newUser.getLastName(), newUser.getEmail(), newUser.getPassword(), new Date()));
 
+        // Reads new user entry from DB and returns user object
         return getUser(userId);
     }
 
@@ -61,7 +64,10 @@ class UserDao {
         String existingUserEmail = existingUser.getEmail();
 
         for (User user : users) {
+
+            // Checks if user email exists in table
             if (user.getEmail().equalsIgnoreCase(existingUserEmail)) {
+                // Checks if user password matches entry in table
                 if (user.getPassword().equalsIgnoreCase(existingUser.getPassword())) {
                     return user;
                 } else {
