@@ -9,14 +9,6 @@ public class ConversationEntry implements Serializable, Comparable<ConversationE
     private String content;
     private String authorName;
 
-    ConversationEntry(UUID conversationId, UUID authorId, Date dateCreated, String content, String authorName) {
-        this.conversationId = conversationId;
-        this.authorId = authorId;
-        this.dateCreated = dateCreated;
-        this.content = content;
-        this.authorName = authorName;
-    }
-
     ConversationEntry() {
         this.conversationId = null;
         this.authorId = null;
@@ -25,46 +17,47 @@ public class ConversationEntry implements Serializable, Comparable<ConversationE
         this.authorName = null;
     }
 
-    public UUID getConversationId() {
+    UUID getConversationId() {
         return conversationId;
     }
 
-    public void setConversationId(UUID conversationId) {
+    void setConversationId(UUID conversationId) {
         this.conversationId = conversationId;
     }
 
-    public UUID getAuthorId() {
+    UUID getAuthorId() {
         return authorId;
     }
 
-    public void setAuthorId(UUID authorId) {
+    void setAuthorId(UUID authorId) {
         this.authorId = authorId;
     }
 
-    public Date getDateCreated() {
+    Date getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(Date dateCreated) {
+    void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
 
-    public String getContent() {
+    String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    void setContent(String content) {
         this.content = content;
     }
 
-    public String getAuthorName() {
+    String getAuthorName() {
         return authorName;
     }
 
-    public void setAuthorName(String authorName) {
+    void setAuthorName(String authorName) {
         this.authorName = authorName;
     }
 
+    // Comparable interface override, sorts conversation entries by date
     @Override
     public int compareTo(ConversationEntry conversationEntry) {
         return getDateCreated().compareTo(conversationEntry.getDateCreated());

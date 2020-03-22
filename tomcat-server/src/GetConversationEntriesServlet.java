@@ -1,13 +1,10 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,90 +19,35 @@ import java.util.UUID;
 public class GetConversationEntriesServlet extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+        // Allows resource sharing across different origins
         response.setHeader("Access-Control-Allow-Origin", "*");
 
-        BufferedReader bufferedReader = new BufferedReader(request.getReader());
-        String incomingJsonString = bufferedReader.readLine();
-        JSONParser jsonParser = new JSONParser();
-        JSONObject incomingJsonObject = null;
+        ServletHelper servletHelper = new ServletHelper();
+        JSONObject incomingJsonObject = servletHelper.parseIncomingJSON(request, response);
 
-        try {
-            incomingJsonObject = (JSONObject) jsonParser.parse(incomingJsonString);
-        } catch (ParseException exception) {
-            exception.printStackTrace();
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "JSON Parse Exception thrown");
-        }
-
+        // User IDs of both participants of the conversation
         UUID authorId = UUID.fromString((String) incomingJsonObject.get("authorId"));
         UUID secondaryAuthorId = UUID.fromString((String) incomingJsonObject.get("secondaryAuthorId"));
 
+        // Cassandra DB instance
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
+        // Retrieves conversation data
         Conversation conversation = cassandraDataStore.getConversation(authorId, secondaryAuthorId);
 
         List<ConversationEntry> conversationEntries = new ArrayList<>();
         String authorName = cassandraDataStore.getUser(authorId).getFirstName();
         String secondaryAuthorName = cassandraDataStore.getUser(secondaryAuthorId).getFirstName();
 
-        if (authorId != null) {
-            conversationEntries = cassandraDataStore.getConversationEntries(conversation.getConversationId(), authorId, secondaryAuthorId,
-                    authorName, secondaryAuthorName);
+        // Retrieves all entries of a conversation  from both participants
+        conversationEntries = cassandraDataStore.getConversationEntries(conversation.getConversationId(), authorId, secondaryAuthorId,
+                authorName, secondaryAuthorName);
 
-            Collections.sort(conversationEntries);
+        Collections.sort(conversationEntries);
 
-            JSONArray jsonArray = new JSONArray();
-            conversationEntries.forEach(entry -> {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("authorId", entry.getAuthorId().toString());
-                jsonObject.put("conversationId", entry.getConversationId().toString());
-                jsonObject.put("dateCreated", entry.getDateCreated().toString());
-                jsonObject.put("content", entry.getContent());
-                jsonObject.put("authorName", entry.getAuthorName());
-
-                jsonArray.add(jsonObject);
-            });
-
-            response.getWriter().write(jsonArray.toJSONString());
-            response.getWriter().flush();
-            response.getWriter().close();
-        } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
-
-
-//        if (conversationId != null && authorId != null && secondaryAuthorId != null) {
-//            conversationEntries = cassandraDataStore.getConversationEntries(conversationId, authorId, secondaryAuthorId);
-//            Collections.sort(conversationEntries);
-//
-////            String authorName = cassandraDataStore.getUser(authorId).getFirstName();
-//            String authorName = cassandraDataStore.getUser(UUID.fromString("2003c2f5-0d6d-4b05-8e79-ec90518a5675")).getFirstName();
-////            String secondaryAuthorName = cassandraDataStore.getUser(secondaryAuthorId).getFirstName();
-//            String secondaryAuthorName = cassandraDataStore.getUser(UUID.fromString("2ebcb689-d31e-4d85-8dff-351e8f902d6c")).getFirstName();
-//
-//            JSONArray jsonArray = new JSONArray();
-//            conversationEntries.forEach(entry -> {
-//                JSONObject jsonObject = new JSONObject();
-//                jsonObject.put("authorId", entry.getAuthorId().toString());
-//                jsonObject.put("conversationId", entry.getConversationId().toString());
-//                jsonObject.put("dateCreated", entry.getDateCreated().toString());
-//                jsonObject.put("content", entry.getContent());
-//
-//                if (entry.getAuthorId().toString().equalsIgnoreCase("51dca0e3-f008-4dd6-baf8-63b60348a119")) {
-//                    jsonObject.put("authorName", "Alesia");
-//                } else {
-//                    jsonObject.put("authorName", "Danny");
-//                }
-//
-//                jsonArray.add(jsonObject);
-//            });
-//
-//            response.getWriter().write(jsonArray.toJSONString());
-//            response.getWriter().flush();
-//            response.getWriter().close();
-//        } else {
-//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//        }
+        // Build JSON array of messages and then send to client
+        JSONArray jsonArray = servletHelper.buildConversationEntriesJsonArray(conversationEntries);
+        servletHelper.writeJsonOutput(response, jsonArray.toString());
 
         cassandraDataStore.close();
     }
