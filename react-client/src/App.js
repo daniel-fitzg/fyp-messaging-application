@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.css';
-import LoginForm from "./main-frame-components/welcome-page/LoginForm"
-import RegisterForm from "./main-frame-components/welcome-page/RegisterForm"
+import LoginForm from "./main-frame-components/LoginForm"
+import RegisterForm from "./main-frame-components/RegisterForm"
 import TitleMessageList from "./main-frame-components/TitleMessageList"
 import TitleConversationsList from "./main-frame-components/TitleConversationsList"
-import Conversation from "./main-frame-components/user-conversations/Conversation"
+import Conversation from "./main-frame-components/Conversation"
 import MessagesList from "./main-frame-components/MessagesList"
 import SendMessage from "./main-frame-components/SendMessage"
 
@@ -28,6 +28,7 @@ class App extends React.Component {
         messages: []
       }
 
+      // Bind statements that set the context of 'this' when passed to Components are properties (arguments)
       this.loadWelcomeScreen = this.loadWelcomeScreen.bind(this)
       this.loadConversationsScreen = this.loadConversationsScreen.bind(this)
       this.loadMessagesScreen = this.loadMessagesScreen.bind(this)
@@ -35,13 +36,16 @@ class App extends React.Component {
       this.loadRegisterForm = this.loadRegisterForm.bind(this)
       this.resetWelcomeScreen = this.resetWelcomeScreen.bind(this)
       this.updateLoadingScreen = this.updateLoadingScreen.bind(this)
-      this.updateConversationId = this.updateConversationId.bind(this)
       this.authenticateUser = this.authenticateUser.bind(this)
       this.registerUser = this.registerUser.bind(this)
       this.getConversations = this.getConversations.bind(this)
       this.getConversationEntries = this.getConversationEntries.bind(this)
       this.addConversationEntry = this.addConversationEntry.bind(this)
   }
+
+  /*
+  The following load functions set falgs that control which screen/elements are rendered for the user
+  */
 
   loadWelcomeScreen(event) {
     this.setState({
@@ -50,6 +54,7 @@ class App extends React.Component {
       showMessagesScreen: false
     })
 
+    // Does not show the login or registration button
     this.resetWelcomeScreen()
   }
 
@@ -61,6 +66,7 @@ class App extends React.Component {
       userId: userId
     })
 
+    // Upon load, conversations are retreived from the server
     this.getConversations()
   }
 
@@ -71,7 +77,9 @@ class App extends React.Component {
       showMessagesScreen: true
     })
 
+    // Gets the conversation ID needed to identify the messages/entries belonging to the conversation
     this.getConversation(authorId, secondaryAuthorId)
+    // Gets the relevant entries
     this.getConversationEntries(authorId, secondaryAuthorId)
   }
 
@@ -94,24 +102,19 @@ class App extends React.Component {
     })
   }
 
+  // Inverts current boolean value of the showLoadingScreen flag
   updateLoadingScreen() {
    this.setState({
      showLoadingScreen: !this.state.showLoadingScreen
    })
   }
 
-  updateConversationId(conversationId) {
-    this.setState({
-      conversationId: conversationId
-    })
-
-    this.getConversationEntries(this.state.conversationId)
-  }
-
+  // HTTP request to server with user input data to authenticate that user is in system and password if correct
   authenticateUser(event, email, password) {
     const request = new XMLHttpRequest()
      request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/AuthenticateUser', true);
      request.onreadystatechange = () => {
+         // Server response has been received and ready to be processed
          if (request.readyState === 4 && request.status === 200) {
            var user = JSON.parse(request.responseText)
 
@@ -136,10 +139,12 @@ class App extends React.Component {
        }));
   }
 
+  // HTTP request to server with user input data to register a new user in the system
   registerUser(event, email, password, firstName, lastName) {
     const request = new XMLHttpRequest()
      request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/RegisterUser', true);
      request.onreadystatechange = () => {
+         // Server response has been received and ready to be processed
          if (request.readyState === 4 && request.status === 200) {
            var result = JSON.parse(request.responseText)
 
@@ -165,21 +170,21 @@ class App extends React.Component {
      }))
   }
 
+  // HTTP request to server to get a list of possible users the current user can have a conversation with
   // Called when the conversation list screen is activated
   getConversations() {
     const request = new XMLHttpRequest()
     request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetUserConversations', true);
     request.onreadystatechange = () => {
+        // Server response has been received and ready to be processed
         if (request.readyState === 4 && request.status === 200) {
           var conversationList = JSON.parse(request.responseText)
           this.setState({
             conversationList: conversationList
           })
-          //this.updateLoadingScreen()
           this.setState({
             showLoadingScreen: false
           })
-          console.log("Marker " + conversationList)
         }
      };
 
@@ -188,6 +193,7 @@ class App extends React.Component {
      }))
   }
 
+  // HTTP request to server to retreive the conversation of which both users are a participant
   getConversation(authorId, secondaryAuthorId) {
     this.setState({
       secondaryUserId: secondaryAuthorId
@@ -196,15 +202,12 @@ class App extends React.Component {
     const request = new XMLHttpRequest()
     request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetConversation', true);
     request.onreadystatechange = () => {
+        // Server response has been received and ready to be processed
         if (request.readyState === 4 && request.status === 200) {
           var conversation = JSON.parse(request.responseText)
           this.setState({
             conversationId: conversation.conversationId
           })
-          // this.setState({
-          //   showLoadingScreen: true
-          // })
-          console.log("Convo retrieved " + conversation.conversationId)
         }
      };
 
@@ -214,18 +217,16 @@ class App extends React.Component {
      }))
   }
 
+  // HTTP request to server to get all message entries belonging to the conversation
   getConversationEntries(authorId, secondaryAuthorId) {
     const request = new XMLHttpRequest()
     request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/GetConversationEntries', true);
     request.onreadystatechange = () => {
+        // Server response has been received and ready to be processed
         if (request.readyState === 4 && request.status === 200) {
           var messages = JSON.parse(request.responseText)
           this.setState({
-            messages: messages
-          })
-          console.log(messages)
-          //this.updateLoadingScreen()
-          this.setState({
+            messages: messages,
             showLoadingScreen: false
           })
         }
@@ -237,18 +238,17 @@ class App extends React.Component {
      }))
   }
 
+  // HTTP request to server with user input text to add an entry to the current conversation
   addConversationEntry(event, message) {
-    alert("Convo: " + this.state.conversationId + " Message: " + message)
-
     const request = new XMLHttpRequest()
     request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/AddConversationEntry', true);
     request.onreadystatechange = () => {
+        // Server response has been received and ready to be processed
         if (request.readyState === 4 && request.status === 200) {
           var updatedMessages = JSON.parse(request.responseText)
           this.setState({
             messages: updatedMessages
           })
-          console.log(updatedMessages)
         }
      };
 
@@ -261,36 +261,44 @@ class App extends React.Component {
      }))
   }
 
-  /* One way of keeping the send message bar on screen even when scrolling down woul be poisition: fixed ???*/
-
+  // Determines which component and elements are currently rendered to the User Interface
   getComponent() {
+    
     if (this.state.showWelcomeScreen) {
+      // Welcome screen is active
       if (this.state.showLoginForm) {
+        // User has clicked login button
         return (
           <div>
-            <img className="welcome-icon" src={require(`${"./main-frame-components/welcome-page/NewLogo.jpg"}`)} />
+            <img className="welcome-icon" src={require(`${"./main-frame-components/NewLogo.jpg"}`)} />
             <LoginForm authenticateUser={this.authenticateUser}/>
             <button className="cancel-button" onClick={this.resetWelcomeScreen}>CANCEL</button>
           </div>
         )
       } else if (this.state.showRegisterForm) {
+        // User has clicked register button
         return (
           <div>
-            <img className="welcome-icon" src={require(`${"./main-frame-components/welcome-page/NewLogo.jpg"}`)} />
+            <img className="welcome-icon" src={require(`${"./main-frame-components/NewLogo.jpg"}`)} />
             <RegisterForm registerUser={this.registerUser}/>
             <button className="cancel-button" onClick={this.resetWelcomeScreen}>CANCEL</button>
           </div>
         )
+      } else {
+        // Neither login nor register button has yet been pressed
+        return (
+          <div>
+            <img className="welcome-icon" src={require(`${"./main-frame-components/NewLogo.jpg"}`)} />
+            <button className="login-button" onClick={this.loadLoginForm}>LOGIN</button>
+            <button className="register-button" onClick={this.loadRegisterForm}>REGISTER</button>
+            <button className="cancel-button" onClick={this.resetWelcomeScreen}>CANCEL</button>
+          </div>
+        )
       }
-      return (
-        <div>
-          <img className="welcome-icon" src={require(`${"./main-frame-components/welcome-page/NewLogo.jpg"}`)} />
-          <button className="login-button" onClick={this.loadLoginForm}>LOGIN</button>
-          <button className="register-button" onClick={this.loadRegisterForm}>REGISTER</button>
-          <button className="cancel-button" onClick={this.resetWelcomeScreen}>CANCEL</button>
-        </div>
-      )
+      // User has logged in/registered - conversation list screen now active
     } else if (this.state.showConversationsScreen) {
+
+      // Compiles conversation list from data returned from server
       var list = this.state.conversationList.map((conversation) =>
         <Conversation
         conversation={conversation}
@@ -305,7 +313,8 @@ class App extends React.Component {
           </div>
         )
        } else {
-        return (
+         // Display list of available conversations
+         return (
           <div style={{backgroundColor: "white"}}>
             <TitleConversationsList
               loadWelcomeScreen={this.loadWelcomeScreen}
@@ -316,7 +325,10 @@ class App extends React.Component {
           </div>
         )
       }
+    
+    // User has selected a conversation and messages from the conversation are displayed
     } else if (this.state.showMessagesScreen) {
+      
       if (this.state.showLoadingScreen) {
         return (
           <div style={{backgroundColor: "white"}}>

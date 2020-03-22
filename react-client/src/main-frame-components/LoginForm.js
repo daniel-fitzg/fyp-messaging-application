@@ -1,7 +1,10 @@
 import React from "react"
 
-class LoginForm extends React.Component {
+/* 
+Creates a LoginForm Component to receive user input for user login
+*/
 
+class LoginForm extends React.Component {
   constructor() {
     super()
     this.state = {
@@ -14,12 +17,14 @@ class LoginForm extends React.Component {
   }
 
   handleChange(event) {
+    // Sets either email or password state based on the 'name' of the input field triggering change event
     this.setState({
       [event.target.name]: event.target.value
     })
   }
 
   handleSubmit(event) {
+    // Prevents re-render of React
     event.preventDefault()
     this.props.authenticateUser(event, this.state.email, this.state.password)
   }

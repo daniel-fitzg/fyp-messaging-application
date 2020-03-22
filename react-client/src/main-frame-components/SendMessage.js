@@ -1,7 +1,10 @@
 import React from "react"
 
-class SendMessage extends React.Component {
+/* 
+Creates a SendMessage Component allowing user to enter text and send to the conversation
+*/
 
+class SendMessage extends React.Component {
   constructor() {
     super()
     this.state = {
@@ -19,8 +22,8 @@ class SendMessage extends React.Component {
   }
 
   handleSubmit(event) {
+    // Prevents a React re-render
     event.preventDefault()
-    // Need to send a secondary author id here
     this.props.addConversationEntry(event, this.state.message)
     this.setState({
       message: ""

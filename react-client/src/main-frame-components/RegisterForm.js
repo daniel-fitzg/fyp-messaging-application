@@ -1,5 +1,9 @@
 import React from "react"
 
+/* 
+Creates a RegisterForm Component to receive user input for user registration
+*/
+
 class RegisterForm extends React.Component {
 
   constructor() {
@@ -16,6 +20,7 @@ class RegisterForm extends React.Component {
   }
 
   handleChange(event) {
+    // Sets either one of the 4 field's state based on the 'name' of the input field triggering change event
     this.setState({
       [event.target.name]: event.target.value
     })

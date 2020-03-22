@@ -1,8 +1,12 @@
 import React from "react"
-import SendMessage from "./SendMessage"
+
+/* 
+Creates a MessagesList Component from data returned from server
+A list of messages from server is parsed to print to User Interface
+Messages are from both participants and in order from newest to oldest
+*/
 
 class MessagesList extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -11,16 +15,19 @@ class MessagesList extends React.Component {
     }
   }
 
+  // Timer - getConversationEntries will be called every 2 seconds to update message list of the current conversation
   componentDidMount() {
     this.interval = setInterval(() => {
       this.props.getConversationEntries(this.state.userId, this.state.secondaryAuthorId)
     }, 2000);
   }
 
+  // Timer is cleared when the message list screen is no longer active/being rendered
   componentWillUnmount() {
    clearInterval(this.interval)
  }
-
+  
+  // Name tag of each message and message colour is filtered the user ID of each individual message
   render() {
    return (
      <div className="message-list">

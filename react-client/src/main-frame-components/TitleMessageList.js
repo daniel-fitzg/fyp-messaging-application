@@ -1,5 +1,11 @@
 import React from "react"
 
+/* 
+Creates a TitleMessageList Component 
+This is the header component for the messages list screen
+It contains a back button that will bring a user back to the conversation list screen from the messages screen
+*/
+
 class TitleMessageList extends React.Component {
   constructor(props) {
     super(props)
