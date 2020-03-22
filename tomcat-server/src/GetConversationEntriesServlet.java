@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 /*
-* Servlet gets and returns the entries of a single conversation for the user
+* Servlet gets and returns the entries of a single conversation for the current user and the secondary user/participant
 * */
 
 @WebServlet(name = "GetConversationEntriesServlet", urlPatterns = {"/GetConversationEntries"})
@@ -33,7 +33,8 @@ public class GetConversationEntriesServlet extends HttpServlet {
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
         // Retrieves conversation data
-        Conversation conversation = cassandraDataStore.getConversation(authorId, secondaryAuthorId);
+        Conversation conversation = servletHelper.getConversation(cassandraDataStore, authorId,
+                secondaryAuthorId);
 
         List<ConversationEntry> conversationEntries = new ArrayList<>();
         String authorName = cassandraDataStore.getUser(authorId).getFirstName();

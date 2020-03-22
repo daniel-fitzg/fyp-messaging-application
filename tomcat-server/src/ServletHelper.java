@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 public class ServletHelper {
 
@@ -48,5 +49,9 @@ public class ServletHelper {
         response.getWriter().write(jsonString);
         response.getWriter().flush();
         response.getWriter().close();
+    }
+
+    Conversation getConversation(CassandraDataStore cassandraDataStore, UUID userId, UUID secondaryUserId) {
+        return cassandraDataStore.getConversation(userId, secondaryUserId);
     }
 }

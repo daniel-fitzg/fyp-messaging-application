@@ -18,33 +18,23 @@ import java.util.UUID;
 @WebServlet(name = "GetConversationServlet", urlPatterns = {"/GetConversation"})
 public class GetConversationServlet extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Allows resource sharing across different origins
         response.setHeader("Access-Control-Allow-Origin", "*");
 
-        BufferedReader bufferedReader = new BufferedReader(request.getReader());
-        String incomingJsonString = bufferedReader.readLine();
-        JSONParser jsonParser = new JSONParser();
-        JSONObject incomingJsonObject = null;
+        ServletHelper servletHelper = new ServletHelper();
+        JSONObject incomingJsonObject = servletHelper.parseIncomingJSON(request, response);
 
-        try {
-            incomingJsonObject = (JSONObject) jsonParser.parse(incomingJsonString);
-        } catch (ParseException exception) {
-            exception.printStackTrace();
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "JSON Parse Exception thrown");
-        }
-
-        UUID authorId = UUID.fromString((String) incomingJsonObject.get("authorId"));
-        UUID secondaryAuthorId = UUID.fromString((String) incomingJsonObject.get("secondaryAuthorId"));
-
+        // Cassandra DB instance
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
-        Conversation conversation = cassandraDataStore.getConversation(authorId, secondaryAuthorId);
+        // Retrieves conversation data
+        Conversation conversation = servletHelper.getConversation(cassandraDataStore, UUID.fromString((String) incomingJsonObject.get("authorId")),
+                UUID.fromString((String) incomingJsonObject.get("secondaryAuthorId")));
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("conversationId", conversation.getConversationId().toString());
 
-        response.getWriter().write(jsonObject.toJSONString());
-        response.getWriter().flush();
-        response.getWriter().close();
+        servletHelper.writeJsonOutput(response, jsonObject.toString());
 
         cassandraDataStore.close();
     }
