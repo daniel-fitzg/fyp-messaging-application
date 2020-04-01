@@ -36,7 +36,7 @@ class LoginForm extends React.Component {
             <input
               className="user-input"
               name="email"
-              placeholder="Email"
+              placeholder="Username"
               type="text"
               onChange={this.handleChange}
             />
