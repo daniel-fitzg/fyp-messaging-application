@@ -29,10 +29,7 @@ class Conversation extends React.Component {
         <button className="conversation-button" onClick={this.handleClick}>
           <h3 className="conversation-username">{this.props.conversation.firstName} {this.props.conversation.lastName}</h3>
           <p className="conversation-status">ONLINE</p>
-          {this.props.conversation.lastUpdated != null &&
-            <p className="conversation-updated">Updated: {this.props.conversation.lastUpdated}</p>
-          }
-
+          <p className="conversation-updated">Registered: {this.props.conversation.registerDate}</p>
         </button>
       </div>
     )

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +40,8 @@ public class GetUserConversationsServlet extends HttpServlet {
         }
         users.remove(duplicateUser);
 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+
         // Populate JSON array with user objects
         JSONArray jsonArray = new JSONArray();
         users.forEach(user -> {
@@ -46,6 +49,7 @@ public class GetUserConversationsServlet extends HttpServlet {
             userJsonObject.put("userId", user.getUserId().toString());
             userJsonObject.put("firstName", user.getFirstName());
             userJsonObject.put("lastName", user.getLastName());
+            userJsonObject.put("registerDate", simpleDateFormat.format(user.getRegisterDate()));
 
             jsonArray.add(userJsonObject);
         });
