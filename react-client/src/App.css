@@ -165,11 +165,36 @@
 
 .conversation {
   /* display: flex;
-  flex-direction: row; */
-  background-color: #e1e4e8;
+  flex-direction: column; */
+  /* background-color: #e1e4e8;
   border: 1px solid black;
   padding: 5px;
-  color: black;
+  color: black; */
+}
+
+.conversation-button {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 60px;
+}
+
+.conversation-username {
+  position: absolute;
+  left: 5%;  
+  /* text-align: center; */
+}
+
+.conversation-updated {
+  position: relative;
+  left: 50%;  
+  top: 3px;
+}
+
+.conversation-status {
+  position: relative;
+  left: 30%;
+  top: 3px;
 }
 
 .select-conversation-button {
