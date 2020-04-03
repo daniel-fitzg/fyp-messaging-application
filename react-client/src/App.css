@@ -191,10 +191,18 @@
   top: 3px;
 }
 
-.conversation-status {
+.online-status {
   position: relative;
   left: 30%;
   top: 3px;
+  color: GREEN;
+}
+
+.offline-status {
+  position: relative;
+  left: 30%;
+  top: 3px;
+  color: RED;
 }
 
 .select-conversation-button {

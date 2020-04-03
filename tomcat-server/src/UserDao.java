@@ -27,8 +27,9 @@ class UserDao {
             user.setFirstName(row.getString("first_name"));
             user.setLastName(row.getString("last_name"));
             user.setPassword(row.getString("password"));
-            user.setEmail(row.getString("email"));
+            user.setUsername(row.getString("username"));
             user.setRegisterDate(row.getTimestamp("register_date"));
+            user.setOnlineStatus(row.getBool("online_status"));
 
             users.add(user);
         });
@@ -38,11 +39,11 @@ class UserDao {
 
     User registerUser(RegisterUser newUser) {
         List<User> users = getAllUsers();
-        String newUserEmail = newUser.getEmail();
+        String newUserUsername = newUser.getUsername();
 
-        // Checks if user email alreay exists in the users table
+        // Checks if username already exists in the users table
         for (User user : users) {
-            if (user.getEmail().equalsIgnoreCase(newUserEmail)) {
+            if (user.getUsername().equalsIgnoreCase(newUserUsername)) {
                 System.out.println("User already exists");
                 return null;
             }
@@ -51,9 +52,10 @@ class UserDao {
         // Writes new user data to DB
         UUID userId = UUID.randomUUID();
         PreparedStatement preparedStatement = session.prepare("INSERT INTO " + tableName +
-                " (user_id, first_name, last_name, email, password, register_date) VALUES (?, ?, ?, ?, ?, ?)");
+                " (user_id, first_name, last_name, username, password, register_date, online_status) VALUES (?, ?, ?, ?, ?, ?, ?)");
 
-        session.execute(preparedStatement.bind(userId, newUser.getFirstName(), newUser.getLastName(), newUser.getEmail(), newUser.getPassword(), new Date()));
+        session.execute(preparedStatement.bind(userId, newUser.getFirstName(), newUser.getLastName(), newUser.getUsername(),
+                newUser.getPassword(), new Date(), true));
 
         // Reads new user entry from DB and returns user object
         return getUser(userId);
@@ -61,15 +63,15 @@ class UserDao {
 
     User authenticateUser(User existingUser) {
         List<User> users = getAllUsers();
-        String existingUserEmail = existingUser.getEmail();
+        String existingUserUsername = existingUser.getUsername();
 
         for (User user : users) {
 
-            // Checks if user email exists in table
-            if (user.getEmail().equalsIgnoreCase(existingUserEmail)) {
+            // Checks if username exists in table
+            if (user.getUsername().equalsIgnoreCase(existingUserUsername)) {
                 // Checks if user password matches entry in table
                 if (user.getPassword().equalsIgnoreCase(existingUser.getPassword())) {
-                    return user;
+                    return updateUserOnlineStatus(user);
                 } else {
                     return null;
                 }
@@ -77,6 +79,20 @@ class UserDao {
         }
 
         return null;
+    }
+
+    private User updateUserOnlineStatus(User user) {
+        PreparedStatement changeOnlineStatusTrue = session.prepare("UPDATE " + tableName + " SET online_status = " + true +
+                " WHERE user_id = " + user.getUserId());
+        session.execute(changeOnlineStatusTrue.bind());
+
+        return getUser(user.getUserId());
+    }
+
+    void logoutUser(UUID userId) {
+        PreparedStatement changeOnlineStatusFalse = session.prepare("UPDATE " + tableName + " SET online_status = " + false +
+                " WHERE user_id = " + userId);
+        session.execute(changeOnlineStatusFalse.bind());
     }
 
     User getUser(UUID userId) {
@@ -90,8 +106,9 @@ class UserDao {
         user.setFirstName(row.getString("first_name"));
         user.setLastName(row.getString("last_name"));
         user.setPassword(row.getString("password"));
-        user.setEmail(row.getString("email"));
+        user.setUsername(row.getString("username"));
         user.setRegisterDate(row.getTimestamp("register_date"));
+        user.setOnlineStatus(row.getBool("online_status"));
 
         return user;
     }

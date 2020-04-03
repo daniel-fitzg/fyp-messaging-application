@@ -23,7 +23,7 @@ public class AuthenticateUserServlet extends HttpServlet {
 
         // New user object to be passed to data store
         User user = new User();
-        user.setEmail((String) incomingJsonObject.get("email"));
+        user.setUsername((String) incomingJsonObject.get("email"));
         user.setPassword((String) incomingJsonObject.get("password"));
 
         // Cassandra DB instance
@@ -39,7 +39,7 @@ public class AuthenticateUserServlet extends HttpServlet {
                 outgoingJsonObject.put("userId", authenticatedUser.getUserId().toString());
                 outgoingJsonObject.put("firstName", authenticatedUser.getFirstName());
                 outgoingJsonObject.put("lastName", authenticatedUser.getLastName());
-                outgoingJsonObject.put("email", authenticatedUser.getEmail());
+                outgoingJsonObject.put("email", authenticatedUser.getUsername());
                 outgoingJsonObject.put("registerDate", authenticatedUser.getRegisterDate().toString());
             } else {
                 // TODO reintegrate when HTTP error codes work
@@ -59,7 +59,7 @@ public class AuthenticateUserServlet extends HttpServlet {
 
     // Checks if user has entered empty strings for credentials
     private boolean validateExistingUser(User existingUser) {
-        if (existingUser.getEmail().equalsIgnoreCase("") || existingUser.getPassword().equalsIgnoreCase("")) {
+        if (existingUser.getUsername().equalsIgnoreCase("") || existingUser.getPassword().equalsIgnoreCase("")) {
             return false;
         }
 

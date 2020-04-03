@@ -24,7 +24,7 @@ public class RegisterUserServlet extends HttpServlet {
         CassandraDataStore cassandraDataStore = new CassandraDataStore();
 
         RegisterUser newUser = new RegisterUser();
-        newUser.setEmail((String) incomingJsonObject.get("email"));
+        newUser.setUsername((String) incomingJsonObject.get("email"));
         newUser.setPassword((String) incomingJsonObject.get("password"));
         newUser.setFirstName((String) incomingJsonObject.get("firstName"));
         newUser.setLastName((String) incomingJsonObject.get("lastName"));
@@ -57,7 +57,7 @@ public class RegisterUserServlet extends HttpServlet {
     private boolean validateNewUser(RegisterUser newUser) throws IOException {
         return !newUser.getFirstName().equalsIgnoreCase("")
                 && !newUser.getLastName().equalsIgnoreCase("")
-                && !newUser.getEmail().equalsIgnoreCase("")
+                && !newUser.getUsername().equalsIgnoreCase("")
                 && !newUser.getPassword().equalsIgnoreCase("");
     }
 

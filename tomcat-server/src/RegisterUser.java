@@ -3,13 +3,13 @@ import java.io.Serializable;
 class RegisterUser implements Serializable {
     private String firstName;
     private String lastName;
-    private String email;
+    private String username;
     private String password;
 
     RegisterUser() {
         this.firstName = null;
         this.lastName = null;
-        this.email = null;
+        this.username = null;
         this.password = null;
     }
 
@@ -29,12 +29,12 @@ class RegisterUser implements Serializable {
         this.lastName = lastName;
     }
 
-    String getEmail() {
-        return email;
+    String getUsername() {
+        return username;
     }
 
-    void setEmail(String email) {
-        this.email = email;
+    void setUsername(String username) {
+        this.username = username;
     }
 
     String getPassword() {

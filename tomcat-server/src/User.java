@@ -6,17 +6,19 @@ public class User implements Serializable {
     private UUID userId;
     private String firstName;
     private String lastName;
-    private String email;
+    private String username;
     private String password;
     private Date registerDate;
+    private boolean onlineStatus;
 
     User() {
         this.userId = null;
         this.firstName = null;
         this.lastName = null;
-        this.email = null;
+        this.username = null;
         this.password = null;
         this.registerDate = null;
+        this.onlineStatus = false;
     }
 
     UUID getUserId() {
@@ -59,11 +61,19 @@ public class User implements Serializable {
         this.registerDate = registerDate;
     }
 
-    String getEmail() {
-        return email;
+    String getUsername() {
+        return username;
     }
 
-    void setEmail(String email) {
-        this.email = email;
+    void setUsername(String username) {
+        this.username = username;
+    }
+
+    public boolean isOnlineStatus() {
+        return onlineStatus;
+    }
+
+    public void setOnlineStatus(boolean onlineStatus) {
+        this.onlineStatus = onlineStatus;
     }
 }

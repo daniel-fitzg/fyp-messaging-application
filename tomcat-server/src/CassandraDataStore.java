@@ -27,6 +27,10 @@ public class CassandraDataStore {
         return new UserDao(session).authenticateUser(user);
     }
 
+    void logoutUser(UUID userId) {
+        new UserDao(session).logoutUser(userId);
+    }
+
     User getUser(UUID userId) {
         return new UserDao(session).getUser(userId);
     }

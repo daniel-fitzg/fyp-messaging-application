@@ -38,6 +38,7 @@ class App extends React.Component {
       this.updateLoadingScreen = this.updateLoadingScreen.bind(this)
       this.authenticateUser = this.authenticateUser.bind(this)
       this.registerUser = this.registerUser.bind(this)
+      this.logoutUser = this.logoutUser.bind(this)
       this.getConversations = this.getConversations.bind(this)
       this.getConversationEntries = this.getConversationEntries.bind(this)
       this.addConversationEntry = this.addConversationEntry.bind(this)
@@ -170,6 +171,22 @@ class App extends React.Component {
      }))
   }
 
+  logoutUser() {
+    const request = new XMLHttpRequest()
+     request.open('POST', 'http://localhost:8080/tomcat_server_war_exploded/LogoutUser', true);
+     request.onreadystatechange = () => {
+         // Server response has been received and ready to be processed
+         if (request.readyState === 4 && request.status === 200) {
+           var result = JSON.parse(request.responseText)
+           console.log("User logged out")
+         }
+     };
+
+     request.send(JSON.stringify({
+       userId: this.state.userId
+     }))
+  }
+
   // HTTP request to server to get a list of possible users the current user can have a conversation with
   // Called when the conversation list screen is activated
   getConversations() {
@@ -263,7 +280,7 @@ class App extends React.Component {
 
   // Determines which component and elements are currently rendered to the User Interface
   getComponent() {
-    
+
     if (this.state.showWelcomeScreen) {
       // Welcome screen is active
       if (this.state.showLoginForm) {
@@ -303,6 +320,7 @@ class App extends React.Component {
         <Conversation
         conversation={conversation}
         currentUserId={this.state.userId}
+        getConversations={this.getConversations}
         updateLoadingScreen={this.updateLoadingScreen}
         loadMessagesScreen={this.loadMessagesScreen}/>);
 
@@ -320,15 +338,16 @@ class App extends React.Component {
               loadWelcomeScreen={this.loadWelcomeScreen}
               firstName={this.state.firstName}
               lastName={this.state.lastName}
+              logoutUser={this.logoutUser}
             />
             {list}
           </div>
         )
       }
-    
+
     // User has selected a conversation and messages from the conversation are displayed
     } else if (this.state.showMessagesScreen) {
-      
+
       if (this.state.showLoadingScreen) {
         return (
           <div style={{backgroundColor: "white"}}>

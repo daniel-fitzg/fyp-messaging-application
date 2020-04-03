@@ -17,6 +17,17 @@ class Conversation extends React.Component {
     this.handleClick = this.handleClick.bind(this)
   }
 
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      this.props.getConversations()
+    }, 2000);
+  }
+
+  // Timer is cleared when the message list screen is no longer active/being rendered
+  componentWillUnmount() {
+   clearInterval(this.interval)
+ }
+
   handleClick() {
     this.props.updateLoadingScreen()
     this.props.loadMessagesScreen(this.state.authorId, this.state.secondaryAuthorId)
@@ -28,7 +39,12 @@ class Conversation extends React.Component {
       <div>
         <button className="conversation-button" onClick={this.handleClick}>
           <h3 className="conversation-username">{this.props.conversation.firstName} {this.props.conversation.lastName}</h3>
-          <p className="conversation-status">ONLINE</p>
+          {this.props.conversation.onlineStatus &&
+            <p className="online-status">ONLINE</p>
+          }
+          {!this.props.conversation.onlineStatus &&
+            <p className="offline-status">OFFLINE</p>
+          }
           <p className="conversation-updated">Registered: {this.props.conversation.registerDate}</p>
         </button>
       </div>

@@ -50,6 +50,7 @@ public class GetUserConversationsServlet extends HttpServlet {
             userJsonObject.put("firstName", user.getFirstName());
             userJsonObject.put("lastName", user.getLastName());
             userJsonObject.put("registerDate", simpleDateFormat.format(user.getRegisterDate()));
+            userJsonObject.put("onlineStatus", user.isOnlineStatus());
 
             jsonArray.add(userJsonObject);
         });

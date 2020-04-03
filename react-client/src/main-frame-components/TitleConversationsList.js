@@ -14,6 +14,7 @@ class TitleConversationsList extends React.Component {
   }
   
   handleClick() {
+    this.props.logoutUser()
     // Brings user back to login screen when logout button is pressed
     this.props.loadWelcomeScreen()
   }
