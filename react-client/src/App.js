@@ -177,7 +177,6 @@ class App extends React.Component {
      request.onreadystatechange = () => {
          // Server response has been received and ready to be processed
          if (request.readyState === 4 && request.status === 200) {
-           var result = JSON.parse(request.responseText)
            console.log("User logged out")
          }
      };
