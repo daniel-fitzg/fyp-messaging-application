@@ -10,33 +10,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @WebServlet(name = "GetConversationServlet", urlPatterns = {"/GetConversation"})
 public class GetConversationServlet extends HttpServlet {
+
+    private ConversationService conversationService = new ConversationService();
+    private JSONHandler jsonHandler = new JSONHandler();
+
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Allows resource sharing across different origins
         response.setHeader("Access-Control-Allow-Origin", "*");
 
-        ServletHelper servletHelper = new ServletHelper();
-        JSONObject incomingJsonObject = servletHelper.parseIncomingJSON(request, response);
+        Map<String, UUID> authorIds = jsonHandler.createAuthorIdListFromJSON(request, response);
+        UUID authorId = authorIds.get("authorId");
+        UUID secondaryAuthorId = authorIds.get("secondaryAuthorId");
 
-        // Cassandra DB instance
-        CassandraDataStore cassandraDataStore = new CassandraDataStore();
+        Conversation conversation = conversationService.getConversation(authorId, secondaryAuthorId);
 
-        // Retrieves conversation data
-        Conversation conversation = servletHelper.getConversation(cassandraDataStore, UUID.fromString((String) incomingJsonObject.get("authorId")),
-                UUID.fromString((String) incomingJsonObject.get("secondaryAuthorId")));
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("conversationId", conversation.getConversationId().toString());
-
-        servletHelper.writeJsonOutput(response, jsonObject.toString());
-
-        cassandraDataStore.close();
+        jsonHandler.writeJSONOutputConversationId(response, conversation.getConversationId());
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

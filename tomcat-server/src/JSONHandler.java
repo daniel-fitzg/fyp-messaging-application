@@ -107,6 +107,12 @@ public class JSONHandler {
         writeJSONOutput(response, jsonObject.toJSONString());
     }
 
+    void writeJSONOutputConversationId(HttpServletResponse response, UUID conversationId) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("conversationId", conversationId.toString());
+        writeJSONOutput(response, jsonObject.toJSONString());
+    }
+
     private void writeJSONOutput(HttpServletResponse response, String jsonString) throws IOException {
         response.getWriter().write(jsonString);
         response.getWriter().flush();
