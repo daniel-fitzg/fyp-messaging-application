@@ -20,4 +20,8 @@ public class ConversationService {
 
         return cassandraDataStore.getConversationEntries(conversationId, authorId, secondaryAuthorId, authorName, secondaryAuthorName);
     }
+
+    Conversation getConversation(UUID authorId, UUID secondaryAuthorId) {
+        return cassandraDataStore.getConversation(authorId, secondaryAuthorId);
+    }
 }

@@ -8,10 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class JSONHandler {
 
@@ -32,6 +29,16 @@ public class JSONHandler {
         }
 
         return conversationEntry;
+    }
+
+    Map<String, UUID> createAuthorIdListFromJSON(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Map<String, UUID> authorIds = new HashMap<>();
+
+        JSONObject jsonObject = parseIncomingJSON(request, response);
+        authorIds.put("authorId", UUID.fromString((String) jsonObject.get("authorId")));
+        authorIds.put("secondaryAuthorId", UUID.fromString((String) jsonObject.get("secondaryAuthorId")));
+
+        return authorIds;
     }
 
     User createAuthenticateUserFromJSON(HttpServletRequest request, HttpServletResponse response) throws IOException {
