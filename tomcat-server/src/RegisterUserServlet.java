@@ -13,45 +13,18 @@ import java.io.IOException;
 @WebServlet(name = "RegisterUserServlet", urlPatterns = {"/RegisterUser"})
 public class RegisterUserServlet extends HttpServlet {
 
+    private UserService userService = new UserService();
+    private JSONHandler jsonHandler = new JSONHandler();
+
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Allows resource sharing across different origins
         response.setHeader("Access-Control-Allow-Origin", "*");
 
-        ServletHelper servletHelper = new ServletHelper();
-        JSONObject incomingJsonObject = servletHelper.parseIncomingJSON(request, response);
+        RegisterUser newUser = jsonHandler.createRegisterUserFromJSON(request, response);
 
-        // Cassandra DB instance
-        CassandraDataStore cassandraDataStore = new CassandraDataStore();
+        User registeredUser = userService.registerUser(newUser);
 
-        RegisterUser newUser = new RegisterUser();
-        newUser.setUsername((String) incomingJsonObject.get("email"));
-        newUser.setPassword((String) incomingJsonObject.get("password"));
-        newUser.setFirstName((String) incomingJsonObject.get("firstName"));
-        newUser.setLastName((String) incomingJsonObject.get("lastName"));
-
-        JSONObject outgoingJsonObject = new JSONObject();
-
-        // validateNewUser = Validates that user input does not contain empty strings
-        if (validateNewUser(newUser)) {
-            User registeredUser = cassandraDataStore.registerUser(newUser);
-
-            if (registeredUser != null) {
-                System.out.println("User registered successfully");
-                outgoingJsonObject.put("registeredUserId", registeredUser.getUserId().toString());
-            } else {
-                //response.setStatus(HttpServletResponse.SC_CONFLICT, "Email already registered");
-                outgoingJsonObject.put("registeredUserId", false);
-            }
-        } else {
-            //response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            outgoingJsonObject.put("registeredUserId", false);
-        }
-
-        // Sends response to server
-        // New user ID if registration successful, boolean: false is registration fails
-        servletHelper.writeJsonOutput(response, outgoingJsonObject.toString());
-
-        cassandraDataStore.close();
+        jsonHandler.writeJSONOutputRegisterUser(response, registeredUser);
     }
 
     private boolean validateNewUser(RegisterUser newUser) throws IOException {

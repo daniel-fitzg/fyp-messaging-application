@@ -20,6 +20,14 @@ public class UserService {
         return cassandraDataStore.authenticateUser(user);
     }
 
+    User registerUser(RegisterUser user) {
+        if (!validationService.validateRegisterUser(user)) {
+            return null;
+        }
+
+        return cassandraDataStore.registerUser(user);
+    }
+
     List<User> getAllUsers() {
         return cassandraDataStore.getAllUsers();
     }

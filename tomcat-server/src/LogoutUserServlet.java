@@ -19,7 +19,7 @@ public class LogoutUserServlet extends HttpServlet {
         response.setHeader("Access-Control-Allow-Origin", "*");
 
         UUID userId = jsonHandler.getUserIdFromJSON(request, response);
-        
+
         userService.logoutUser(userId);
     }
 

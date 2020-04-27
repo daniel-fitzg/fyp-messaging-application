@@ -56,6 +56,18 @@ public class JSONHandler {
         return user;
     }
 
+    RegisterUser createRegisterUserFromJSON(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        JSONObject jsonObject = parseIncomingJSON(request, response);
+
+        RegisterUser user = new RegisterUser();
+        user.setUsername((String) jsonObject.get("email"));
+        user.setPassword((String) jsonObject.get("password"));
+        user.setFirstName((String) jsonObject.get("firstName"));
+        user.setLastName((String) jsonObject.get("lastName"));
+
+        return user;
+    }
+
     private JSONObject parseIncomingJSON(HttpServletRequest request, HttpServletResponse response) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(request.getReader());
         String incomingJsonString = bufferedReader.readLine();
@@ -113,8 +125,9 @@ public class JSONHandler {
         writeJSONOutput(response, buildConversationEntriesJsonArray(conversationEntries).toJSONString());
     }
 
-    void writeJSONOutputUser(HttpServletResponse response, User user) throws IOException {
+    void writeJSONOutputAuthenticateUser(HttpServletResponse response, User user) throws IOException {
         JSONObject jsonObject = new JSONObject();
+
 
         if (user != null) {
             jsonObject.put("userId", user.getUserId().toString());
@@ -126,6 +139,19 @@ public class JSONHandler {
             writeJSONOutput(response, jsonObject.toJSONString());
         } else {
             jsonObject.put("userId", null);
+        }
+
+        writeJSONOutput(response, jsonObject.toJSONString());
+    }
+
+    void writeJSONOutputRegisterUser(HttpServletResponse response, User registeredUser) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+
+        if (registeredUser != null) {
+            System.out.println("User registered successfully");
+            jsonObject.put("registeredUserId", registeredUser.getUserId().toString());
+        } else {
+            jsonObject.put("registeredUserId", false);
         }
 
         writeJSONOutput(response, jsonObject.toJSONString());

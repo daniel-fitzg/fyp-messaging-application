@@ -1,12 +1,9 @@
-import org.json.simple.JSONObject;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
 
 /*
 * Servlet processes user sign-in requests by authenticating users credentials
@@ -25,7 +22,7 @@ public class AuthenticateUserServlet extends HttpServlet {
         User user = jsonHandler.createAuthenticateUserFromJSON(request, response);
         user = userService.authenticateUser(user);
 
-        jsonHandler.writeJSONOutputUser(response, user);
+        jsonHandler.writeJSONOutputAuthenticateUser(response, user);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
