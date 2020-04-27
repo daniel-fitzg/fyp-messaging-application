@@ -38,4 +38,8 @@ public class UserService {
 
         return users;
     }
+
+    void logoutUser(UUID userId) {
+        cassandraDataStore.logoutUser(userId);
+    }
 }

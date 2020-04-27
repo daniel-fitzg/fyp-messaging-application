@@ -10,19 +10,17 @@ import java.util.UUID;
 
 @WebServlet(name = "LogoutUserServlet", urlPatterns = {"/LogoutUser"})
 public class LogoutUserServlet extends HttpServlet {
+
+    private UserService userService = new UserService();
+    private JSONHandler jsonHandler = new JSONHandler();
+
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Allows resource sharing across different origins
         response.setHeader("Access-Control-Allow-Origin", "*");
 
-        ServletHelper servletHelper = new ServletHelper();
-        JSONObject incomingJsonObject = servletHelper.parseIncomingJSON(request, response);
-
-        UUID userId = UUID.fromString((String) incomingJsonObject.get("userId"));
-
-        CassandraDataStore cassandraDataStore = new CassandraDataStore();
-
-        cassandraDataStore.logoutUser(userId);
-        cassandraDataStore.close();
+        UUID userId = jsonHandler.getUserIdFromJSON(request, response);
+        
+        userService.logoutUser(userId);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
