@@ -20,16 +20,7 @@ class UserDao {
         ResultSet resultSet = session.execute(preparedStatement.bind());
 
         resultSet.forEach(row -> {
-            User user = new User();
-            user.setUserId(row.getUUID("user_id"));
-            user.setFirstName(row.getString("first_name"));
-            user.setLastName(row.getString("last_name"));
-            user.setPassword(row.getString("password"));
-            user.setUsername(row.getString("username"));
-            user.setRegisterDate(row.getTimestamp("register_date"));
-            user.setOnlineStatus(row.getBool("online_status"));
-
-            users.add(user);
+            users.add(buildUser(row));
         });
 
         return users;
@@ -96,10 +87,14 @@ class UserDao {
     User getUser(UUID userId) {
         PreparedStatement preparedStatement = session.prepare("SELECT * FROM " + TABLE_NAME + " WHERE user_id = " + userId);
         ResultSet resultSet = session.execute(preparedStatement.bind());
-
-        // Populate User with DB results
-        User user = new User();
         Row row = resultSet.one();
+
+        return buildUser(row);
+    }
+
+    private User buildUser(Row row) {
+        User user = new User();
+
         user.setUserId(row.getUUID("user_id"));
         user.setFirstName(row.getString("first_name"));
         user.setLastName(row.getString("last_name"));
