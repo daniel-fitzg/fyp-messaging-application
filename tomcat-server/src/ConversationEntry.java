@@ -8,6 +8,7 @@ public class ConversationEntry implements Serializable, Comparable<ConversationE
     private Date dateCreated;
     private String content;
     private String authorName;
+    private UUID secondaryAuthorId;
 
     ConversationEntry() {
         this.conversationId = null;
@@ -15,6 +16,7 @@ public class ConversationEntry implements Serializable, Comparable<ConversationE
         this.dateCreated = null;
         this.content = null;
         this.authorName = null;
+        this.secondaryAuthorId = null;
     }
 
     UUID getConversationId() {
@@ -55,6 +57,14 @@ public class ConversationEntry implements Serializable, Comparable<ConversationE
 
     void setAuthorName(String authorName) {
         this.authorName = authorName;
+    }
+
+    public UUID getSecondaryAuthorId() {
+        return secondaryAuthorId;
+    }
+
+    public void setSecondaryAuthorId(UUID secondaryAuthorId) {
+        this.secondaryAuthorId = secondaryAuthorId;
     }
 
     // Comparable interface override, sorts conversation entries by date
