@@ -2,7 +2,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public class Conversation implements Serializable {
+class Conversation implements Serializable {
     private UUID userId;
     private UUID conversationId;
     private UUID secondaryUserId;

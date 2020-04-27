@@ -59,6 +59,5 @@ class ConversationContentDao {
 
             conversationEntries.add(conversationEntry);
         });
-
     }
 }

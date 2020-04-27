@@ -1,7 +1,7 @@
 import java.util.List;
 import java.util.UUID;
 
-public class UserService {
+class UserService {
 
     private CassandraDataStore cassandraDataStore;
     private ValidationService validationService;

@@ -5,10 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-// TODO For each table add comment block specifying columns
-
 class UserDao {
-    final String tableName = "users";
+    private final String TABLE_NAME = "users";
     private Session session;
 
     UserDao(Session session) {
@@ -18,7 +16,7 @@ class UserDao {
     List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
 
-        PreparedStatement preparedStatement = session.prepare("SELECT * FROM " + tableName);
+        PreparedStatement preparedStatement = session.prepare("SELECT * FROM " + TABLE_NAME);
         ResultSet resultSet = session.execute(preparedStatement.bind());
 
         resultSet.forEach(row -> {
@@ -51,7 +49,7 @@ class UserDao {
 
         // Writes new user data to DB
         UUID userId = UUID.randomUUID();
-        PreparedStatement preparedStatement = session.prepare("INSERT INTO " + tableName +
+        PreparedStatement preparedStatement = session.prepare("INSERT INTO " + TABLE_NAME +
                 " (user_id, first_name, last_name, username, password, register_date, online_status) VALUES (?, ?, ?, ?, ?, ?, ?)");
 
         session.execute(preparedStatement.bind(userId, newUser.getFirstName(), newUser.getLastName(), newUser.getUsername(),
@@ -82,7 +80,7 @@ class UserDao {
     }
 
     private User updateUserOnlineStatus(User user) {
-        PreparedStatement changeOnlineStatusTrue = session.prepare("UPDATE " + tableName + " SET online_status = " + true +
+        PreparedStatement changeOnlineStatusTrue = session.prepare("UPDATE " + TABLE_NAME + " SET online_status = " + true +
                 " WHERE user_id = " + user.getUserId());
         session.execute(changeOnlineStatusTrue.bind());
 
@@ -90,13 +88,13 @@ class UserDao {
     }
 
     void logoutUser(UUID userId) {
-        PreparedStatement changeOnlineStatusFalse = session.prepare("UPDATE " + tableName + " SET online_status = " + false +
+        PreparedStatement changeOnlineStatusFalse = session.prepare("UPDATE " + TABLE_NAME + " SET online_status = " + false +
                 " WHERE user_id = " + userId);
         session.execute(changeOnlineStatusFalse.bind());
     }
 
     User getUser(UUID userId) {
-        PreparedStatement preparedStatement = session.prepare("SELECT * FROM " + tableName + " WHERE user_id = " + userId);
+        PreparedStatement preparedStatement = session.prepare("SELECT * FROM " + TABLE_NAME + " WHERE user_id = " + userId);
         ResultSet resultSet = session.execute(preparedStatement.bind());
 
         // Populate User with DB results

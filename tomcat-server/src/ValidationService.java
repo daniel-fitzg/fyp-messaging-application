@@ -1,4 +1,4 @@
-public class ValidationService {
+class ValidationService {
 
     boolean validateAuthenticateUser(User user) {
         // Checks if user has entered empty strings

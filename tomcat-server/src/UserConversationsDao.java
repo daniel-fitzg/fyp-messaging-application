@@ -15,8 +15,6 @@ public class UserConversationsDao {
     }
 
     Conversation getConversation(UUID authorId, UUID secondaryAuthorId) {
-        Conversation conversation = null;
-
         // Checks for a conversation based on user ID and secondary user ID
         PreparedStatement getConversation = session.prepare("SELECT * FROM " + tableName + " WHERE user_id = " + authorId +
                 " AND secondary_user_id = " + secondaryAuthorId);

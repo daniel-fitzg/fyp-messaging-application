@@ -1,6 +1,3 @@
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
