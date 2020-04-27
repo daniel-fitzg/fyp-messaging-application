@@ -34,7 +34,17 @@ public class JSONHandler {
         return conversationEntry;
     }
 
-    JSONObject parseIncomingJSON(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    User createAuthenticateUserFromJSON(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        JSONObject jsonObject = parseIncomingJSON(request, response);
+
+        User user = new User();
+        user.setUsername((String) jsonObject.get("email"));
+        user.setPassword((String) jsonObject.get("password"));
+
+        return user;
+    }
+
+    private JSONObject parseIncomingJSON(HttpServletRequest request, HttpServletResponse response) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(request.getReader());
         String incomingJsonString = bufferedReader.readLine();
         JSONParser jsonParser = new JSONParser();
@@ -50,7 +60,7 @@ public class JSONHandler {
         return incomingJsonObject;
     }
 
-    JSONArray buildConversationEntriesJsonArray(List<ConversationEntry> conversationEntries) {
+    private JSONArray buildConversationEntriesJsonArray(List<ConversationEntry> conversationEntries) {
         JSONArray jsonArray = new JSONArray();
 
         conversationEntries.forEach(entry -> {
@@ -67,15 +77,31 @@ public class JSONHandler {
         return jsonArray;
     }
 
-    void writeJsonOutput(HttpServletResponse response, String jsonString) throws IOException {
-        response.getWriter().write(jsonString);
-        response.getWriter().flush();
-        response.getWriter().close();
-    }
-
     void writeJSONOutputConversationEntries(HttpServletResponse response, List<ConversationEntry> conversationEntries) throws IOException{
         Collections.sort(conversationEntries);
-        response.getWriter().write(buildConversationEntriesJsonArray(conversationEntries).toJSONString());
+        writeJSONOutput(response, buildConversationEntriesJsonArray(conversationEntries).toJSONString());
+    }
+
+    void writeJSONOutputUser(HttpServletResponse response, User user) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+
+        if (user != null) {
+            jsonObject.put("userId", user.getUserId().toString());
+            jsonObject.put("firstName", user.getFirstName());
+            jsonObject.put("lastName", user.getLastName());
+            jsonObject.put("email", user.getUsername());
+            jsonObject.put("registerDate", user.getRegisterDate().toString());
+
+            writeJSONOutput(response, jsonObject.toJSONString());
+        } else {
+            jsonObject.put("userId", null);
+        }
+
+        writeJSONOutput(response, jsonObject.toJSONString());
+    }
+
+    private void writeJSONOutput(HttpServletResponse response, String jsonString) throws IOException {
+        response.getWriter().write(jsonString);
         response.getWriter().flush();
         response.getWriter().close();
     }
