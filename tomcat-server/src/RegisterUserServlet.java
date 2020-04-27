@@ -27,13 +27,6 @@ public class RegisterUserServlet extends HttpServlet {
         jsonHandler.writeJSONOutputRegisterUser(response, registeredUser);
     }
 
-    private boolean validateNewUser(RegisterUser newUser) throws IOException {
-        return !newUser.getFirstName().equalsIgnoreCase("")
-                && !newUser.getLastName().equalsIgnoreCase("")
-                && !newUser.getUsername().equalsIgnoreCase("")
-                && !newUser.getPassword().equalsIgnoreCase("");
-    }
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         processRequest(request, response);
     }
