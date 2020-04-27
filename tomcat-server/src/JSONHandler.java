@@ -41,6 +41,11 @@ public class JSONHandler {
         return authorIds;
     }
 
+    UUID getUserIdFromJSON(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        JSONObject jsonObject = parseIncomingJSON(request, response);
+         return UUID.fromString((String) jsonObject.get("userId"));
+    }
+
     User createAuthenticateUserFromJSON(HttpServletRequest request, HttpServletResponse response) throws IOException {
         JSONObject jsonObject = parseIncomingJSON(request, response);
 
@@ -84,6 +89,25 @@ public class JSONHandler {
         return jsonArray;
     }
 
+    private JSONArray buildUserConversationsJsonArray(List<User> users) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+
+        // Populate JSON array with user objects
+        JSONArray jsonArray = new JSONArray();
+        users.forEach(user -> {
+            JSONObject userJsonObject = new JSONObject();
+            userJsonObject.put("userId", user.getUserId().toString());
+            userJsonObject.put("firstName", user.getFirstName());
+            userJsonObject.put("lastName", user.getLastName());
+            userJsonObject.put("registerDate", simpleDateFormat.format(user.getRegisterDate()));
+            userJsonObject.put("onlineStatus", user.isOnlineStatus());
+
+            jsonArray.add(userJsonObject);
+        });
+
+        return jsonArray;
+    }
+
     void writeJSONOutputConversationEntries(HttpServletResponse response, List<ConversationEntry> conversationEntries) throws IOException{
         Collections.sort(conversationEntries);
         writeJSONOutput(response, buildConversationEntriesJsonArray(conversationEntries).toJSONString());
@@ -111,6 +135,10 @@ public class JSONHandler {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("conversationId", conversationId.toString());
         writeJSONOutput(response, jsonObject.toJSONString());
+    }
+
+    void writeJSONOutputUserConversations(HttpServletResponse response, List<User> users) throws IOException {
+        writeJSONOutput(response, buildUserConversationsJsonArray(users).toJSONString());
     }
 
     private void writeJSONOutput(HttpServletResponse response, String jsonString) throws IOException {

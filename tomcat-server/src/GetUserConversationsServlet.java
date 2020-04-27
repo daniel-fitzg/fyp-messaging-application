@@ -17,47 +17,19 @@ import java.util.UUID;
 @WebServlet(name = "GetUserConversationsServlet", urlPatterns = {"/GetUserConversations"})
 public class GetUserConversationsServlet extends HttpServlet {
 
+    private UserService userService = new UserService();
+    private JSONHandler jsonHandler = new JSONHandler();
+
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Allows resource sharing across different origins
         response.setHeader("Access-Control-Allow-Origin", "*");
 
-        ServletHelper servletHelper = new ServletHelper();
-        JSONObject incomingJsonObject = servletHelper.parseIncomingJSON(request, response);
+        UUID userId = jsonHandler.getUserIdFromJSON(request, response);
 
-        UUID userId = UUID.fromString((String) incomingJsonObject.get("userId"));
+        List<User> users = userService.getAllUsers();
+        users = userService.removeCurrentUser(users, userId);
 
-        CassandraDataStore cassandraDataStore = new CassandraDataStore();
-
-        List<User> users = cassandraDataStore.getAllUsers();
-        User duplicateUser = null;
-
-        // Identifies and removes the current user within the returned list of all registered users
-        for (User user : users) {
-            if (user.getUserId().equals(userId)) {
-                duplicateUser = user;
-                break;
-            }
-        }
-        users.remove(duplicateUser);
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-
-        // Populate JSON array with user objects
-        JSONArray jsonArray = new JSONArray();
-        users.forEach(user -> {
-            JSONObject userJsonObject = new JSONObject();
-            userJsonObject.put("userId", user.getUserId().toString());
-            userJsonObject.put("firstName", user.getFirstName());
-            userJsonObject.put("lastName", user.getLastName());
-            userJsonObject.put("registerDate", simpleDateFormat.format(user.getRegisterDate()));
-            userJsonObject.put("onlineStatus", user.isOnlineStatus());
-
-            jsonArray.add(userJsonObject);
-        });
-
-        servletHelper.writeJsonOutput(response, jsonArray.toString());
-
-        cassandraDataStore.close();
+        jsonHandler.writeJSONOutputUserConversations(response, users);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
