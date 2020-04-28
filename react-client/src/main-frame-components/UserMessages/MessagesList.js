@@ -32,7 +32,7 @@ class MessagesList extends React.Component {
    return (
      <div className="message-list">
        {this.props.messages.map(message => {
-         if (message.authorId === this.state.userId) {
+         if (message.authorId === this.props.userId) {
            return (
              <div>
                <div>
