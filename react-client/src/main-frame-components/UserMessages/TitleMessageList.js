@@ -18,7 +18,7 @@ class TitleMessageList extends React.Component {
 
   handleClick() {
     this.props.updateLoadingScreen()
-    this.props.loadConversationsScreen(this.state.userId)
+    this.props.loadConversationsScreen(this.props.userId, this.props.firstName, this.props.lastName)
   }
 
   render() {
